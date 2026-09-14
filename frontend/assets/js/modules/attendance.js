@@ -7,6 +7,15 @@ class AttendanceController {
         this.model = new AttendanceModel();
         this.view = new AttendanceView();
         this.timerInterval = null;
+        const user = JSON.parse(localStorage.getItem('workops_user') || '{}');
+        if ((user.role || '').toUpperCase() !== 'ROLE_HR') {
+            window.location.replace('../dashboard.html');
+            return;
+        }
+        this.canViewAll = ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_MANAGER'].includes((user.role || '').toUpperCase());
+        document.querySelectorAll('.attendance-manager-only').forEach(element => {
+            element.hidden = !this.canViewAll;
+        });
         this.init();
     }
 
@@ -15,7 +24,9 @@ class AttendanceController {
         this.initGeolocation();
         this.bindEvents();
         try {
-            await Promise.all([this.refreshTodayStatus(), this.refreshKpis(), this.refreshRecords(), this.refreshCorrections()]);
+            const requests = [this.refreshTodayStatus(), this.refreshRecords()];
+            if (this.canViewAll) requests.push(this.refreshKpis(), this.refreshCorrections());
+            await Promise.all(requests);
         } catch (error) {
             console.error('Error loading attendance module data:', error);
         }
@@ -125,7 +136,9 @@ class AttendanceController {
             const active = this.model.todayStatus?.isClockedIn && !this.model.todayStatus?.isClockedOut;
             const response = active ? await this.model.clockOut('Shift completed via Web Dashboard') : await this.model.clockIn('Clocked in via WorkOps Web Dashboard');
             if (response?.success) WorkOps.showToast('success', active ? 'Clock-Out successful! Shift duration recorded.' : 'Clock-In successful! Have a productive shift.', active ? 'Goodbye' : 'Welcome');
-            await Promise.all([this.refreshTodayStatus(), this.refreshKpis(), this.refreshRecords()]);
+            const requests = [this.refreshTodayStatus(), this.refreshRecords()];
+            if (this.canViewAll) requests.push(this.refreshKpis());
+            await Promise.all(requests);
         } catch (error) {
             WorkOps.showToast('error', error.message || 'Operation failed. Please try again.', 'Clock Action Error');
             if (this.model.todayStatus) this.view.renderClock(this.model.todayStatus, this.timerInterval, value => { this.timerInterval = value; });
@@ -150,7 +163,7 @@ class AttendanceController {
                 WorkOps.showToast('success', 'Correction request submitted to HR/Manager for review.');
                 bootstrap.Modal.getInstance(document.getElementById('correctionModal'))?.hide();
                 this.view.resetCorrectionForm();
-                await this.refreshCorrections();
+                if (this.canViewAll) await this.refreshCorrections();
             }
         } catch (error) {
             WorkOps.showToast('error', error.message || 'Failed to submit correction request');

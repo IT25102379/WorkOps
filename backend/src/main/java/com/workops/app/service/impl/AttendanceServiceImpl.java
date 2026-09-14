@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -132,17 +131,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new BadRequestException("You have already clocked out today at " + attendance.getClockOutTime().toLocalTime());
         }
 
-        // 2. Validate Geolocation for Clock-Out
-        Department dept = employee.getDepartment();
-        double distanceMeters = calculateHaversineDistance(
-                request.getLatitude().doubleValue(),
-                request.getLongitude().doubleValue(),
-                dept.getOfficeLatitude().doubleValue(),
-                dept.getOfficeLongitude().doubleValue()
-        );
-        boolean isGeofenceValid = distanceMeters <= dept.getGeofenceRadiusMeters();
-
-        // 3. Compute Duration, Overtime, Early Departure, and Status
+        // 2. Compute Duration, Overtime, Early Departure, and Status
         attendance.setClockOutTime(now);
         attendance.setClockOutLatitude(request.getLatitude());
         attendance.setClockOutLongitude(request.getLongitude());
@@ -238,9 +227,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AttendanceResponseDTO> getFilteredAttendance(AttendanceFilterDTO filterDTO) {
+    public List<AttendanceResponseDTO> getFilteredAttendance(AttendanceFilterDTO filterDTO, String username, boolean canViewAll) {
         if (filterDTO == null) {
             filterDTO = new AttendanceFilterDTO();
+        }
+
+        if (!canViewAll) {
+            Employee employee = resolveEmployee(null, username);
+            filterDTO.setEmployeeId(employee.getId());
         }
 
         List<Attendance> records = attendanceRepository.filterAttendance(

@@ -7,22 +7,52 @@
     <link rel="icon" type="image/svg+xml" href="public/workops-icon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 28px; background: radial-gradient(circle at 12% 18%, rgba(79,70,229,.24), transparent 38%), radial-gradient(circle at 88% 82%, rgba(6,182,212,.14), transparent 34%), var(--bg-primary); }
-        .auth-layout { width: min(1040px, 100%); display: grid; grid-template-columns: 1fr 440px; gap: 0; overflow: hidden; border: 1px solid var(--border-color); border-radius: var(--radius-xl); background: rgba(17,24,39,.74); box-shadow: 0 28px 80px rgba(0,0,0,.42); }
-        .auth-intro { padding: 52px; background: linear-gradient(145deg, rgba(79,70,229,.18), rgba(6,182,212,.06)); }
-        .auth-card { padding: 42px; background: rgba(31,41,55,.66); }
-        .auth-logo { display:flex; align-items:center; gap:10px; font-size:1.3rem; font-weight:800; color:var(--text-primary); }
-        .auth-logo-mark { width:38px; height:38px; display:grid; place-items:center; border-radius:11px; color:#fff; background:linear-gradient(135deg,#4f46e5,#06b6d4); }
-        .quick-role-pill { cursor:pointer; font-size:.75rem; padding:7px 11px; border-radius:999px; background:var(--bg-secondary); border:1px solid var(--border-color); color:var(--text-secondary); transition:var(--transition-fast); }
-        .quick-role-pill:hover { color:var(--text-primary); border-color:var(--primary); background:var(--bg-glass-hover); }
-        .auth-feature { display:flex; align-items:flex-start; gap:12px; margin-top:22px; color:var(--text-secondary); }
-        .auth-feature i { color:#818cf8; margin-top:4px; }
-        @media (max-width: 800px) { .auth-layout { grid-template-columns:1fr; max-width:500px; } .auth-intro { display:none; } }
+        :root { --auth-ink: #101b2d; --auth-ink-soft: #17263b; --auth-paper: #f5f7fb; --auth-muted: #91a0b5; --auth-lime: #d9f85a; --auth-cyan: #61d5d0; }
+        * { letter-spacing: 0 !important; }
+        body { font-family: 'Manrope', sans-serif; background: var(--auth-paper); }
+        .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; position: relative; overflow: hidden; background: var(--auth-paper); }
+        .auth-page::before, .auth-page::after { content: ''; position: absolute; pointer-events: none; border-radius: 50%; filter: blur(2px); }
+        .auth-page::before { width: 460px; height: 460px; top: -220px; right: -120px; background: rgba(97,213,208,.25); }
+        .auth-page::after { width: 380px; height: 380px; bottom: -200px; left: -120px; background: rgba(217,248,90,.18); }
+        .auth-layout { width: min(940px, 100%); min-height: 560px; display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(340px, .94fr); overflow: hidden; position: relative; z-index: 1; border: 1px solid rgba(16,27,45,.12); border-radius: 24px; background: var(--auth-ink); box-shadow: 0 30px 70px rgba(16,27,45,.22); animation: auth-rise .7s ease both; }
+        .auth-intro { padding: 42px 46px; position: relative; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(145deg, #12253b 0%, #1c3449 62%, #21454d 100%); color: #fff; }
+        .auth-intro::after { content: ''; position: absolute; width: 220px; height: 220px; right: -80px; bottom: 90px; border: 1px solid rgba(217,248,90,.35); border-radius: 50%; box-shadow: 0 0 0 28px rgba(217,248,90,.06), 0 0 0 56px rgba(217,248,90,.035); }
+        .auth-card { padding: 42px 42px 34px; background: #fbfcfe; color: var(--auth-ink); }
+        .auth-intro h1 { max-width: 500px; margin: 0; color: #fff; font-size: clamp(2.35rem, 4.2vw, 3.75rem); line-height: .98; letter-spacing: -.06em !important; }
+        .auth-intro-copy { max-width: 430px; margin: 18px 0 0; color: #b7c5d6; font-size: .9rem; line-height: 1.65; }
+        .auth-feature-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 30px; max-width: 500px; }
+        .auth-feature { min-height: 92px; display:flex; flex-direction: column; gap:12px; padding: 14px; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; background: rgba(255,255,255,.055); color: #c9d5e3; }
+        .auth-feature i { color: var(--auth-lime); font-size: 1rem; }
+        .auth-feature strong { display:block; margin-bottom: 5px; color:#fff; font-size:.82rem; }
+        .auth-feature span { font-size:.73rem; line-height:1.5; }
+        .auth-form-label { display:block; margin-bottom:9px; color:#526176; font: 500 .68rem/1.2 'DM Mono', monospace; letter-spacing:.06em !important; text-transform:uppercase; }
+        .auth-card h2 { color:var(--auth-ink); font-size:1.65rem; letter-spacing:-.045em !important; }
+        .auth-card .auth-subtitle { color:#728096; font-size:.86rem; }
+        .auth-close { color:#8290a3; transition:color .2s ease, transform .2s ease; }
+        .auth-close:hover { color:var(--auth-ink); transform:rotate(90deg); }
+        .auth-card .form-control { min-height:50px; border:1px solid #dbe2ea !important; border-radius:10px !important; background:#fff !important; color:var(--auth-ink) !important; box-shadow:0 3px 12px rgba(16,27,45,.03); font-family:'Manrope',sans-serif; }
+        .auth-card .form-control:focus { border-color:#65b8b2 !important; box-shadow:0 0 0 4px rgba(97,213,208,.18) !important; }
+        .auth-card .text-info { color:#168c91 !important; }
+        .auth-card .text-secondary { color:#718096 !important; }
+        .auth-meta { color:#718096; font-size:.77rem; }
+        .auth-meta .form-check-input { width:16px; height:16px; margin-top:0; border-color:#cbd5e1; }
+        .auth-meta .form-check-input:checked { background-color:#168c91; border-color:#168c91; }
+        .auth-submit { min-height:52px; border:0; border-radius:10px; background:var(--auth-ink); color:#fff; box-shadow:0 10px 22px rgba(16,27,45,.18); font-weight:800; transition:transform .2s ease, background .2s ease, box-shadow .2s ease; }
+        .auth-submit:hover { background:#1a314b; color:#fff; transform:translateY(-2px); box-shadow:0 14px 28px rgba(16,27,45,.24); }
+        .auth-submit:focus-visible, .quick-role-pill:focus-visible { outline:3px solid rgba(97,213,208,.45); outline-offset:3px; }
+        .auth-divider { display:flex; align-items:center; gap:12px; margin:28px 0 16px; color:#9aa7b8; font:500 .62rem/1 'DM Mono',monospace; letter-spacing:.06em !important; text-transform:uppercase; }
+        .auth-divider::before, .auth-divider::after { content:''; height:1px; flex:1; background:#e2e8f0; }
+        .quick-role-pill { cursor:pointer; display:inline-flex; align-items:center; gap:7px; min-height:35px; padding:7px 12px; border:1px solid #dce4ed; border-radius:8px; background:#fff; color:#526176; font-size:.72rem; font-weight:700; transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease; }
+        .quick-role-pill:hover { color:var(--auth-ink); border-color:#65b8b2; background:#f6fffd; box-shadow:0 7px 16px rgba(16,27,45,.08); transform:translateY(-2px); }
+        .quick-role-pill:disabled { cursor:not-allowed; opacity:.6; pointer-events:none; }
+        @keyframes auth-rise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+        @media (max-width: 800px) { .auth-page { padding:18px; } .auth-layout { min-height:0; grid-template-columns:1fr; max-width:520px; border-radius:22px; } .auth-intro { min-height:270px; padding:30px; } .auth-intro h1 { font-size:2.35rem; } .auth-kicker { margin-top:48px; } .auth-feature-list { display:none; } .auth-card { padding:34px 28px 30px; } }
+        @media (max-width: 420px) { .auth-page { padding:10px; } .auth-intro { padding:25px 22px; } .auth-card { padding:28px 20px 24px; } .auth-intro h1 { font-size:2rem; } }
     </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -30,35 +60,35 @@
 <div class="auth-page">
     <div class="auth-layout">
         <section class="auth-intro">
-            <a href="home.html" class="auth-logo text-decoration-none"><span class="auth-logo-mark"><i class="fa-solid fa-layer-group"></i></span>Work<span class="text-gradient-primary">Ops</span></a>
-            <div class="mt-5">
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-3">Secure workforce operations</span>
-                <h1 class="display-5 fw-bold">Your team's operational command center.</h1>
-                <p class="mt-3">Bring attendance, leave, payroll and performance into one clear daily workflow.</p>
-                <div class="auth-feature"><i class="fa-solid fa-shield-halved"></i><span><strong class="text-light">Role-aware access</strong><br>Every view is shaped around the work your role owns.</span></div>
-                <div class="auth-feature"><i class="fa-solid fa-chart-line"></i><span><strong class="text-light">Live operational context</strong><br>Make faster decisions with current people and workforce data.</span></div>
+            <div>
+                <h1>Your team's operational command center.</h1>
+                <p class="auth-intro-copy">Bring attendance, leave, payroll and performance into one clear daily workflow.</p>
+                <div class="auth-feature-list">
+                    <div class="auth-feature"><i class="fa-solid fa-shield-halved"></i><span><strong>Role-aware access</strong>Every view is shaped around the work your role owns.</span></div>
+                    <div class="auth-feature"><i class="fa-solid fa-chart-line"></i><span><strong>Live operational context</strong>Make faster decisions with current workforce data.</span></div>
+                </div>
             </div>
         </section>
         <section class="auth-card">
-            <div class="d-flex justify-content-between align-items-start mb-4"><div><h2 class="h4 mb-1">Welcome back</h2><p class="small mb-0">Sign in to continue to WorkOps.</p></div><a href="home.html" class="text-secondary" title="Back to home"><i class="fa-solid fa-xmark"></i></a></div>
+            <div class="d-flex justify-content-between align-items-start mb-4"><div><h2 class="h4 mb-1">Welcome back</h2><p class="auth-subtitle mb-0">Sign in to continue to WorkOps.</p></div><a href="home.html" class="auth-close" title="Back to home"><i class="fa-solid fa-xmark"></i></a></div>
             <form id="login-form">
-                <label class="form-label" for="username">Username or email</label>
-                <input class="form-control mb-3" id="username" value="john.doe" autocomplete="username" required>
-                <div class="d-flex justify-content-between"><label class="form-label" for="password">Password</label><a href="#" class="small text-info text-decoration-none" id="forgot-link">Forgot password?</a></div>
-                <input type="password" class="form-control mb-3" id="password" value="Password@123" autocomplete="current-password" required>
-                <div class="d-flex align-items-center justify-content-between mb-4"><label class="small text-secondary"><input class="form-check-input me-2" type="checkbox" checked> Remember session</label><span class="badge bg-success-subtle text-success"><i class="fa-solid fa-lock me-1"></i> JWT secured</span></div>
-                <button class="btn btn-workops-primary w-100 py-2" id="btn-submit-login"><i class="fa-solid fa-right-to-bracket me-2"></i> Sign in to WorkOps</button>
+                <label class="auth-form-label" for="username">Username or email</label>
+                <input class="form-control mb-3" id="username" placeholder="Name or Email" autocomplete="username" required>
+                <div class="d-flex justify-content-between"><label class="auth-form-label mb-0" for="password">Password</label><a href="#" class="small text-info text-decoration-none" id="forgot-link">Forgot password?</a></div>
+                <input type="password" class="form-control mb-3" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+                <div class="d-flex align-items-center mb-4 auth-meta"><label><input class="form-check-input me-2" type="checkbox" checked> Remember session</label></div>
+                <button class="btn auth-submit w-100 py-2" id="btn-submit-login"><i class="fa-solid fa-right-to-bracket me-2"></i> Sign in to WorkOps</button>
             </form>
-            <div class="border-top border-secondary mt-4 pt-3"><div class="small text-muted text-center mb-2">DEMO ROLE SHORTCUTS</div><div class="d-flex flex-wrap gap-2 justify-content-center"><button type="button" class="quick-role-pill" data-user="john.doe" data-name="John Doe"><i class="fa-solid fa-code me-1 text-primary"></i> Staff</button><button type="button" class="quick-role-pill" data-user="admin" data-name="System Administrator"><i class="fa-solid fa-user-shield me-1 text-danger"></i> Admin</button><button type="button" class="quick-role-pill" data-user="sarah.hr" data-name="Sarah Connor"><i class="fa-solid fa-user-tie me-1 text-warning"></i> HR Manager</button></div></div>
+            <div class="text-center mt-3" style="color:#718096;font-size:.78rem;">New employee? <a href="signup.html" style="color:#168c91;font-weight:800;text-decoration:none;">Create an account</a></div>
+            <div class="auth-divider">Quick access</div><div class="d-flex flex-wrap gap-2 justify-content-center"><button type="button" class="quick-role-pill" disabled><i class="fa-solid fa-code text-primary"></i> Staff</button><button type="button" class="quick-role-pill" disabled><i class="fa-solid fa-user-shield text-danger"></i> Admin</button><button type="button" class="quick-role-pill" disabled><i class="fa-solid fa-user-tie text-warning"></i> HR Manager</button></div>
         </section>
     </div>
 </div>
 <script type="module">
     import { ApiClient } from './assets/js/api.js';
     import { WorkOps } from './assets/js/main.js';
-    document.querySelectorAll('.quick-role-pill').forEach(button => button.addEventListener('click', () => { document.getElementById('username').value = button.dataset.user; document.getElementById('password').value = 'Password@123'; WorkOps.showToast('info', `Credentials filled for ${button.dataset.name}`); }));
     document.getElementById('forgot-link').addEventListener('click', event => { event.preventDefault(); WorkOps.showToast('info', 'Contact your WorkOps administrator to reset access.'); });
-    document.getElementById('login-form').addEventListener('submit', async event => { event.preventDefault(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value; const button = document.getElementById('btn-submit-login'); button.disabled = true; button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Authenticating...'; try { const response = await ApiClient.post('/auth/login', { username, password }); const user = response?.data; if (!user?.token || !user?.userId) throw new Error('Authentication service returned an invalid response.'); ApiClient.setToken(user.token); localStorage.setItem('workops_user', JSON.stringify(user)); WorkOps.showToast('success', `Welcome back, ${user.fullName}.`, 'Authentication approved'); setTimeout(() => window.location.href = 'dashboard.html', 650); } catch (error) { button.disabled = false; button.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Sign in to WorkOps'; WorkOps.showToast('error', error.message || 'Login failed. Please check your credentials.'); } });
+    document.getElementById('login-form').addEventListener('submit', async event => { event.preventDefault(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value; const button = document.getElementById('btn-submit-login'); button.disabled = true; button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Authenticating...'; try { const response = await ApiClient.post('/auth/login', { username, password }); const user = response?.data; if (!user?.token || !user?.userId) throw new Error('Authentication service returned an invalid response.'); ApiClient.setToken(user.token); localStorage.setItem('workops_user', JSON.stringify(user)); WorkOps.showToast('success', `Welcome back, ${user.fullName}.`, 'Authentication approved'); const destination = (user.role || '').toUpperCase() === 'ROLE_HR' ? 'pages/attendance.html' : 'dashboard.html'; setTimeout(() => window.location.href = destination, 650); } catch (error) { button.disabled = false; button.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Sign in to WorkOps'; WorkOps.showToast('error', error.message || 'Login failed. Please check your credentials.'); } });
 </script>
 </body>
 </html>

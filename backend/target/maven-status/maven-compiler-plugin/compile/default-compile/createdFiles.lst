@@ -7,6 +7,7 @@ com\workops\app\config\OpenApiConfig.class
 com\workops\app\entity\enums\RequestType.class
 com\workops\app\dto\TodayStatusDTO.class
 com\workops\app\repository\AttendanceRepository.class
+com\workops\app\dto\AccountSummaryDTO$AccountSummaryDTOBuilder.class
 com\workops\app\entity\Employee$EmployeeBuilder.class
 com\workops\app\dto\AttendanceKpiDTO.class
 com\workops\app\entity\AttendanceRequest.class
@@ -44,6 +45,7 @@ com\workops\app\controller\AttendanceController.class
 com\workops\app\entity\Department$DepartmentBuilder.class
 com\workops\app\entity\Department.class
 com\workops\app\security\JwtAuthenticationFilter.class
+com\workops\app\dto\AccountSummaryDTO.class
 com\workops\app\entity\AttendanceRequest$AttendanceRequestBuilder.class
 com\workops\app\dto\TodayStatusDTO$TodayStatusDTOBuilder.class
 com\workops\app\config\SecurityConfig.class

@@ -3,12 +3,15 @@ package com.workops.app.controller;
 import com.workops.app.dto.ApiResponse;
 import com.workops.app.dto.AuthRequest;
 import com.workops.app.dto.AuthResponse;
+import com.workops.app.dto.SignupRequest;
+import com.workops.app.dto.AccountSummaryDTO;
 import com.workops.app.entity.Employee;
 import com.workops.app.entity.User;
 import com.workops.app.repository.EmployeeRepository;
 import com.workops.app.repository.UserRepository;
 import com.workops.app.security.JwtUtils;
 import com.workops.app.security.UserPrincipal;
+import com.workops.app.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -35,6 +38,14 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
+    private final UserAccountService userAccountService;
+
+    @PostMapping("/signup")
+    @Operation(summary = "Create an employee account and profile")
+    public ResponseEntity<ApiResponse<AccountSummaryDTO>> signup(@Valid @RequestBody SignupRequest signupRequest) {
+        AccountSummaryDTO account = userAccountService.registerEmployee(signupRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Employee account created", account));
+    }
 
     @PostMapping("/login")
     @Operation(summary = "Authenticate user and return JWT Bearer token")

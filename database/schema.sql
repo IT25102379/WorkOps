@@ -288,12 +288,12 @@ GO
 -- 3. Users (Passwords hashed with BCrypt for 'Password@123')
 SET IDENTITY_INSERT dbo.users ON;
 INSERT INTO dbo.users (id, username, email, password_hash, role_id, is_active) VALUES
-(1, 'admin', 'admin@workops.io', '$2a$10$WkG.1Q6qI3PZ4d.6G2q09.QoA2uLhZtC5y1E.jK8j5yYv6sB/nNey', 1, 1),
-(2, 'sarah.hr', 'sarah.connor@workops.io', '$2a$10$WkG.1Q6qI3PZ4d.6G2q09.QoA2uLhZtC5y1E.jK8j5yYv6sB/nNey', 2, 1),
-(3, 'alex.manager', 'alex.cross@workops.io', '$2a$10$WkG.1Q6qI3PZ4d.6G2q09.QoA2uLhZtC5y1E.jK8j5yYv6sB/nNey', 3, 1),
-(4, 'john.doe', 'john.doe@workops.io', '$2a$10$WkG.1Q6qI3PZ4d.6G2q09.QoA2uLhZtC5y1E.jK8j5yYv6sB/nNey', 4, 1),
-(5, 'emma.watson', 'emma.watson@workops.io', '$2a$10$WkG.1Q6qI3PZ4d.6G2q09.QoA2uLhZtC5y1E.jK8j5yYv6sB/nNey', 4, 1),
-(6, 'david.fin', 'david.fin@workops.io', '$2a$10$WkG.1Q6qI3PZ4d.6G2q09.QoA2uLhZtC5y1E.jK8j5yYv6sB/nNey', 5, 1);
+(1, 'admin', 'admin@workops.io', '$2a$10$fjnma/2IFUusPAWzB7vImu5U9rXURNu1/6vm8lCjk7aSR8mqIPeii', 1, 1),
+(2, 'sarah.hr', 'sarah.connor@workops.io', '$2a$10$fjnma/2IFUusPAWzB7vImu5U9rXURNu1/6vm8lCjk7aSR8mqIPeii', 2, 1),
+(3, 'alex.manager', 'alex.cross@workops.io', '$2a$10$fjnma/2IFUusPAWzB7vImu5U9rXURNu1/6vm8lCjk7aSR8mqIPeii', 3, 1),
+(4, 'john.doe', 'john.doe@workops.io', '$2a$10$fjnma/2IFUusPAWzB7vImu5U9rXURNu1/6vm8lCjk7aSR8mqIPeii', 4, 1),
+(5, 'emma.watson', 'emma.watson@workops.io', '$2a$10$fjnma/2IFUusPAWzB7vImu5U9rXURNu1/6vm8lCjk7aSR8mqIPeii', 4, 1),
+(6, 'david.fin', 'david.fin@workops.io', '$2a$10$fjnma/2IFUusPAWzB7vImu5U9rXURNu1/6vm8lCjk7aSR8mqIPeii', 5, 1);
 SET IDENTITY_INSERT dbo.users OFF;
 GO
 
