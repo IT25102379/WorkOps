@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -140,8 +139,6 @@ public class AttendanceServiceImpl implements AttendanceService {
                 dept.getOfficeLatitude().doubleValue(),
                 dept.getOfficeLongitude().doubleValue()
         );
-        boolean isGeofenceValid = distanceMeters <= dept.getGeofenceRadiusMeters();
-
         // 3. Compute Duration, Overtime, Early Departure, and Status
         attendance.setClockOutTime(now);
         attendance.setClockOutLatitude(request.getLatitude());
