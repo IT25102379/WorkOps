@@ -334,6 +334,14 @@ cd backend
 mvn clean spring-boot:run
 ```
 
+The backend uses SQL Server authentication. Set these environment variables before starting it:
+
+```powershell
+$env:DB_URL = "jdbc:sqlserver://localhost:1433;databaseName=workops_db;encrypt=true;trustServerCertificate=true"
+$env:DB_USERNAME = "your_sql_login"
+$env:DB_PASSWORD = "your_sql_password"
+```
+
 3. Confirm backend is running at:
    - **Base API:** `http://localhost:8080/api/v1`
    - **Swagger UI:** `http://localhost:8080/swagger-ui.html`

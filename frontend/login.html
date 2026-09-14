@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkOps — Sign In</title>
+    <link rel="icon" type="image/svg+xml" href="public/workops-icon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,6 +24,7 @@
         .auth-feature i { color:#818cf8; margin-top:4px; }
         @media (max-width: 800px) { .auth-layout { grid-template-columns:1fr; max-width:500px; } .auth-intro { display:none; } }
     </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div class="auth-page">
@@ -54,10 +56,9 @@
 <script type="module">
     import { ApiClient } from './assets/js/api.js';
     import { WorkOps } from './assets/js/main.js';
-    const profiles = { admin: { fullName:'System Administrator', designation:'Chief Technology Officer', departmentName:'Executive Office', role:'ROLE_ADMIN' }, 'sarah.hr': { fullName:'Sarah Connor', designation:'Head of Human Resources', departmentName:'Human Resources', role:'ROLE_HR' }, 'john.doe': { fullName:'John Doe', designation:'Senior Full Stack Engineer', departmentName:'Engineering & Technology', role:'ROLE_STAFF' } };
     document.querySelectorAll('.quick-role-pill').forEach(button => button.addEventListener('click', () => { document.getElementById('username').value = button.dataset.user; document.getElementById('password').value = 'Password@123'; WorkOps.showToast('info', `Credentials filled for ${button.dataset.name}`); }));
     document.getElementById('forgot-link').addEventListener('click', event => { event.preventDefault(); WorkOps.showToast('info', 'Contact your WorkOps administrator to reset access.'); });
-    document.getElementById('login-form').addEventListener('submit', async event => { event.preventDefault(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value; const button = document.getElementById('btn-submit-login'); button.disabled = true; button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Authenticating...'; try { const response = await ApiClient.post('/auth/login', { username, password }); const fallback = profiles[username] || profiles['john.doe']; const user = { username, ...fallback, ...(response?.data || {}) }; if (response?.data?.token) ApiClient.setToken(response.data.token); localStorage.setItem('workops_user', JSON.stringify(user)); WorkOps.showToast('success', `Welcome back, ${user.fullName}.`, 'Authentication approved'); setTimeout(() => window.location.href = 'dashboard.html', 650); } catch (error) { button.disabled = false; button.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Sign in to WorkOps'; WorkOps.showToast('error', error.message || 'Login failed. Please check your credentials.'); } });
+    document.getElementById('login-form').addEventListener('submit', async event => { event.preventDefault(); const username = document.getElementById('username').value.trim(); const password = document.getElementById('password').value; const button = document.getElementById('btn-submit-login'); button.disabled = true; button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Authenticating...'; try { const response = await ApiClient.post('/auth/login', { username, password }); const user = response?.data; if (!user?.token || !user?.userId) throw new Error('Authentication service returned an invalid response.'); ApiClient.setToken(user.token); localStorage.setItem('workops_user', JSON.stringify(user)); WorkOps.showToast('success', `Welcome back, ${user.fullName}.`, 'Authentication approved'); setTimeout(() => window.location.href = 'dashboard.html', 650); } catch (error) { button.disabled = false; button.innerHTML = '<i class="fa-solid fa-right-to-bracket me-2"></i> Sign in to WorkOps'; WorkOps.showToast('error', error.message || 'Login failed. Please check your credentials.'); } });
 </script>
 </body>
 </html>

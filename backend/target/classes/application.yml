@@ -8,11 +8,11 @@ spring:
     name: workops-backend
 
   datasource:
-    # Microsoft SQL Server JDBC Connection
-    url: jdbc:sqlserver://localhost:1433;databaseName=workops_db;encrypt=true;trustServerCertificate=true;
-    username: sa
-    password: YourStrongPassword123!
+    # Microsoft SQL Server JDBC connection using SQL Server authentication.
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=workops_db;encrypt=true;trustServerCertificate=true}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:1211}
     hikari:
       maximum-pool-size: 15
       minimum-idle: 5
