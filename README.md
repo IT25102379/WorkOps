@@ -1,4 +1,4 @@
-# 🏢 WorkOps — Enterprise Staff & Attendance Management System
+# 🏢 WorkOps — Enterprise Staff Management System
 
 <div align="center">
 
@@ -389,16 +389,6 @@ All seed accounts are initialized with the default password: **`Password@123`**
 | `POST` | `/api/v1/auth/login` | Authenticates user with username & password, returns JWT token + profile | ❌ Public |
 | `GET` | `/api/v1/auth/me` | Retrieves profile of currently authenticated user session | ✅ Bearer |
 
-#### Example Login Request:
-```json
-POST /api/v1/auth/login
-Content-Type: application/json
-
-{
-  "username": "john.doe",
-  "password": "Password@123"
-}
-```
 
 ---
 
@@ -477,40 +467,4 @@ $$d = 2r \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\ph
 cd backend
 mvn test
 ```
-
-### Manual Testing with cURL
-
-#### Authenticate:
-```bash
-curl -X POST http://localhost:8080/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d "{\"username\": \"admin\", \"password\": \"Password@123\"}"
-```
-
-#### Check Today's Status:
-```bash
-curl -X GET http://localhost:8080/api/v1/attendance/status/today \
-  -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
-```
-
-#### Perform Clock-In:
-```bash
-curl -X POST http://localhost:8080/api/v1/attendance/clock-in \
-  -H "Authorization: Bearer <YOUR_JWT_TOKEN>" \
-  -H "Content-Type: application/json" \
-  -d "{\"employeeId\": 4, \"latitude\": 6.927100, \"longitude\": 79.861200, \"remarks\": \"Office arrival\"}"
-```
-
----
-
-## 🤝 Contributing & License
-
-Contributions, issues, and feature requests are welcome!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 
