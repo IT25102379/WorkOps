@@ -14,14 +14,14 @@ class AppController {
     }
 
     initTheme() {
-        const savedTheme = localStorage.getItem('workops_theme') || 'dark';
+        const savedTheme = localStorage.getItem('workops_theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         
         const themeBtn = document.getElementById('theme-toggle-btn');
         if (themeBtn) {
             this.updateThemeIcon(savedTheme);
             themeBtn.addEventListener('click', () => {
-                const current = document.documentElement.getAttribute('data-theme') || 'dark';
+                const current = document.documentElement.getAttribute('data-theme') || 'light';
                 const next = current === 'dark' ? 'light' : 'dark';
                 document.documentElement.setAttribute('data-theme', next);
                 localStorage.setItem('workops_theme', next);

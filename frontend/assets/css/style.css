@@ -6,19 +6,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* Color Palette - Dark Enterprise Modern */
-    --bg-primary: #0b0f19;
-    --bg-secondary: #111827;
-    --bg-tertiary: #1f2937;
-    --bg-glass: rgba(17, 24, 39, 0.75);
-    --bg-glass-card: rgba(31, 41, 55, 0.55);
-    --bg-glass-hover: rgba(55, 65, 81, 0.65);
+    /* Color Palette - Light Enterprise Modern */
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f3f4f6;
+    --bg-glass: rgba(255, 255, 255, 0.9);
+    --bg-glass-card: rgba(255, 255, 255, 0.96);
+    --bg-glass-hover: rgba(243, 244, 246, 0.95);
     
     --border-color: rgba(255, 255, 255, 0.08);
     --border-glow: rgba(99, 102, 241, 0.3);
     
-    --text-primary: #f9fafb;
-    --text-secondary: #9ca3af;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
     --text-muted: #6b7280;
     
     --primary: #4f46e5;
@@ -52,7 +52,7 @@
 }
 
 [data-theme="light"] {
-    --bg-primary: #f3f4f6;
+    --bg-primary: #ffffff;
     --bg-secondary: #ffffff;
     --bg-tertiary: #e5e7eb;
     --bg-glass: rgba(255, 255, 255, 0.85);
