@@ -326,3 +326,22 @@ INSERT INTO dbo.attendance_requests (id, attendance_id, employee_id, request_typ
 (1, 2, 5, 'TIME_CORRECTION', CAST(GETDATE() AS DATE), DATEADD(minute, 35, DATEADD(hour, 8, CAST(CAST(GETDATE() AS DATE) AS DATETIME2))), NULL, 'Security badge scanner at gate 2 was malfunctioning. Arrived at 08:35 AM.', 'PENDING', NULL, NULL, NULL);
 SET IDENTITY_INSERT dbo.attendance_requests OFF;
 GO
+
+-- 7. Public Contact Messages
+IF OBJECT_ID('dbo.contact_messages', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.contact_messages (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        full_name NVARCHAR(150) NOT NULL,
+        email NVARCHAR(150) NOT NULL,
+        subject NVARCHAR(100) NULL,
+        message NVARCHAR(MAX) NOT NULL,
+        status NVARCHAR(20) NOT NULL DEFAULT 'NEW'
+            CONSTRAINT chk_contact_messages_status CHECK (status IN ('NEW', 'READ', 'RESOLVED')),
+        created_at DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    CREATE INDEX idx_contact_messages_status ON dbo.contact_messages (status);
+    CREATE INDEX idx_contact_messages_created_at ON dbo.contact_messages (created_at);
+END;
+GO

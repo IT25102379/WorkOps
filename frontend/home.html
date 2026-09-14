@@ -704,21 +704,49 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 // ── Contact form ──────────────────────────────────────────────────────────
-document.getElementById('contact-form').addEventListener('submit', function(e) {
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('contact-submit-btn');
+    const originalButtonContent = btn.innerHTML;
+    const payload = {
+        fullName: document.getElementById('cf-name').value.trim(),
+        email: document.getElementById('cf-email').value.trim(),
+        subject: document.getElementById('cf-subject').value,
+        message: document.getElementById('cf-message').value.trim()
+    };
+
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
     btn.disabled = true;
-    setTimeout(() => {
+
+    try {
+        const response = await fetch('http://localhost:8080/api/v1/contact/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Unable to submit your message.');
+        }
+
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Message Sent!';
         btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
         this.reset();
-        setTimeout(() => {
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
-            btn.style.background = '';
+    } catch (error) {
+        btn.innerHTML = originalButtonContent;
+        window.alert(error.message || 'Unable to submit your message. Please try again.');
+    } finally {
+        if (btn.innerHTML.includes('Message Sent!')) {
+            setTimeout(() => {
+                btn.innerHTML = originalButtonContent;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 3000);
+        } else {
             btn.disabled = false;
-        }, 3000);
-    }, 1500);
+        }
+    }
 });
 
 // ── Animated stat counters ────────────────────────────────────────────────
