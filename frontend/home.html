@@ -734,9 +734,20 @@ document.getElementById('contact-form').addEventListener('submit', async functio
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Message Sent!';
         btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
         this.reset();
+        Swal.fire({
+            icon: 'success',
+            title: 'Message sent successfully',
+            text: 'Thank you for contacting WorkOps. Our team will get back to you soon.',
+            confirmButtonColor: '#4f46e5'
+        });
     } catch (error) {
         btn.innerHTML = originalButtonContent;
-        Swal.fire({ icon: 'error', title: 'Message could not be sent', text: error.message || 'Unable to submit your message. Please try again.' });
+        Swal.fire({
+            icon: 'error',
+            title: 'Message could not be sent',
+            text: error.message || 'Unable to submit your message. Please try again.',
+            confirmButtonColor: '#ef4444'
+        });
     } finally {
         if (btn.innerHTML.includes('Message Sent!')) {
             setTimeout(() => {
