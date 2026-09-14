@@ -513,14 +513,4 @@ Contributions, issues, and feature requests are welcome!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
----
-
-<div align="center">
-
-<b>Built with ❤️ for modern workforce operations & enterprise productivity.</b>
-
-⭐ *Star this repository if you find it helpful!*
-
-</div>
