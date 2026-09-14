@@ -78,13 +78,8 @@
     <div class="hero-orb hero-orb-3"></div>
 
     <div class="container position-relative">
-        <div class="row align-items-center g-5">
+        <div class="row align-items-stretch g-5">
             <div class="col-lg-6">
-                <div class="hero-badge">
-                    <span class="hero-badge-dot"></span>
-                    Enterprise-Grade Workforce Platform v2.0
-                </div>
-
                 <h1 class="hero-title">
                     Manage Your<br>
                     <span class="gradient-word">Workforce</span><br>
@@ -122,30 +117,12 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6 d-flex align-items-center">
                 <div class="hero-visual">
-                    <!-- Floating side cards -->
-                    <div class="hero-float-card hero-float-card-1">
-                        <div class="float-card-label">Live Attendance</div>
-                        <div class="float-card-value">
-                            <span style="color:#10b981;"><i class="fa-solid fa-circle-dot fa-xs"></i></span>
-                            <span style="color:#f9fafb;">247</span>
-                            <span style="color:#6b7280;font-size:0.8rem;">/ 312 Present</span>
-                        </div>
-                    </div>
-
-                    <div class="hero-float-card hero-float-card-2">
-                        <div class="float-card-label">Leave Requests</div>
-                        <div class="float-card-value">
-                            <span style="color:#f59e0b;"><i class="fa-solid fa-clock fa-xs"></i></span>
-                            <span style="color:#f9fafb;">14</span>
-                            <span style="color:#6b7280;font-size:0.8rem;">Pending Review</span>
-                        </div>
-                    </div>
-
                     <!-- Product video -->
                     <div class="hero-video-frame">
-                        <video class="hero-video" autoplay muted loop playsinline preload="auto" src="./public/Hero.mp4" aria-label="WorkOps dashboard preview">
+                        <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-label="WorkOps dashboard preview">
+                            <source src="./public/Hero.mp4" type="video/mp4">
                             Your browser does not support the hero video.
                         </video>
                     </div>
@@ -829,9 +806,13 @@
 // ── Hero video playback ───────────────────────────────────────────────────
 const heroVideo = document.querySelector('.hero-video');
 const playHeroVideo = () => {
+    if (!heroVideo) return;
+
+    heroVideo.muted = true;
     heroVideo.play().catch(() => {});
 };
 
+heroVideo.addEventListener('loadedmetadata', playHeroVideo);
 heroVideo.addEventListener('canplay', playHeroVideo);
 playHeroVideo();
 
