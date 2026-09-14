@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(content=~{::div.content-wrapper})}">
+<body>
+<div class="content-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Leave Dashboard</h2>
+        <a th:href="@{/leave/apply}" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Apply Leave</a>
+    </div>
+
+    <!-- Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3" th:each="balance : ${balances}">
+            <div class="card bg-white text-dark h-100 border-start border-primary border-4">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase mb-2" th:text="${balance.leaveType.leaveTypeName}">Leave Type</h6>
+                    <h3 class="mb-0" th:text="${balance.remainingDays} + ' / ' + ${balance.allocatedDays}">0/0</h3>
+                    <small class="text-muted">Remaining Days</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent History -->
+    <div class="card mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Leave Requests</h5>
+            <a th:href="@{/leave/history}" class="btn btn-sm btn-outline-secondary">View All History</a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Type</th>
+                            <th>Duration</th>
+                            <th>Days</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="req, iterStat : ${history}" th:if="${iterStat.index < 5}">
+                            <td th:text="${req.leaveType.leaveTypeName}">Annual Leave</td>
+                            <td>
+                                <span th:text="${#temporals.format(req.startDate, 'MMM dd, yyyy')}"></span> - 
+                                <span th:text="${#temporals.format(req.endDate, 'MMM dd, yyyy')}"></span>
+                            </td>
+                            <td th:text="${req.numberOfDays}">2</td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : (req.status.name() == 'REJECTED' ? 'bg-danger' : 'bg-secondary'))}"
+                                      th:text="${req.status}">PENDING</span>
+                            </td>
+                            <td th:text="${#temporals.format(req.appliedDate, 'MMM dd, yyyy')}">Applied Date</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" th:if="${req.status.name() == 'PENDING'}">
+                                    <a th:href="@{/leave/edit/{id}(id=${req.leaveRequestId})}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                    <form th:action="@{/leave/cancel/{id}(id=${req.leaveRequestId})}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to cancel this leave request?');"><i class="bi bi-x-circle"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(history)}">
+                            <td colspan="6" class="text-center py-3">No recent leave requests found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

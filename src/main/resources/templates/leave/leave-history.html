@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(content=~{::div.content-wrapper})}">
+<body>
+<div class="content-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Leave History</h2>
+        <a th:href="@{/leave/dashboard}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back to Dashboard</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Leave ID</th>
+                            <th>Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Days</th>
+                            <th>Status</th>
+                            <th>Applied Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="req : ${history}">
+                            <td th:text="'#' + ${req.leaveRequestId}">#1</td>
+                            <td th:text="${req.leaveType.leaveTypeName}">Annual Leave</td>
+                            <td th:text="${#temporals.format(req.startDate, 'MMM dd, yyyy')}">Date</td>
+                            <td th:text="${#temporals.format(req.endDate, 'MMM dd, yyyy')}">Date</td>
+                            <td th:text="${req.numberOfDays}">2</td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : (req.status.name() == 'REJECTED' ? 'bg-danger' : 'bg-secondary'))}"
+                                      th:text="${req.status}">PENDING</span>
+                            </td>
+                            <td th:text="${#temporals.format(req.appliedDate, 'MMM dd, yyyy')}">Applied Date</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(history)}">
+                            <td colspan="7" class="text-center py-4">No leave history found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

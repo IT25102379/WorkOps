@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(content=~{::div.content-wrapper})}">
+<body>
+<div class="content-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Apply for Leave</h2>
+        <a th:href="@{/leave/dashboard}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Back to Dashboard</a>
+    </div>
+
+    <div class="card max-w-md mx-auto" style="max-width: 800px;">
+        <div class="card-body">
+            <form th:action="@{/leave/apply}" th:object="${leaveRequestDTO}" method="post">
+                
+                <div class="mb-3">
+                    <label for="leaveTypeId" class="form-label fw-bold">Leave Type <span class="text-danger">*</span></label>
+                    <select class="form-select" id="leaveTypeId" th:field="*{leaveTypeId}" th:classappend="${#fields.hasErrors('leaveTypeId')} ? 'is-invalid' : ''">
+                        <option value="">Select Leave Type</option>
+                        <option th:each="type : ${leaveTypes}" th:value="${type.leaveTypeId}" th:text="${type.leaveTypeName}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('leaveTypeId')}" th:errors="*{leaveTypeId}"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="startDate" class="form-label fw-bold">Start Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="startDate" th:field="*{startDate}" th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="endDate" class="form-label fw-bold">End Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="endDate" th:field="*{endDate}" th:classappend="${#fields.hasErrors('endDate')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="numberOfDays" class="form-label fw-bold">Number of Days</label>
+                    <input type="number" class="form-control bg-light" id="numberOfDays" th:field="*{numberOfDays}" readonly>
+                    <small class="text-muted">Auto-calculated based on dates</small>
+                </div>
+
+                <div class="mb-4">
+                    <label for="reason" class="form-label fw-bold">Reason <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="reason" th:field="*{reason}" rows="3" th:classappend="${#fields.hasErrors('reason')} ? 'is-invalid' : ''"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a th:href="@{/leave/dashboard}" class="btn btn-light">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-5">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
