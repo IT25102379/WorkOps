@@ -67,6 +67,7 @@ class AppController {
         const userAvatarElements = document.querySelectorAll('.session-user-avatar');
 
         if (user) {
+            this.applyRoleAccess(user);
             userNameElements.forEach(el => el.textContent = user.fullName || user.username);
             userRoleElements.forEach(el => el.textContent = user.designation || user.role);
             userAvatarElements.forEach(el => {
@@ -78,6 +79,27 @@ class AppController {
                     .substring(0, 2);
                 el.textContent = initials;
             });
+        }
+    }
+
+    applyRoleAccess(user) {
+        const roles = [user.role, ...(user.authorities || [])]
+            .filter(Boolean)
+            .map(role => role.toUpperCase());
+
+        if (!roles.includes('ROLE_HR')) return;
+
+        document.querySelectorAll('.nav-link-custom').forEach(link => {
+            const isAttendanceLink = link.getAttribute('href')?.includes('attendance.html');
+            if (!isAttendanceLink) link.remove();
+        });
+
+        document.querySelectorAll('.nav-header').forEach(header => header.remove());
+
+        const isDashboard = window.location.pathname.endsWith('/dashboard.html');
+        const isAttendancePage = window.location.pathname.endsWith('/pages/attendance.html');
+        if (isDashboard && !isAttendancePage) {
+            window.location.replace('pages/attendance.html');
         }
     }
 
