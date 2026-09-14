@@ -1,0 +1,48 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: workops-backend
+
+  datasource:
+    # Microsoft SQL Server JDBC Connection
+    url: jdbc:sqlserver://localhost:1433;databaseName=workops_db;encrypt=true;trustServerCertificate=true;
+    username: sa
+    password: YourStrongPassword123!
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.SQLServerDialect
+
+# Custom Application Config
+workops:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000 # 24 Hours
+  geofence:
+    default-latitude: 6.92707900
+    default-longitude: 79.86124400
+    default-radius-meters: 350
+    enforce-verification: false # Set true for strict office geofence enforcement
+
+# OpenAPI & Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

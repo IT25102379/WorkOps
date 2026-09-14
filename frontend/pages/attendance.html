@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps - Attendance Management & Geofence Engine</title>
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/attendance.css">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-header">Core Modules</div>
+            <a href="../dashboard.html" class="nav-link-custom">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="attendance.html" class="nav-link-custom active">
+                <i class="fa-solid fa-user-clock"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Leave Management</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Payroll & Salary</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-award"></i>
+                <span>Performance</span>
+            </a>
+
+            <div class="nav-header mt-3">Administration</div>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-users"></i>
+                <span>Employees</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-building"></i>
+                <span>Departments</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-snippet">
+                <div class="user-avatar session-user-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name session-user-name">John Doe</div>
+                    <div class="user-role session-user-role">Senior Engineer</div>
+                </div>
+                <a href="../index.html" class="btn btn-sm text-secondary p-1" title="Sign Out">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="btn-icon-action d-lg-none" id="sidebar-toggle-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div>
+                    <h4 class="mb-0 fs-5 fw-bold">Attendance & Shift Engine</h4>
+                    <span class="small text-muted">Real-time Geofenced Clocking & Overtime Analytics</span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <!-- GPS Geofence Pill -->
+                <div class="geo-status-indicator d-none d-md-flex" id="geo-status-pill">
+                    <div class="radar-dot"></div>
+                    <span id="geo-status-text">Acquiring Geolocation...</span>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button class="btn-icon-action" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+
+                <!-- Notifications with Badge -->
+                <button class="btn-icon-action position-relative" title="Notifications">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-dark rounded-circle"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Body Content -->
+        <div class="content-container">
+            
+            <!-- Hero Clock-In Widget -->
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="clock-hero-card">
+                        <div class="row align-items-center g-4">
+                            <!-- Clock & Date Column -->
+                            <div class="col-lg-6">
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <span class="badge-status badge-absent" id="shift-status-badge">
+                                        <i class="fa-regular fa-circle"></i> Not Clocked In
+                                    </span>
+                                    <span class="small text-muted" id="shift-meta-text">
+                                        Shift: 08:30 - 17:30 (Grace: 15m)
+                                    </span>
+                                </div>
+                                <div class="digital-time-display" id="digital-clock-time">00:00:00 AM</div>
+                                <div class="digital-date-display" id="digital-clock-date">Loading date...</div>
+
+                                <!-- Elapsed Shift Timer Box -->
+                                <div class="elapsed-timer-box" id="live-elapsed-container" style="display: none;">
+                                    <i class="fa-solid fa-stopwatch text-info fs-5"></i>
+                                    <div>
+                                        <div class="small text-muted" style="font-size: 0.75rem;">LIVE SHIFT DURATION</div>
+                                        <div class="elapsed-timer-text" id="live-elapsed-timer">00h 00m 00s</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action & Coordinates Column -->
+                            <div class="col-lg-6 text-lg-end">
+                                <div class="d-flex flex-column align-items-lg-end gap-3">
+                                    <!-- Dual-Action Clock Button -->
+                                    <button id="btn-clock-action" class="btn-clock-toggle clock-in-state">
+                                        <i class="fa-solid fa-right-to-bracket"></i> Clock In Now
+                                    </button>
+
+                                    <!-- Geolocation & Security Telemetry -->
+                                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                                        <span class="badge bg-dark border border-secondary text-secondary p-2">
+                                            <i class="fa-solid fa-satellite me-1 text-info"></i>
+                                            GPS: <span id="geo-coordinates-text" class="text-light">6.927079, 79.861244</span>
+                                        </span>
+                                        <span class="badge bg-dark border border-secondary text-secondary p-2">
+                                            <i class="fa-solid fa-shield-halved me-1 text-success"></i>
+                                            IP: <span class="text-light">192.168.1.45</span>
+                                        </span>
+                                    </div>
+
+                                    <!-- Quick Action: Submit Correction -->
+                                    <button class="btn btn-sm btn-workops-outline mt-1" data-bs-toggle="modal" data-bs-target="#correctionModal">
+                                        <i class="fa-solid fa-pen-to-square me-1"></i> Request Attendance Correction
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Summary Metric Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-card kpi-success">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="kpi-label">Total Present Today</span>
+                            <div class="kpi-icon-box text-success">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-present-count">0</div>
+                        <div class="small text-muted">
+                            <span class="text-success fw-bold"><i class="fa-solid fa-arrow-trend-up me-1"></i> Active staff</span> on floor
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-card kpi-warning">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="kpi-label">Late Arrivals</span>
+                            <div class="kpi-icon-box text-warning">
+                                <i class="fa-solid fa-user-clock"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-late-count">0</div>
+                        <div class="small text-muted">
+                            <span class="text-warning fw-bold">Post 08:45 AM</span> grace threshold
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="kpi-label">On-Time Percentage</span>
+                            <div class="kpi-icon-box text-primary">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-ontime-rate">0%</div>
+                        <div class="small text-muted">
+                            <span class="text-info fw-bold">Target: 95%</span> company KPI
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="kpi-card kpi-purple">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="kpi-label">Overtime Hours</span>
+                            <div class="kpi-icon-box text-purple">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value" id="kpi-overtime-hours">0h</div>
+                        <div class="small text-muted">
+                            <span class="text-purple fw-bold">> 8h shift</span> accumulated today
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Records & Filter Toolbar -->
+            <div class="row g-4">
+                <div class="col-xl-8">
+                    <!-- Filter Toolbar -->
+                    <div class="filter-toolbar">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-3 col-6">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="filter-start-date">
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="filter-end-date">
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="form-label">Department</label>
+                                <select class="form-select" id="filter-dept">
+                                    <option value="">All Departments</option>
+                                    <option value="1">Engineering</option>
+                                    <option value="2">Human Resources</option>
+                                    <option value="3">Finance</option>
+                                    <option value="4">Marketing</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="filter-status">
+                                    <option value="">All Statuses</option>
+                                    <option value="PRESENT">Present</option>
+                                    <option value="LATE_ARRIVAL">Late Arrival</option>
+                                    <option value="OVERTIME">Overtime</option>
+                                    <option value="HALF_DAY">Half Day</option>
+                                    <option value="EARLY_DEPARTURE">Early Leave</option>
+                                    <option value="ABSENT">Absent</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-secondary border-secondary text-muted">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="filter-search" placeholder="Search by employee name or code...">
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-flex gap-2 justify-content-md-end">
+                                <button class="btn btn-workops-outline" id="btn-reset-filters">
+                                    <i class="fa-solid fa-rotate-left"></i> Reset
+                                </button>
+                                <button class="btn btn-workops-primary" id="btn-apply-filters">
+                                    <i class="fa-solid fa-filter"></i> Apply
+                                </button>
+                                <button class="btn btn-workops-success" id="btn-export-csv">
+                                    <i class="fa-solid fa-file-excel"></i> Export CSV
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Records Table -->
+                    <div class="table-custom-container">
+                        <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center bg-secondary">
+                            <h5 class="mb-0 fs-6 fw-bold">Live Attendance Logs</h5>
+                            <span class="small text-muted" id="records-total-count">Loading logs...</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Date</th>
+                                        <th>Clock In</th>
+                                        <th>Clock Out</th>
+                                        <th>Work Duration</th>
+                                        <th>Status</th>
+                                        <th>Geofence</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendance-table-body">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manager / HR Review & Correction Panel -->
+                <div class="col-xl-4">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 fs-6 fw-bold">
+                                <i class="fa-solid fa-clipboard-check text-primary me-2"></i>
+                                Correction Requests
+                            </h5>
+                            <span class="badge bg-danger rounded-pill" id="pending-corrections-badge">0</span>
+                        </div>
+                        <p class="small text-muted mb-4">
+                            Review and approve missed clock-in or time amendment submissions from team members.
+                        </p>
+
+                        <!-- Correction Requests List -->
+                        <div id="correction-requests-list" style="max-height: 580px; overflow-y: auto;">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- Modal: Submit Attendance Correction -->
+<div class="modal fade" id="correctionModal" tabindex="-1" aria-labelledby="correctionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="correctionModalLabel">
+                    <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>
+                    Request Attendance Correction
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="correction-request-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Request Type</label>
+                        <select class="form-select" id="corr-type" required>
+                            <option value="TIME_CORRECTION">Time Correction (In/Out Time Adjustment)</option>
+                            <option value="MISSED_CLOCK_IN">Missed Clock-In</option>
+                            <option value="MISSED_CLOCK_OUT">Missed Clock-Out</option>
+                            <option value="STATUS_CHANGE">Status Amendment</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Target Date</label>
+                        <input type="date" class="form-control" id="corr-date" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Requested Clock In</label>
+                            <input type="time" class="form-control" id="corr-clockin">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Requested Clock Out</label>
+                            <input type="time" class="form-control" id="corr-clockout">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Justification / Reason</label>
+                        <textarea class="form-control" id="corr-reason" rows="3" placeholder="Describe the reason for correction (e.g., Gate scanner malfunction, external client visit)..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-workops-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-workops-primary">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Submit Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Audit & Security Details -->
+<div class="modal fade" id="auditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-shield-halved text-success me-2"></i>
+                    Attendance Audit Trail
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center gap-3 p-3 rounded-3 mb-3 bg-dark border border-secondary">
+                    <div class="user-avatar" style="width: 44px; height: 44px;">AU</div>
+                    <div>
+                        <div class="fw-bold text-light" id="audit-emp-name">Employee Name</div>
+                        <div class="small text-muted" id="audit-emp-code">EMP-000</div>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush bg-transparent">
+                    <li class="list-group-item bg-transparent text-secondary d-flex justify-content-between">
+                        <span>Attendance Date:</span>
+                        <strong class="text-light" id="audit-date">--</strong>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary d-flex justify-content-between">
+                        <span>Exact Clock In:</span>
+                        <strong class="text-light" id="audit-clock-in">--</strong>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary d-flex justify-content-between">
+                        <span>Exact Clock Out:</span>
+                        <strong class="text-light" id="audit-clock-out">--</strong>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary d-flex justify-content-between">
+                        <span>Logged IP Address:</span>
+                        <strong class="text-info font-monospace" id="audit-ip">--</strong>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary">
+                        <div class="mb-1">User-Agent Signature:</div>
+                        <div class="small text-muted p-2 bg-dark rounded font-monospace" id="audit-ua" style="word-break: break-all;">--</div>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary">
+                        <div class="mb-1">System Remarks:</div>
+                        <div class="small text-light" id="audit-remarks">--</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-workops-outline" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5.3 JS Bundle CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Application Modules -->
+<script type="module" src="../assets/js/main.js"></script>
+<script type="module" src="../assets/js/modules/attendance.js"></script>
+</body>
+</html>

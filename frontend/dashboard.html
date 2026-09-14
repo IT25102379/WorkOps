@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps - Enterprise Staff Operations Dashboard</title>
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/attendance.css">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
+        </div>
+
+        <div class="sidebar-nav">
+            <div class="nav-header">Core Modules</div>
+            <a href="dashboard.html" class="nav-link-custom active">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="pages/attendance.html" class="nav-link-custom">
+                <i class="fa-solid fa-user-clock"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Leave Management</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Payroll & Salary</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-award"></i>
+                <span>Performance</span>
+            </a>
+
+            <div class="nav-header mt-3">Administration</div>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-users"></i>
+                <span>Employees</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-building"></i>
+                <span>Departments</span>
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-snippet">
+                <div class="user-avatar session-user-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name session-user-name">John Doe</div>
+                    <div class="user-role session-user-role">Senior Engineer</div>
+                </div>
+                <a href="index.html" class="btn btn-sm text-secondary p-1" title="Sign Out">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="btn-icon-action d-lg-none" id="sidebar-toggle-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div>
+                    <h4 class="mb-0 fs-5 fw-bold">Executive Overview</h4>
+                    <span class="small text-muted">Welcome back, <span class="session-user-name text-light fw-medium">John Doe</span></span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <button class="btn-icon-action" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <button class="btn-icon-action position-relative" title="Notifications">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-dark rounded-circle"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Container -->
+        <div class="content-container">
+            <!-- Hero Banner -->
+            <div class="glass-card p-4 mb-4 position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%);">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <span class="badge bg-primary text-light mb-2">WorkOps v1.0 Enterprise</span>
+                        <h2 class="fw-bold mb-2">Operational Hub & Staff Management</h2>
+                        <p class="text-secondary mb-0">
+                            Monitor live floor attendance, track automated grace period metrics, review pending leave requests, and manage payroll cycles effortlessly.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <a href="pages/attendance.html" class="btn btn-workops-primary">
+                            <i class="fa-solid fa-user-clock me-1"></i> Open Attendance Hub
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Metric Grid -->
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small fw-bold text-uppercase">Total Headcount</span>
+                            <div class="kpi-icon-box text-primary">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="fs-2 fw-bold text-light mt-2">48</div>
+                        <div class="small text-success mt-1"><i class="fa-solid fa-circle-check me-1"></i> 100% active staff</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small fw-bold text-uppercase">Present Today</span>
+                            <div class="kpi-icon-box text-success">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                        </div>
+                        <div class="fs-2 fw-bold text-light mt-2">42</div>
+                        <div class="small text-info mt-1"><i class="fa-solid fa-satellite-dish me-1"></i> GPS verified check-ins</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small fw-bold text-uppercase">On-Time Rate</span>
+                            <div class="kpi-icon-box text-warning">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="fs-2 fw-bold text-light mt-2">90.5%</div>
+                        <div class="small text-warning mt-1"><i class="fa-solid fa-clock me-1"></i> 4 late arrivals today</div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="glass-card p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small fw-bold text-uppercase">Pending Approvals</span>
+                            <div class="kpi-icon-box text-purple">
+                                <i class="fa-solid fa-inbox"></i>
+                            </div>
+                        </div>
+                        <div class="fs-2 fw-bold text-light mt-2">2</div>
+                        <div class="small text-secondary mt-1">Corrections & leaves</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Cards Grid -->
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="glass-card p-4 h-100">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i> Quick Operations</h5>
+                        <div class="d-grid gap-3">
+                            <a href="pages/attendance.html" class="p-3 rounded-3 border border-secondary d-flex align-items-center justify-content-between text-decoration-none" style="background: var(--bg-primary);">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="kpi-icon-box text-success"><i class="fa-solid fa-fingerprint"></i></div>
+                                    <div>
+                                        <div class="fw-bold text-light">Clock-In / Shift Tracker</div>
+                                        <div class="small text-muted">Geofenced check-in & live timer</div>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-muted"></i>
+                            </a>
+
+                            <div class="p-3 rounded-3 border border-secondary d-flex align-items-center justify-content-between opacity-75" style="background: var(--bg-primary);">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="kpi-icon-box text-info"><i class="fa-solid fa-calendar-plus"></i></div>
+                                    <div>
+                                        <div class="fw-bold text-light">Apply for Leave</div>
+                                        <div class="small text-muted">Annual, casual, or medical balances</div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-secondary">Coming Soon</span>
+                            </div>
+
+                            <div class="p-3 rounded-3 border border-secondary d-flex align-items-center justify-content-between opacity-75" style="background: var(--bg-primary);">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="kpi-icon-box text-purple"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                                    <div>
+                                        <div class="fw-bold text-light">View Salary Slip</div>
+                                        <div class="small text-muted">Auto-calculated net salary with overtime</div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-secondary">Coming Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="glass-card p-4 h-100">
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-shield-halved text-info me-2"></i> Security & Geofence Status</h5>
+                        <div class="p-3 rounded-3 bg-dark border border-secondary mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="small text-secondary">Primary Office Geofence</span>
+                                <span class="badge bg-success-subtle text-success">Active (350m Radius)</span>
+                            </div>
+                            <div class="small text-light">
+                                <i class="fa-solid fa-location-crosshairs text-info me-1"></i> Coordinates: <strong>6.927079, 79.861244</strong>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-3 bg-dark border border-secondary mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="small text-secondary">Shift Configuration</span>
+                                <span class="badge bg-primary-subtle text-primary">Standard 9-Hour</span>
+                            </div>
+                            <div class="small text-light">
+                                <i class="fa-regular fa-clock text-warning me-1"></i> 08:30 AM - 05:30 PM | <strong>15 Min Grace Period</strong>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-3 bg-dark border border-secondary">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="small text-secondary">Audit Trail Logging</span>
+                                <span class="badge bg-info-subtle text-info">Enabled</span>
+                            </div>
+                            <div class="small text-muted">
+                                Captures IP address, browser signature, and GPS coordinates on all clocking actions.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Bootstrap 5.3 JS Bundle CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Application Modules -->
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
