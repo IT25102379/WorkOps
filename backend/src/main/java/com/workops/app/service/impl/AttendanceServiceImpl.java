@@ -131,15 +131,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new BadRequestException("You have already clocked out today at " + attendance.getClockOutTime().toLocalTime());
         }
 
-        // 2. Validate Geolocation for Clock-Out
-        Department dept = employee.getDepartment();
-        double distanceMeters = calculateHaversineDistance(
-                request.getLatitude().doubleValue(),
-                request.getLongitude().doubleValue(),
-                dept.getOfficeLatitude().doubleValue(),
-                dept.getOfficeLongitude().doubleValue()
-        );
-        // 3. Compute Duration, Overtime, Early Departure, and Status
+        // 2. Compute Duration, Overtime, Early Departure, and Status
         attendance.setClockOutTime(now);
         attendance.setClockOutLatitude(request.getLatitude());
         attendance.setClockOutLongitude(request.getLongitude());
