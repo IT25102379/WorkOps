@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/modules.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -421,13 +422,7 @@ themeBtn.addEventListener('click', ()=>{
 
 // Toast helper
 function showToast(type, msg){
-    const icons = {success:'fa-check-circle',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
-    const colors = {success:'var(--success)',error:'var(--danger)',info:'var(--info)',warning:'var(--warning)'};
-    const t = document.createElement('div');
-    t.className = 'workops-toast';
-    t.innerHTML = `<i class="fa-solid ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;"></i><span style="font-size:0.875rem;color:var(--text-primary);">${msg}</span>`;
-    document.getElementById('toast-container').appendChild(t);
-    setTimeout(()=>t.remove(), 4000);
+    Swal.fire({ toast: true, position: 'top-end', icon: type, title: msg, showConfirmButton: false, timer: 4500, timerProgressBar: true });
 }
 
 function editUser(email, role){

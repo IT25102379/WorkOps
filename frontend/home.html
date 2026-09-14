@@ -22,6 +22,7 @@
     <!-- WorkOps Styles -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/home.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -735,7 +736,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
         this.reset();
     } catch (error) {
         btn.innerHTML = originalButtonContent;
-        window.alert(error.message || 'Unable to submit your message. Please try again.');
+        Swal.fire({ icon: 'error', title: 'Message could not be sent', text: error.message || 'Unable to submit your message. Please try again.' });
     } finally {
         if (btn.innerHTML.includes('Message Sent!')) {
             setTimeout(() => {

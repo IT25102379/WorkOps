@@ -90,38 +90,17 @@ class AppController {
     }
 
     showToast(type, message, title = '') {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-
-        const toast = document.createElement('div');
-        toast.className = `workops-toast border-${type}`;
-
-        let iconClass = 'fa-circle-info text-info';
-        if (type === 'success') iconClass = 'fa-circle-check text-success';
-        if (type === 'danger' || type === 'error') iconClass = 'fa-circle-exclamation text-danger';
-        if (type === 'warning') iconClass = 'fa-triangle-exclamation text-warning';
-
-        toast.innerHTML = `
-            <i class="fa-solid ${iconClass} fs-5"></i>
-            <div class="flex-grow-1">
-                ${title ? `<div class="fw-bold fs-6 mb-1">${title}</div>` : ''}
-                <div class="small text-secondary">${message}</div>
-            </div>
-            <button type="button" class="btn-close ms-2" aria-label="Close"></button>
-        `;
-
-        const closeBtn = toast.querySelector('.btn-close');
-        closeBtn.addEventListener('click', () => toast.remove());
-
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.4s ease';
-                setTimeout(() => toast.remove(), 400);
-            }
-        }, 4500);
+        const icon = type === 'danger' ? 'error' : type;
+        return Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon,
+            title: title || message,
+            text: title ? message : undefined,
+            showConfirmButton: false,
+            timer: 4500,
+            timerProgressBar: true
+        });
     }
 }
 
