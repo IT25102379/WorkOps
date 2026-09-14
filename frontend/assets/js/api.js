@@ -214,6 +214,9 @@ export const ApiClient = {
             return json;
         } catch (error) {
             console.warn(`[WorkOps API] Backend offline or request error (${endpoint}). Running in seamless client fallback mode.`, error.message);
+            if (endpoint.startsWith('/auth/')) {
+                throw error;
+            }
             return this.handleMockFallback(endpoint, options);
         }
     },
