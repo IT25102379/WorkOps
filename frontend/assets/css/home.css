@@ -372,9 +372,9 @@ body {
 }
 
 .btn-hero-secondary:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.3);
-    color: #fff;
+    background: var(--accent-dim);
+    border-color: var(--accent-line);
+    color: var(--text-1);
 }
 
 .hero-stats {
