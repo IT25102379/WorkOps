@@ -10,7 +10,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -45,8 +45,8 @@
     </ul>
 
     <div class="nav-actions">
-        <a href="index.html" class="btn-nav-login">Sign In</a>
-        <a href="index.html" class="btn-nav-cta">
+        <a href="login.html" class="btn-nav-login">Sign In</a>
+        <a href="login.html" class="btn-nav-cta">
             <i class="fa-solid fa-rocket me-1"></i> Get Started
         </a>
     </div>
@@ -64,7 +64,7 @@
     <a href="#about">About</a>
     <a href="#team">Team</a>
     <a href="#contact">Contact</a>
-    <a href="index.html" class="btn-nav-cta mt-2 text-center">Sign In to WorkOps</a>
+    <a href="login.html" class="btn-nav-cta mt-2 text-center">Sign In to WorkOps</a>
 </div>
 
 <!-- ══════════════════════════════════════════════════
@@ -96,7 +96,7 @@
                 </p>
 
                 <div class="hero-ctas">
-                    <a href="index.html" class="btn-hero-primary" id="hero-cta-start">
+                    <a href="login.html" class="btn-hero-primary" id="hero-cta-start">
                         <i class="fa-solid fa-rocket"></i>
                         Launch App
                     </a>
@@ -146,11 +146,9 @@
                     <!-- Dashboard mockup -->
                     <div class="hero-mockup">
                         <div class="mockup-topbar">
-                            <div class="mockup-dot mockup-dot-red"></div>
-                            <div class="mockup-dot mockup-dot-yellow"></div>
-                            <div class="mockup-dot mockup-dot-green"></div>
-                            <div class="mockup-title-bar"></div>
-                            <div style="width:60px;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;"></div>
+                            <span class="mockup-live-dot"></span>
+                            <span class="mockup-topbar-label">WORKOPS/CONSOLE</span>
+                            <span class="mockup-topbar-time">UPTIME 99.9%</span>
                         </div>
 
                         <div class="mockup-stat-grid">
@@ -244,6 +242,7 @@
             <!-- Employee Management -->
             <div class="col-md-6 col-lg-4 reveal">
                 <div class="feature-card" style="--fc-color:#6366f1;">
+                    <span class="feature-index">01</span>
                     <div class="feature-icon-wrap" style="--fi-bg:rgba(99,102,241,0.15);--fi-color:#818cf8;--fi-border:rgba(99,102,241,0.2);">
                         <i class="fa-solid fa-users"></i>
                     </div>
@@ -260,6 +259,7 @@
             <!-- Attendance Management -->
             <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.05s;">
                 <div class="feature-card" style="--fc-color:#10b981;">
+                    <span class="feature-index">02</span>
                     <div class="feature-icon-wrap" style="--fi-bg:rgba(16,185,129,0.15);--fi-color:#10b981;--fi-border:rgba(16,185,129,0.2);">
                         <i class="fa-solid fa-user-clock"></i>
                     </div>
@@ -276,6 +276,7 @@
             <!-- Leave Management -->
             <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.1s;">
                 <div class="feature-card" style="--fc-color:#f59e0b;">
+                    <span class="feature-index">03</span>
                     <div class="feature-icon-wrap" style="--fi-bg:rgba(245,158,11,0.15);--fi-color:#f59e0b;--fi-border:rgba(245,158,11,0.2);">
                         <i class="fa-solid fa-calendar-days"></i>
                     </div>
@@ -292,6 +293,7 @@
             <!-- Payroll Management -->
             <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.15s;">
                 <div class="feature-card" style="--fc-color:#06b6d4;">
+                    <span class="feature-index">04</span>
                     <div class="feature-icon-wrap" style="--fi-bg:rgba(6,182,212,0.15);--fi-color:#06b6d4;--fi-border:rgba(6,182,212,0.2);">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                     </div>
@@ -308,6 +310,7 @@
             <!-- Performance Management -->
             <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.2s;">
                 <div class="feature-card" style="--fc-color:#a855f7;">
+                    <span class="feature-index">05</span>
                     <div class="feature-icon-wrap" style="--fi-bg:rgba(168,85,247,0.15);--fi-color:#a855f7;--fi-border:rgba(168,85,247,0.2);">
                         <i class="fa-solid fa-award"></i>
                     </div>
@@ -324,6 +327,7 @@
             <!-- User & Access Management -->
             <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.25s;">
                 <div class="feature-card" style="--fc-color:#ef4444;">
+                    <span class="feature-index">06</span>
                     <div class="feature-icon-wrap" style="--fi-bg:rgba(239,68,68,0.15);--fi-color:#ef4444;--fi-border:rgba(239,68,68,0.2);">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
@@ -792,13 +796,13 @@
 <!-- ══════════════════════════════════════════════════
      CTA BANNER
 ══════════════════════════════════════════════════ -->
-<section style="padding:80px 0;background:linear-gradient(135deg,rgba(79,70,229,0.15) 0%,rgba(139,92,246,0.1) 100%);border-top:1px solid rgba(99,102,241,0.15);border-bottom:1px solid rgba(99,102,241,0.15);">
+<section class="cta-banner">
     <div class="container text-center">
         <div class="reveal">
             <h2 class="section-title mb-3">Ready to Transform<br><span class="text-gradient-primary">Your Workforce Management?</span></h2>
             <p class="section-subtitle mx-auto mb-5">Login to WorkOps and experience enterprise-grade HR management at your fingertips.</p>
             <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="index.html" class="btn-hero-primary" id="cta-launch-app">
+                <a href="login.html" class="btn-hero-primary" id="cta-launch-app">
                     <i class="fa-solid fa-rocket"></i> Launch WorkOps
                 </a>
                 <a href="#features" class="btn-hero-secondary" id="cta-explore">
@@ -836,7 +840,7 @@
                     <li><a href="#features">Features</a></li>
                     <li><a href="#roles">User Roles</a></li>
                     <li><a href="#about">Architecture</a></li>
-                    <li><a href="index.html">Login</a></li>
+                    <li><a href="login.html">Login</a></li>
                 </ul>
             </div>
 
