@@ -8,6 +8,10 @@ class AttendanceController {
         this.view = new AttendanceView();
         this.timerInterval = null;
         const user = JSON.parse(localStorage.getItem('workops_user') || '{}');
+        if ((user.role || '').toUpperCase() !== 'ROLE_HR') {
+            window.location.replace('../dashboard.html');
+            return;
+        }
         this.canViewAll = ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_MANAGER'].includes((user.role || '').toUpperCase());
         document.querySelectorAll('.attendance-manager-only').forEach(element => {
             element.hidden = !this.canViewAll;

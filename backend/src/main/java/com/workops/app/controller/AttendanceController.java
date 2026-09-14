@@ -24,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Attendance Management", description = "Endpoints for Clock-In/Out, Live Timers, Geofencing, KPIs & Correction Requests")
 @SecurityRequirement(name = "BearerAuth")
+@PreAuthorize("hasAuthority('ROLE_HR')")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
