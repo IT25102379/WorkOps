@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps — Performance & KPI Management</title>
+    <meta name="description" content="Track staff performance reviews, KPI goals, 360-degree feedback, and appraisal cycles in WorkOps.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/modules.css">
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-header">Core Modules</div>
+            <a href="../dashboard.html" class="nav-link-custom"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <a href="attendance.html" class="nav-link-custom"><i class="fa-solid fa-user-clock"></i><span>Attendance</span></a>
+            <a href="leave.html" class="nav-link-custom"><i class="fa-solid fa-calendar-days"></i><span>Leave Management</span></a>
+            <a href="payroll.html" class="nav-link-custom"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll & Salary</span></a>
+            <a href="performance.html" class="nav-link-custom active"><i class="fa-solid fa-award"></i><span>Performance</span></a>
+            <div class="nav-header mt-3">Administration</div>
+            <a href="employees.html" class="nav-link-custom"><i class="fa-solid fa-users"></i><span>Employees</span></a>
+            <a href="departments.html" class="nav-link-custom"><i class="fa-solid fa-building"></i><span>Departments</span></a>
+            <a href="users.html" class="nav-link-custom"><i class="fa-solid fa-user-shield"></i><span>User Access</span></a>
+            <a href="settings.html" class="nav-link-custom"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-snippet" onclick="window.location='profile.html'">
+                <div class="user-avatar session-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name session-name">John Doe</div>
+                    <div class="user-role session-role">HR Officer</div>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;" title="Logout" onclick="event.stopPropagation();localStorage.removeItem('workops_user');window.location='../index.html';"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1 class="topbar-title"><i class="fa-solid fa-award me-2" style="color:#f59e0b;"></i>Performance & Appraisals</h1>
+                <p class="topbar-subtitle">Quarterly review cycles, team OKRs, rating metrics, and staff development</p>
+            </div>
+            <div class="topbar-actions">
+                <button class="theme-toggle" id="theme-btn" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+                <button class="btn-module-primary" data-bs-toggle="modal" data-bs-target="#newReviewModal">
+                    <i class="fa-solid fa-plus"></i> New Appraisal
+                </button>
+            </div>
+        </div>
+
+        <div class="module-body">
+            <!-- Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-warning" style="background:rgba(245,158,11,0.12);">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="stats-value">4.42 <span style="font-size:0.9rem;font-weight:500;color:var(--text-muted);">/ 5.0</span></div>
+                        <div class="stats-label">Org Average Rating</div>
+                        <div class="stats-change positive mt-2"><i class="fa-solid fa-arrow-up"></i> +0.3 vs last cycle</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-success" style="background:rgba(16,185,129,0.12);">
+                            <i class="fa-solid fa-bullseye"></i>
+                        </div>
+                        <div class="stats-value">88.5%</div>
+                        <div class="stats-label">Goal Completion Rate</div>
+                        <div class="stats-change positive mt-2"><i class="fa-solid fa-arrow-up"></i> 142 of 160 OKRs met</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-info" style="background:rgba(6,182,212,0.12);">
+                            <i class="fa-solid fa-arrows-spin"></i>
+                        </div>
+                        <div class="stats-value">Q3 2026</div>
+                        <div class="stats-label">Active Review Cycle</div>
+                        <div class="stats-change text-info mt-2"><i class="fa-solid fa-calendar-check"></i> Ends Oct 31, 2026</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-danger" style="background:rgba(239,68,68,0.12);">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div class="stats-value">18</div>
+                        <div class="stats-label">Pending Reviews</div>
+                        <div class="stats-change text-warning mt-2"><i class="fa-solid fa-clock"></i> 8 Manager, 10 Self</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objectives & Rating Breakdown Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-7">
+                    <div class="module-card h-100">
+                        <div class="module-card-header d-flex justify-content-between align-items-center">
+                            <h3 class="module-card-title"><i class="fa-solid fa-list-check me-2" style="color:var(--primary);"></i>Company OKR & Goals Progress</h3>
+                            <span class="badge" style="background:rgba(99,102,241,0.15);color:var(--primary-light);">Q3 Cycle</span>
+                        </div>
+                        <div class="module-card-body">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-weight:600;font-size:0.9rem;color:var(--text-primary);">Engineering: Zero-Downtime Microservices Migration</span>
+                                    <span style="font-weight:700;font-size:0.875rem;color:var(--primary-light);">92%</span>
+                                </div>
+                                <div class="progress" style="height:8px;background:var(--bg-secondary);border-radius:999px;">
+                                    <div class="progress-bar" style="width:92%;background:linear-gradient(90deg, #6366f1, #818cf8);border-radius:999px;"></div>
+                                </div>
+                                <div style="font-size:0.775rem;color:var(--text-muted);margin-top:4px;">Lead: Sarah Jenkins • Due in 14 days</div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-weight:600;font-size:0.9rem;color:var(--text-primary);">Product Design: Unified Design System v2</span>
+                                    <span style="font-weight:700;font-size:0.875rem;color:#10b981;">100% (Completed)</span>
+                                </div>
+                                <div class="progress" style="height:8px;background:var(--bg-secondary);border-radius:999px;">
+                                    <div class="progress-bar" style="width:100%;background:#10b981;border-radius:999px;"></div>
+                                </div>
+                                <div style="font-size:0.775rem;color:var(--text-muted);margin-top:4px;">Lead: Michael Chen • Completed Sep 10</div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-weight:600;font-size:0.9rem;color:var(--text-primary);">HR & Ops: Onboarding Retention Rate > 95%</span>
+                                    <span style="font-weight:700;font-size:0.875rem;color:#f59e0b;">78%</span>
+                                </div>
+                                <div class="progress" style="height:8px;background:var(--bg-secondary);border-radius:999px;">
+                                    <div class="progress-bar" style="width:78%;background:#f59e0b;border-radius:999px;"></div>
+                                </div>
+                                <div style="font-size:0.775rem;color:var(--text-muted);margin-top:4px;">Lead: Emily Rodriguez • Due in 22 days</div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-weight:600;font-size:0.9rem;color:var(--text-primary);">Sales: Enterprise ARR Growth Target</span>
+                                    <span style="font-weight:700;font-size:0.875rem;color:#06b6d4;">85%</span>
+                                </div>
+                                <div class="progress" style="height:8px;background:var(--bg-secondary);border-radius:999px;">
+                                    <div class="progress-bar" style="width:85%;background:#06b6d4;border-radius:999px;"></div>
+                                </div>
+                                <div style="font-size:0.775rem;color:var(--text-muted);margin-top:4px;">Lead: David Kim • In Progress</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="module-card h-100">
+                        <div class="module-card-header">
+                            <h3 class="module-card-title"><i class="fa-solid fa-chart-column me-2" style="color:#10b981;"></i>Rating Distribution (Bell Curve)</h3>
+                        </div>
+                        <div class="module-card-body d-flex flex-column justify-content-around">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-size:0.85rem;color:var(--text-primary);font-weight:500;">Exceptional (5.0)</span>
+                                    <span style="font-size:0.85rem;font-weight:600;color:#10b981;">18% (23 staff)</span>
+                                </div>
+                                <div class="progress" style="height:7px;background:var(--bg-secondary);">
+                                    <div class="progress-bar bg-success" style="width:18%;"></div>
+                                </div>
+                            </div>
+                            <div class="my-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-size:0.85rem;color:var(--text-primary);font-weight:500;">Exceeds Expectations (4.0 - 4.9)</span>
+                                    <span style="font-size:0.85rem;font-weight:600;color:var(--primary-light);">52% (66 staff)</span>
+                                </div>
+                                <div class="progress" style="height:7px;background:var(--bg-secondary);">
+                                    <div class="progress-bar" style="width:52%;background:var(--primary);"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-size:0.85rem;color:var(--text-primary);font-weight:500;">Meets Expectations (3.0 - 3.9)</span>
+                                    <span style="font-size:0.85rem;font-weight:600;color:#06b6d4;">22% (28 staff)</span>
+                                </div>
+                                <div class="progress" style="height:7px;background:var(--bg-secondary);">
+                                    <div class="progress-bar bg-info" style="width:22%;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-size:0.85rem;color:var(--text-primary);font-weight:500;">Needs Improvement (&lt; 3.0)</span>
+                                    <span style="font-size:0.85rem;font-weight:600;color:#ef4444;">8% (10 staff)</span>
+                                </div>
+                                <div class="progress" style="height:7px;background:var(--bg-secondary);">
+                                    <div class="progress-bar bg-danger" style="width:8%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Table Card -->
+            <div class="module-card">
+                <div class="module-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>
+                        <h3 class="module-card-title"><i class="fa-solid fa-clipboard-check me-2" style="color:var(--primary);"></i>Performance Appraisals Records</h3>
+                        <p class="module-card-subtitle">Showing all staff appraisals across active and archived cycles</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <select class="form-select form-select-sm" id="cycleFilter" style="width:140px;background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                            <option value="">All Cycles</option>
+                            <option value="Q3 2026" selected>Q3 2026 (Current)</option>
+                            <option value="Q2 2026">Q2 2026</option>
+                            <option value="Q1 2026">Q1 2026</option>
+                        </select>
+                        <select class="form-select form-select-sm" id="deptFilter" style="width:140px;background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                            <option value="">All Departments</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Design">Design</option>
+                            <option value="Human Resources">Human Resources</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Sales">Sales</option>
+                        </select>
+                        <select class="form-select form-select-sm" id="statusFilter" style="width:140px;background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                            <option value="">All Statuses</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Under Review">Under Review</option>
+                            <option value="Self Review Done">Self Review Done</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="module-card-body p-0">
+                    <div class="table-responsive">
+                        <table class="module-table" id="performanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Department & Role</th>
+                                    <th>Cycle</th>
+                                    <th>Reviewer</th>
+                                    <th>Score / Rating</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;font-size:0.75rem;background:#4f46e5;">SJ</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">Sarah Jenkins</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);font-family:monospace;">EMP-0101</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:500;color:var(--text-primary);">Lead Systems Architect</div>
+                                        <div style="font-size:0.775rem;color:var(--text-muted);">Engineering</div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(99,102,241,0.12);color:var(--primary-light);">Q3 2026</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">David Kim (VP Tech)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-1 text-warning">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star-half-stroke"></i>
+                                            <span style="font-weight:700;color:var(--text-primary);margin-left:4px;">4.8</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="status-badge status-present">Completed</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="viewAppraisal('EMP-0101', 'Sarah Jenkins', '4.8', 'Completed')"><i class="fa-solid fa-eye me-1"></i> View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;font-size:0.75rem;background:#059669;">MC</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">Michael Chen</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);font-family:monospace;">EMP-0102</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:500;color:var(--text-primary);">Product Design Lead</div>
+                                        <div style="font-size:0.775rem;color:var(--text-muted);">Design</div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(99,102,241,0.12);color:var(--primary-light);">Q3 2026</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">Sarah Jenkins</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-1 text-warning">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <span style="font-weight:700;color:var(--text-primary);margin-left:4px;">5.0</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="status-badge status-present">Completed</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="viewAppraisal('EMP-0102', 'Michael Chen', '5.0', 'Completed')"><i class="fa-solid fa-eye me-1"></i> View</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;font-size:0.75rem;background:#d97706;">ER</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">Emily Rodriguez</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);font-family:monospace;">EMP-0103</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:500;color:var(--text-primary);">HR Business Partner</div>
+                                        <div style="font-size:0.775rem;color:var(--text-muted);">Human Resources</div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(99,102,241,0.12);color:var(--primary-light);">Q3 2026</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">John Doe (HR Mgr)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-1 text-warning">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <span style="font-weight:700;color:var(--text-primary);margin-left:4px;">4.2</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="status-badge status-late">Under Review</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="viewAppraisal('EMP-0103', 'Emily Rodriguez', '4.2', 'Under Review')"><i class="fa-solid fa-pencil me-1"></i> Review</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;font-size:0.75rem;background:#dc2626;">DK</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">David Kim</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);font-family:monospace;">EMP-0104</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:500;color:var(--text-primary);">Account Executive Lead</div>
+                                        <div style="font-size:0.775rem;color:var(--text-muted);">Sales</div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(99,102,241,0.12);color:var(--primary-light);">Q3 2026</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">Amanda Clark (VP Sales)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-1 text-warning">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star-half-stroke"></i>
+                                            <i class="fa-regular fa-star"></i>
+                                            <span style="font-weight:700;color:var(--text-primary);margin-left:4px;">3.6</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="status-badge status-late">Self Review Done</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="viewAppraisal('EMP-0104', 'David Kim', '3.6', 'Self Review Done')"><i class="fa-solid fa-pencil me-1"></i> Review</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;font-size:0.75rem;background:#7c3aed;">AP</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">Aarav Patel</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);font-family:monospace;">EMP-0105</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight:500;color:var(--text-primary);">Full Stack Developer</div>
+                                        <div style="font-size:0.775rem;color:var(--text-muted);">Engineering</div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(99,102,241,0.12);color:var(--primary-light);">Q3 2026</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">Sarah Jenkins</td>
+                                    <td>
+                                        <span style="color:var(--text-muted);font-size:0.85rem;">Pending Input</span>
+                                    </td>
+                                    <td><span class="status-badge status-absent">Pending</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-module-primary py-1 px-2" onclick="startAppraisal('EMP-0105', 'Aarav Patel')"><i class="fa-solid fa-play me-1"></i> Start</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal: New Appraisal Cycle / Entry -->
+<div class="modal fade" id="newReviewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title"><i class="fa-solid fa-award me-2" style="color:var(--primary);"></i>Initiate Appraisal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="newReviewForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.85rem;font-weight:600;">Employee *</label>
+                        <select class="form-select" required style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                            <option value="">Select Employee...</option>
+                            <option value="EMP-0101">Sarah Jenkins (Lead Architect)</option>
+                            <option value="EMP-0102">Michael Chen (Design Lead)</option>
+                            <option value="EMP-0105">Aarav Patel (Developer)</option>
+                        </select>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Review Cycle *</label>
+                            <select class="form-select" required style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                                <option value="Q3 2026">Q3 2026</option>
+                                <option value="Q4 2026">Q4 2026</option>
+                                <option value="Annual 2026">Annual 2026</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Reviewer *</label>
+                            <input type="text" class="form-control" value="John Doe (HR Officer)" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);" readonly>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.85rem;font-weight:600;">Competency Focus Areas</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge p-2" style="background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;"><i class="fa-solid fa-check text-success me-1"></i> Technical Excellence</span>
+                            <span class="badge p-2" style="background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;"><i class="fa-solid fa-check text-success me-1"></i> Team Leadership</span>
+                            <span class="badge p-2" style="background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;"><i class="fa-solid fa-check text-success me-1"></i> Communication</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.85rem;font-weight:600;">Notes or Evaluation Instructions</label>
+                        <textarea class="form-control" rows="3" placeholder="Provide guidelines for self & manager review..." style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-module-primary">Create Review Invitation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: View Appraisal Details -->
+<div class="modal fade" id="appraisalModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title"><i class="fa-solid fa-file-lines me-2" style="color:var(--primary);"></i>Performance Appraisal Summary</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="appraisalModalBody">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-module-primary" onclick="downloadReviewPDF()"><i class="fa-solid fa-file-pdf me-1"></i> Export PDF Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container-custom" id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Session loader
+(function initSession(){
+    const u = JSON.parse(localStorage.getItem('workops_user') || '{"name":"John Doe","role":"HR Officer","email":"john.doe@workops.io"}');
+    document.querySelectorAll('.session-name').forEach(el=>el.textContent = u.name);
+    document.querySelectorAll('.session-role').forEach(el=>el.textContent = u.role);
+    const initials = u.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    document.querySelectorAll('.session-avatar').forEach(el=>el.textContent = initials);
+})();
+
+// Theme toggle
+const themeBtn = document.getElementById('theme-btn');
+themeBtn.addEventListener('click', ()=>{
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    themeBtn.innerHTML = next === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+});
+
+// Toast helper
+function showToast(type, msg){
+    const icons = {success:'fa-check-circle',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
+    const colors = {success:'var(--success)',error:'var(--danger)',info:'var(--info)',warning:'var(--warning)'};
+    const t = document.createElement('div');
+    t.className = 'workops-toast';
+    t.innerHTML = `<i class="fa-solid ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;"></i><span style="font-size:0.875rem;color:var(--text-primary);">${msg}</span>`;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(()=>t.remove(), 4000);
+}
+
+function viewAppraisal(id, name, score, status){
+    const body = document.getElementById('appraisalModalBody');
+    body.innerHTML = `
+        <div class="d-flex align-items-center gap-3 p-3 rounded mb-3" style="background:var(--bg-secondary);">
+            <div class="user-avatar" style="width:48px;height:48px;font-size:1.1rem;background:var(--primary);">${name.split(' ').map(n=>n[0]).join('')}</div>
+            <div>
+                <h5 class="mb-0" style="color:var(--text-primary);font-weight:700;">${name}</h5>
+                <div style="font-size:0.85rem;color:var(--text-muted);">${id} • Review Cycle: Q3 2026</div>
+            </div>
+            <div class="ms-auto text-end">
+                <div style="font-size:1.4rem;font-weight:800;color:var(--warning);"><i class="fa-solid fa-star me-1"></i>${score}</div>
+                <span class="status-badge status-present">${status}</span>
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                    <div style="font-size:0.75rem;color:var(--text-muted);">Technical Execution</div>
+                    <div style="font-weight:700;font-size:1.1rem;color:var(--text-primary);">4.9 / 5.0</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                    <div style="font-size:0.75rem;color:var(--text-muted);">Collaboration & Impact</div>
+                    <div style="font-weight:700;font-size:1.1rem;color:var(--text-primary);">4.7 / 5.0</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                    <div style="font-size:0.75rem;color:var(--text-muted);">Growth & Initiative</div>
+                    <div style="font-weight:700;font-size:1.1rem;color:var(--text-primary);">4.8 / 5.0</div>
+                </div>
+            </div>
+        </div>
+        <div class="p-3 rounded mb-2" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+            <div style="font-weight:600;font-size:0.875rem;color:var(--text-primary);margin-bottom:6px;"><i class="fa-solid fa-comment-dots text-primary me-2"></i>Reviewer Executive Summary</div>
+            <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;line-height:1.6;">
+                Demonstrated exemplary leadership throughout the architectural refactoring cycle. Delivered milestone achievements ahead of scheduled timelines, consistently mentoring junior staff members and establishing best-in-class testing standards. Recommended for Tier-1 merit promotion in next cycle.
+            </p>
+        </div>
+    `;
+    new bootstrap.Modal(document.getElementById('appraisalModal')).show();
+}
+
+function startAppraisal(id, name){
+    showToast('info', `Opening appraisal scorecard editor for ${name} (${id})...`);
+}
+
+function downloadReviewPDF(){
+    showToast('success', 'Performance Appraisal Report downloaded (PDF)');
+}
+
+document.getElementById('newReviewForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    showToast('success', 'Appraisal review invitation sent to employee & manager!');
+    bootstrap.Modal.getInstance(document.getElementById('newReviewModal')).hide();
+    this.reset();
+});
+</script>
+</body>
+</html>

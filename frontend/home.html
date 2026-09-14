@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps — Enterprise Staff Management System</title>
+    <meta name="description" content="WorkOps is a next-generation enterprise workforce operating platform featuring attendance tracking, leave management, payroll processing, and performance reviews.">
+    <meta name="keywords" content="staff management, HR system, attendance, payroll, leave management, performance, workforce">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- WorkOps Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════════════ -->
+<nav class="wo-navbar" id="main-navbar">
+    <a href="home.html" class="nav-brand">
+        <div class="nav-brand-icon">
+            <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <span class="nav-brand-text">Work<span>Ops</span></span>
+    </a>
+
+    <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#roles">Roles</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+        <a href="index.html" class="btn-nav-login">Sign In</a>
+        <a href="index.html" class="btn-nav-cta">
+            <i class="fa-solid fa-rocket me-1"></i> Get Started
+        </a>
+    </div>
+
+    <button class="nav-hamburger" id="hamburger-btn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#roles">Roles</a>
+    <a href="#about">About</a>
+    <a href="#team">Team</a>
+    <a href="#contact">Contact</a>
+    <a href="index.html" class="btn-nav-cta mt-2 text-center">Sign In to WorkOps</a>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════════════════ -->
+<section class="hero-section" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+
+    <div class="container position-relative">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    Enterprise-Grade Workforce Platform v2.0
+                </div>
+
+                <h1 class="hero-title">
+                    Manage Your<br>
+                    <span class="gradient-word">Workforce</span><br>
+                    Smarter & Faster
+                </h1>
+
+                <p class="hero-subtitle">
+                    WorkOps is an all-in-one enterprise staff management platform that streamlines attendance, leave, payroll, and performance — all in one powerful dashboard.
+                </p>
+
+                <div class="hero-ctas">
+                    <a href="index.html" class="btn-hero-primary" id="hero-cta-start">
+                        <i class="fa-solid fa-rocket"></i>
+                        Launch App
+                    </a>
+                    <a href="#features" class="btn-hero-secondary" id="hero-cta-learn">
+                        <i class="fa-solid fa-play-circle"></i>
+                        Explore Features
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-count="500">0+</div>
+                        <div class="hero-stat-label">Employees Managed</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-count="6">0</div>
+                        <div class="hero-stat-label">Core Modules</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-count="99.9">0%</div>
+                        <div class="hero-stat-label">System Uptime</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <!-- Floating side cards -->
+                    <div class="hero-float-card hero-float-card-1">
+                        <div class="float-card-label">Live Attendance</div>
+                        <div class="float-card-value">
+                            <span style="color:#10b981;"><i class="fa-solid fa-circle-dot fa-xs"></i></span>
+                            <span style="color:#f9fafb;">247</span>
+                            <span style="color:#6b7280;font-size:0.8rem;">/ 312 Present</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-float-card hero-float-card-2">
+                        <div class="float-card-label">Leave Requests</div>
+                        <div class="float-card-value">
+                            <span style="color:#f59e0b;"><i class="fa-solid fa-clock fa-xs"></i></span>
+                            <span style="color:#f9fafb;">14</span>
+                            <span style="color:#6b7280;font-size:0.8rem;">Pending Review</span>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard mockup -->
+                    <div class="hero-mockup">
+                        <div class="mockup-topbar">
+                            <div class="mockup-dot mockup-dot-red"></div>
+                            <div class="mockup-dot mockup-dot-yellow"></div>
+                            <div class="mockup-dot mockup-dot-green"></div>
+                            <div class="mockup-title-bar"></div>
+                            <div style="width:60px;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;"></div>
+                        </div>
+
+                        <div class="mockup-stat-grid">
+                            <div class="mockup-stat-card">
+                                <div class="mockup-stat-num" style="color:#818cf8;">312</div>
+                                <div class="mockup-stat-lbl">Total Staff</div>
+                            </div>
+                            <div class="mockup-stat-card">
+                                <div class="mockup-stat-num" style="color:#10b981;">247</div>
+                                <div class="mockup-stat-lbl">Present</div>
+                            </div>
+                            <div class="mockup-stat-card">
+                                <div class="mockup-stat-num" style="color:#f59e0b;">14</div>
+                                <div class="mockup-stat-lbl">On Leave</div>
+                            </div>
+                        </div>
+
+                        <div class="mockup-chart-area">
+                            <div class="mockup-bar" style="background:rgba(99,102,241,0.4);height:60%;animation-delay:0s;"></div>
+                            <div class="mockup-bar" style="background:rgba(99,102,241,0.6);height:75%;animation-delay:0.1s;"></div>
+                            <div class="mockup-bar" style="background:rgba(99,102,241,0.8);height:55%;animation-delay:0.2s;"></div>
+                            <div class="mockup-bar" style="background:#6366f1;height:90%;animation-delay:0.3s;"></div>
+                            <div class="mockup-bar" style="background:rgba(99,102,241,0.7);height:70%;animation-delay:0.4s;"></div>
+                            <div class="mockup-bar" style="background:rgba(99,102,241,0.5);height:80%;animation-delay:0.5s;"></div>
+                            <div class="mockup-bar" style="background:#7c3aed;height:95%;animation-delay:0.6s;"></div>
+                            <div class="mockup-bar" style="background:rgba(99,102,241,0.6);height:65%;animation-delay:0.7s;"></div>
+                            <div class="mockup-bar" style="background:rgba(99,102,241,0.4);height:78%;animation-delay:0.8s;"></div>
+                        </div>
+
+                        <div class="mockup-table-rows">
+                            <div class="mockup-row" style="width:100%;"></div>
+                            <div class="mockup-row" style="width:92%;"></div>
+                            <div class="mockup-row" style="width:96%;"></div>
+                            <div class="mockup-row" style="width:88%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     STATS BANNER
+══════════════════════════════════════════════════ -->
+<div class="stats-banner">
+    <div class="container">
+        <div class="row g-0">
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Core Modules</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal" style="transition-delay:0.1s;">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">User Roles</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal" style="transition-delay:0.2s;">
+                    <div class="stat-number">JWT</div>
+                    <div class="stat-label">Secure Authentication</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal" style="transition-delay:0.3s;">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">System Uptime</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     FEATURES SECTION
+══════════════════════════════════════════════════ -->
+<section class="section" id="features">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <div class="section-badge">
+                <i class="fa-solid fa-star"></i> Core Modules
+            </div>
+            <h2 class="section-title">Everything You Need to<br><span class="text-gradient-primary">Run Your Workforce</span></h2>
+            <p class="section-subtitle mx-auto">Six powerful integrated modules giving you total control over every aspect of your organization's human resources.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Employee Management -->
+            <div class="col-md-6 col-lg-4 reveal">
+                <div class="feature-card" style="--fc-color:#6366f1;">
+                    <div class="feature-icon-wrap" style="--fi-bg:rgba(99,102,241,0.15);--fi-color:#818cf8;--fi-border:rgba(99,102,241,0.2);">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="feature-title">Employee Management</div>
+                    <p class="feature-desc">Centralized staff profiles with personal details, employment records, department assignments, and document management.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Add / Edit / Deactivate</span>
+                        <span class="feature-tag">Search & Filter</span>
+                        <span class="feature-tag">Bulk Actions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Management -->
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.05s;">
+                <div class="feature-card" style="--fc-color:#10b981;">
+                    <div class="feature-icon-wrap" style="--fi-bg:rgba(16,185,129,0.15);--fi-color:#10b981;--fi-border:rgba(16,185,129,0.2);">
+                        <i class="fa-solid fa-user-clock"></i>
+                    </div>
+                    <div class="feature-title">Attendance Management</div>
+                    <p class="feature-desc">GPS-powered clock-in/out, real-time presence monitoring, late arrival detection, and automated shift calculation.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">GPS Geofencing</span>
+                        <span class="feature-tag">Shift Tracking</span>
+                        <span class="feature-tag">Reports</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Management -->
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+                <div class="feature-card" style="--fc-color:#f59e0b;">
+                    <div class="feature-icon-wrap" style="--fi-bg:rgba(245,158,11,0.15);--fi-color:#f59e0b;--fi-border:rgba(245,158,11,0.2);">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <div class="feature-title">Leave Management</div>
+                    <p class="feature-desc">End-to-end leave lifecycle — staff submit requests, managers approve or reject, balances update automatically.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Leave Balance</span>
+                        <span class="feature-tag">Approval Workflow</span>
+                        <span class="feature-tag">History</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payroll Management -->
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.15s;">
+                <div class="feature-card" style="--fc-color:#06b6d4;">
+                    <div class="feature-icon-wrap" style="--fi-bg:rgba(6,182,212,0.15);--fi-color:#06b6d4;--fi-border:rgba(6,182,212,0.2);">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="feature-title">Payroll & Salary</div>
+                    <p class="feature-desc">Automated payroll processing, overtime calculation, allowances, deductions, and full payslip generation.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">Auto Calculation</span>
+                        <span class="feature-tag">Payslip PDF</span>
+                        <span class="feature-tag">History</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Management -->
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+                <div class="feature-card" style="--fc-color:#a855f7;">
+                    <div class="feature-icon-wrap" style="--fi-bg:rgba(168,85,247,0.15);--fi-color:#a855f7;--fi-border:rgba(168,85,247,0.2);">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div class="feature-title">Performance Management</div>
+                    <p class="feature-desc">Structured performance reviews, KPI tracking, goal setting, feedback collection, and evaluation dashboards.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">KPI Tracking</span>
+                        <span class="feature-tag">360° Feedback</span>
+                        <span class="feature-tag">Reviews</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User & Access Management -->
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.25s;">
+                <div class="feature-card" style="--fc-color:#ef4444;">
+                    <div class="feature-icon-wrap" style="--fi-bg:rgba(239,68,68,0.15);--fi-color:#ef4444;--fi-border:rgba(239,68,68,0.2);">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="feature-title">User & Access Control</div>
+                    <p class="feature-desc">JWT-secured authentication, role-based access control (RBAC), department management, and full audit trails.</p>
+                    <div class="feature-tags">
+                        <span class="feature-tag">JWT Auth</span>
+                        <span class="feature-tag">RBAC</span>
+                        <span class="feature-tag">Audit Log</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     ROLES SECTION
+══════════════════════════════════════════════════ -->
+<section class="section section-alt" id="roles">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <div class="section-badge">
+                <i class="fa-solid fa-users-gear"></i> User Roles
+            </div>
+            <h2 class="section-title">Built for Every<br><span class="text-gradient-primary">Stakeholder</span></h2>
+            <p class="section-subtitle mx-auto">Six distinct roles — each with tailored permissions and dedicated dashboards designed for their workflows.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4 reveal">
+                <div class="role-card" style="border-top: 2px solid #ef4444;">
+                    <div class="role-avatar" style="background:rgba(239,68,68,0.15);color:#ef4444;">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="role-name">Administrator</div>
+                    <p class="role-desc">Full system control — manages user accounts, roles, permissions, and all system configurations.</p>
+                    <div class="role-perms">
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> User Account Management</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Role & Permission Control</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> System Monitoring</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Global Settings</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.05s;">
+                <div class="role-card" style="border-top: 2px solid #f59e0b;">
+                    <div class="role-avatar" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="role-name">HR Officer</div>
+                    <p class="role-desc">Manages employee records, attendance, leave, onboarding, and generates HR reports.</p>
+                    <div class="role-perms">
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Employee Records</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Attendance & Leave</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Recruitment & Onboarding</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> HR Reports</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+                <div class="role-card" style="border-top: 2px solid #10b981;">
+                    <div class="role-avatar" style="background:rgba(16,185,129,0.15);color:#10b981;">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="role-name">Staff Member</div>
+                    <p class="role-desc">Self-service portal to view personal info, check attendance, apply for leave, and access payslips.</p>
+                    <div class="role-perms">
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> View & Update Profile</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Attendance Check-in</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Leave Requests</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> View Payslips</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.15s;">
+                <div class="role-card" style="border-top: 2px solid #6366f1;">
+                    <div class="role-avatar" style="background:rgba(99,102,241,0.15);color:#818cf8;">
+                        <i class="fa-solid fa-users-between-lines"></i>
+                    </div>
+                    <div class="role-name">Manager</div>
+                    <p class="role-desc">Supervises team members, reviews attendance, approves leave requests, and monitors performance.</p>
+                    <div class="role-perms">
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Team Supervision</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Leave Approval</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Performance Review</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Team Reports</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+                <div class="role-card" style="border-top: 2px solid #06b6d4;">
+                    <div class="role-avatar" style="background:rgba(6,182,212,0.15);color:#06b6d4;">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div class="role-name">Payroll Officer</div>
+                    <p class="role-desc">Manages salary records, processes monthly payroll, calculates deductions, and generates reports.</p>
+                    <div class="role-perms">
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Salary Management</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Payroll Processing</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Overtime Calculation</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Payroll Reports</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.25s;">
+                <div class="role-card" style="border-top: 2px solid #a855f7;">
+                    <div class="role-avatar" style="background:rgba(168,85,247,0.15);color:#a855f7;">
+                        <i class="fa-solid fa-server"></i>
+                    </div>
+                    <div class="role-name">IT/System Admin</div>
+                    <p class="role-desc">Maintains technical infrastructure, manages security, performs backups, and ensures system reliability.</p>
+                    <div class="role-perms">
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Infrastructure Management</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Security & Access Control</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> Data Backups</div>
+                        <div class="role-perm"><i class="fa-solid fa-check"></i> System Performance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     ABOUT SECTION
+══════════════════════════════════════════════════ -->
+<section class="section" id="about">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 reveal">
+                <div class="section-badge">
+                    <i class="fa-solid fa-circle-info"></i> About WorkOps
+                </div>
+                <h2 class="section-title">Enterprise-Grade<br><span class="text-gradient-primary">Workforce Intelligence</span></h2>
+                <p class="section-subtitle mb-4">
+                    WorkOps is developed as a mission-critical full-stack enterprise platform built on <strong style="color:#f9fafb;">Java 17 / Spring Boot 3.2</strong> with <strong style="color:#f9fafb;">Microsoft SQL Server</strong> and a modern dark-theme web frontend.
+                </p>
+                <p class="section-subtitle mb-4">
+                    It features high-precision GPS geofencing for attendance, automated shift & overtime calculation, role-gated approvals, and comprehensive audit trails.
+                </p>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-6">
+                        <div style="background:rgba(17,24,39,0.6);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:18px;">
+                            <i class="fa-brands fa-java" style="color:#f59e0b;font-size:1.5rem;"></i>
+                            <div style="font-size:0.85rem;font-weight:700;color:#f9fafb;margin-top:8px;">Java 17 + Spring Boot</div>
+                            <div style="font-size:0.75rem;color:#6b7280;">Backend powerhouse</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="background:rgba(17,24,39,0.6);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:18px;">
+                            <i class="fa-solid fa-database" style="color:#ef4444;font-size:1.5rem;"></i>
+                            <div style="font-size:0.85rem;font-weight:700;color:#f9fafb;margin-top:8px;">MS SQL Server 2019</div>
+                            <div style="font-size:0.75rem;color:#6b7280;">Reliable data storage</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="background:rgba(17,24,39,0.6);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:18px;">
+                            <i class="fa-solid fa-shield-halved" style="color:#6366f1;font-size:1.5rem;"></i>
+                            <div style="font-size:0.85rem;font-weight:700;color:#f9fafb;margin-top:8px;">JWT + Spring Security</div>
+                            <div style="font-size:0.75rem;color:#6b7280;">Secure authentication</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="background:rgba(17,24,39,0.6);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:18px;">
+                            <i class="fa-solid fa-location-dot" style="color:#10b981;font-size:1.5rem;"></i>
+                            <div style="font-size:0.85rem;font-weight:700;color:#f9fafb;margin-top:8px;">GPS Geofencing</div>
+                            <div style="font-size:0.75rem;color:#6b7280;">Precision attendance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 reveal" style="transition-delay:0.15s;">
+                <div style="background:rgba(17,24,39,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;">
+                    <div style="font-size:0.75rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px;">System Architecture</div>
+
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;">
+                            <i class="fa-solid fa-display" style="color:#818cf8;font-size:1.1rem;width:20px;text-align:center;"></i>
+                            <div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#f9fafb;">Presentation Layer</div>
+                                <div style="font-size:0.75rem;color:#6b7280;">HTML5 · CSS3 · Bootstrap 5 · Vanilla JS</div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;color:#4b5563;font-size:0.8rem;">
+                            <i class="fa-solid fa-arrows-up-down"></i> REST API (JSON)
+                        </div>
+                        <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;">
+                            <i class="fa-solid fa-gears" style="color:#10b981;font-size:1.1rem;width:20px;text-align:center;"></i>
+                            <div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#f9fafb;">Business Logic Layer</div>
+                                <div style="font-size:0.75rem;color:#6b7280;">Java 17 · Spring Boot 3.2.3 · Spring Security</div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;color:#4b5563;font-size:0.8rem;">
+                            <i class="fa-solid fa-arrows-up-down"></i> JPA / Hibernate ORM
+                        </div>
+                        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;">
+                            <i class="fa-solid fa-database" style="color:#ef4444;font-size:1.1rem;width:20px;text-align:center;"></i>
+                            <div>
+                                <div style="font-size:0.85rem;font-weight:600;color:#f9fafb;">Data Layer</div>
+                                <div style="font-size:0.75rem;color:#6b7280;">Microsoft SQL Server 2019+</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:20px;padding:14px;background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size:0.75rem;color:#6b7280;margin-bottom:6px;">API Documentation</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#10b981;">
+                            <i class="fa-solid fa-circle-dot fa-xs"></i>
+                            <span style="font-family:'Courier New',monospace;">localhost:8080/swagger-ui.html</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TEAM SECTION
+══════════════════════════════════════════════════ -->
+<section class="section section-alt" id="team">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <div class="section-badge">
+                <i class="fa-solid fa-people-group"></i> Our Team
+            </div>
+            <h2 class="section-title">The Developers<br><span class="text-gradient-primary">Behind WorkOps</span></h2>
+            <p class="section-subtitle mx-auto">A dedicated team of six engineers, each owning a critical module of the platform.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-4 reveal">
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);">IT</div>
+                    <div class="team-name">IT25103376</div>
+                    <div class="team-id">IT25103376</div>
+                    <p class="team-module">User Authentication & Role Management</p>
+                    <div class="team-badge">Security Module</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.05s;">
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">IT</div>
+                    <div class="team-name">IT25101562</div>
+                    <div class="team-id">IT25101562</div>
+                    <p class="team-module">Employee Management</p>
+                    <div class="team-badge">HR Core Module</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#10b981,#059669);">IT</div>
+                    <div class="team-name">IT25102379</div>
+                    <div class="team-id">IT25102379</div>
+                    <p class="team-module">Attendance Management</p>
+                    <div class="team-badge" style="background:rgba(16,185,129,0.15);color:#10b981;border-color:rgba(16,185,129,0.25);">Attendance Module</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.15s;">
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">IT</div>
+                    <div class="team-name">IT25100304</div>
+                    <div class="team-id">IT25100304</div>
+                    <p class="team-module">Leave Management</p>
+                    <div class="team-badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;border-color:rgba(245,158,11,0.25);">Leave Module</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.2s;">
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#06b6d4,#0891b2);">IT</div>
+                    <div class="team-name">IT25101167</div>
+                    <div class="team-id">IT25101167</div>
+                    <p class="team-module">Payroll Management</p>
+                    <div class="team-badge" style="background:rgba(6,182,212,0.15);color:#06b6d4;border-color:rgba(6,182,212,0.25);">Payroll Module</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.25s;">
+                <div class="team-card">
+                    <div class="team-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);">IT</div>
+                    <div class="team-name">IT25103072</div>
+                    <div class="team-id">IT25103072</div>
+                    <p class="team-module">Performance Management</p>
+                    <div class="team-badge" style="background:rgba(168,85,247,0.15);color:#a855f7;border-color:rgba(168,85,247,0.25);">Performance Module</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TESTIMONIALS
+══════════════════════════════════════════════════ -->
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <div class="section-badge">
+                <i class="fa-solid fa-quote-left"></i> Testimonials
+            </div>
+            <h2 class="section-title">Trusted by<br><span class="text-gradient-primary">HR Professionals</span></h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4 reveal">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"WorkOps completely transformed our HR operations. The attendance module alone saved us 20 hours of manual work per week."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">SC</div>
+                        <div>
+                            <p class="testimonial-name">Sarah Connor</p>
+                            <p class="testimonial-role">Head of HR, TechCorp Lanka</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.05s;">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"The payroll processing module is incredibly accurate. Zero errors in three months of use. The payslip generation is seamless."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background:linear-gradient(135deg,#059669,#10b981);">RK</div>
+                        <div>
+                            <p class="testimonial-name">Rajesh Kumar</p>
+                            <p class="testimonial-role">CFO, Innovate Solutions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 reveal" style="transition-delay:0.1s;">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"As a manager, the leave approval workflow is perfect. I get notified instantly, and team performance tracking helps me coach effectively."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background:linear-gradient(135deg,#d97706,#f59e0b);">AP</div>
+                        <div>
+                            <p class="testimonial-name">Amara Perera</p>
+                            <p class="testimonial-role">Operations Manager, StartupHub</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     CONTACT SECTION
+══════════════════════════════════════════════════ -->
+<section class="section section-alt" id="contact">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <div class="section-badge">
+                <i class="fa-solid fa-envelope"></i> Contact
+            </div>
+            <h2 class="section-title">Get In <span class="text-gradient-primary">Touch</span></h2>
+            <p class="section-subtitle mx-auto">Have questions about WorkOps? Our team is here to help.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-5 reveal">
+                <div class="contact-card">
+                    <h5 style="font-size:1rem;font-weight:700;color:#f9fafb;margin-bottom:24px;">Contact Information</h5>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon-wrap" style="background:rgba(99,102,241,0.15);">
+                            <i class="fa-solid fa-building" style="color:#818cf8;"></i>
+                        </div>
+                        <div>
+                            <div class="contact-info-label">Organization</div>
+                            <div class="contact-info-value">Sri Lanka Institute of Information Technology (SLIIT)</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon-wrap" style="background:rgba(16,185,129,0.15);">
+                            <i class="fa-solid fa-envelope" style="color:#10b981;"></i>
+                        </div>
+                        <div>
+                            <div class="contact-info-label">Email</div>
+                            <div class="contact-info-value">workops@sliit.lk</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon-wrap" style="background:rgba(6,182,212,0.15);">
+                            <i class="fa-solid fa-location-dot" style="color:#06b6d4;"></i>
+                        </div>
+                        <div>
+                            <div class="contact-info-label">Location</div>
+                            <div class="contact-info-value">New Kandy Road, Malabe, Sri Lanka</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-icon-wrap" style="background:rgba(245,158,11,0.15);">
+                            <i class="fa-solid fa-code-branch" style="color:#f59e0b;"></i>
+                        </div>
+                        <div>
+                            <div class="contact-info-label">Version</div>
+                            <div class="contact-info-value">WorkOps v2.0 — Academic Project 2026</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:24px;padding:16px;background:rgba(79,70,229,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;">
+                        <div style="font-size:0.75rem;color:#a5b4fc;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">System Status</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:0.875rem;color:#10b981;">
+                            <span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;animation:pulse 2s ease-in-out infinite;"></span>
+                            All Systems Operational
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7 reveal" style="transition-delay:0.1s;">
+                <div class="contact-card contact-form">
+                    <h5 style="font-size:1rem;font-weight:700;color:#f9fafb;margin-bottom:24px;">Send a Message</h5>
+
+                    <form id="contact-form">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="cf-name">Full Name</label>
+                                <input type="text" class="form-control" id="cf-name" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="cf-email">Email Address</label>
+                                <input type="email" class="form-control" id="cf-email" placeholder="john@company.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="cf-subject">Subject</label>
+                                <select class="form-select" id="cf-subject">
+                                    <option value="">Select a topic...</option>
+                                    <option>General Inquiry</option>
+                                    <option>Technical Support</option>
+                                    <option>Feature Request</option>
+                                    <option>Bug Report</option>
+                                    <option>Partnership</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="cf-message">Message</label>
+                                <textarea class="form-control" id="cf-message" rows="5" placeholder="Write your message here..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-hero-primary w-100 justify-content-center" id="contact-submit-btn" style="border-radius:12px;">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     CTA BANNER
+══════════════════════════════════════════════════ -->
+<section style="padding:80px 0;background:linear-gradient(135deg,rgba(79,70,229,0.15) 0%,rgba(139,92,246,0.1) 100%);border-top:1px solid rgba(99,102,241,0.15);border-bottom:1px solid rgba(99,102,241,0.15);">
+    <div class="container text-center">
+        <div class="reveal">
+            <h2 class="section-title mb-3">Ready to Transform<br><span class="text-gradient-primary">Your Workforce Management?</span></h2>
+            <p class="section-subtitle mx-auto mb-5">Login to WorkOps and experience enterprise-grade HR management at your fingertips.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="index.html" class="btn-hero-primary" id="cta-launch-app">
+                    <i class="fa-solid fa-rocket"></i> Launch WorkOps
+                </a>
+                <a href="#features" class="btn-hero-secondary" id="cta-explore">
+                    <i class="fa-solid fa-circle-play"></i> Explore Features
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════ -->
+<footer class="wo-footer">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <div class="footer-brand-text">
+                    <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;">
+                        <i class="fa-solid fa-layer-group" style="color:#fff;font-size:0.875rem;"></i>
+                    </div>
+                    Work<span>Ops</span>
+                </div>
+                <p class="footer-tagline">Enterprise Staff Management & Workforce Intelligence Platform built for SLIIT 2026.</p>
+                <div class="footer-social-links">
+                    <a href="#" class="footer-social-btn" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="footer-social-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="footer-social-btn" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <div class="footer-col-title">Platform</div>
+                <ul class="footer-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#roles">User Roles</a></li>
+                    <li><a href="#about">Architecture</a></li>
+                    <li><a href="index.html">Login</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <div class="footer-col-title">Modules</div>
+                <ul class="footer-links">
+                    <li><a href="pages/employees.html">Employees</a></li>
+                    <li><a href="pages/attendance.html">Attendance</a></li>
+                    <li><a href="pages/leave.html">Leave</a></li>
+                    <li><a href="pages/payroll.html">Payroll</a></li>
+                    <li><a href="pages/performance.html">Performance</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <div class="footer-col-title">Admin</div>
+                <ul class="footer-links">
+                    <li><a href="pages/departments.html">Departments</a></li>
+                    <li><a href="pages/users.html">User Access</a></li>
+                    <li><a href="pages/settings.html">Settings</a></li>
+                    <li><a href="pages/profile.html">My Profile</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <div class="footer-col-title">Project</div>
+                <ul class="footer-links">
+                    <li><a href="#team">The Team</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#">Documentation</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-copy">© 2026 WorkOps — SLIIT Academic Project. All rights reserved.</p>
+            <div class="footer-tech-badges">
+                <span class="footer-tech-badge"><i class="fa-brands fa-java"></i> Java 17</span>
+                <span class="footer-tech-badge"><i class="fa-solid fa-leaf"></i> Spring Boot</span>
+                <span class="footer-tech-badge"><i class="fa-solid fa-database"></i> MS SQL</span>
+                <span class="footer-tech-badge"><i class="fa-solid fa-shield-halved"></i> JWT</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ── Navbar scroll effect ──────────────────────────────────────────────────
+const navbar = document.getElementById('main-navbar');
+window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── Hamburger toggle ───────────────────────────────────────────────────────
+document.getElementById('hamburger-btn').addEventListener('click', () => {
+    document.getElementById('mobile-menu').classList.toggle('open');
+});
+
+// ── Active nav link on scroll ─────────────────────────────────────────────
+const sections = document.querySelectorAll('section[id], div[id="home"]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+const observerOpts = { rootMargin: '-40% 0px -55% 0px' };
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            navLinks.forEach(a => a.classList.remove('active'));
+            const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+            if (active) active.classList.add('active');
+        }
+    });
+}, observerOpts);
+
+document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+
+// ── Scroll reveal ─────────────────────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1 });
+
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ── Smooth scroll for anchor links ────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('mobile-menu').classList.remove('open');
+        }
+    });
+});
+
+// ── Contact form ──────────────────────────────────────────────────────────
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('contact-submit-btn');
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+    btn.disabled = true;
+    setTimeout(() => {
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Message Sent!';
+        btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+        this.reset();
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+            btn.style.background = '';
+            btn.disabled = false;
+        }, 3000);
+    }, 1500);
+});
+
+// ── Animated stat counters ────────────────────────────────────────────────
+function animateCounter(el, target, suffix) {
+    let current = 0;
+    const step = target / 60;
+    const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = (Number.isInteger(target) ? Math.floor(current) : current.toFixed(1)) + suffix;
+        if (current >= target) clearInterval(timer);
+    }, 16);
+}
+
+const heroStats = document.querySelectorAll('.hero-stat-value');
+const heroObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const el = entry.target;
+            const count = parseFloat(el.getAttribute('data-count'));
+            const suffix = el.textContent.replace(/[\d.]/g, '').trim();
+            animateCounter(el, count, suffix);
+            heroObserver.unobserve(el);
+        }
+    });
+}, { threshold: 0.5 });
+
+heroStats.forEach(s => heroObserver.observe(s));
+</script>
+</body>
+</html>

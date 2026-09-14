@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps — User Access & Role Permissions</title>
+    <meta name="description" content="Manage user accounts, RBAC access controls, stakeholder roles (Administrator, HR Officer, Manager, Staff) in WorkOps.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/modules.css">
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-header">Core Modules</div>
+            <a href="../dashboard.html" class="nav-link-custom"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <a href="attendance.html" class="nav-link-custom"><i class="fa-solid fa-user-clock"></i><span>Attendance</span></a>
+            <a href="leave.html" class="nav-link-custom"><i class="fa-solid fa-calendar-days"></i><span>Leave Management</span></a>
+            <a href="payroll.html" class="nav-link-custom"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll & Salary</span></a>
+            <a href="performance.html" class="nav-link-custom"><i class="fa-solid fa-award"></i><span>Performance</span></a>
+            <div class="nav-header mt-3">Administration</div>
+            <a href="employees.html" class="nav-link-custom"><i class="fa-solid fa-users"></i><span>Employees</span></a>
+            <a href="departments.html" class="nav-link-custom"><i class="fa-solid fa-building"></i><span>Departments</span></a>
+            <a href="users.html" class="nav-link-custom active"><i class="fa-solid fa-user-shield"></i><span>User Access</span></a>
+            <a href="settings.html" class="nav-link-custom"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-snippet" onclick="window.location='profile.html'">
+                <div class="user-avatar session-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name session-name">John Doe</div>
+                    <div class="user-role session-role">HR Officer</div>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;" title="Logout" onclick="event.stopPropagation();localStorage.removeItem('workops_user');window.location='../index.html';"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1 class="topbar-title"><i class="fa-solid fa-user-shield me-2" style="color:#6366f1;"></i>User Access & Role Management</h1>
+                <p class="topbar-subtitle">System authentication accounts, role permissions matrix & access security</p>
+            </div>
+            <div class="topbar-actions">
+                <button class="theme-toggle" id="theme-btn" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#rbacMatrixModal">
+                    <i class="fa-solid fa-table-cells me-1"></i> Permissions Matrix
+                </button>
+                <button class="btn-module-primary" data-bs-toggle="modal" data-bs-target="#newUserModal">
+                    <i class="fa-solid fa-user-plus"></i> New User Account
+                </button>
+            </div>
+        </div>
+
+        <div class="module-body">
+            <!-- Role Cards (Stakeholders defined in requirements) -->
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444;font-size:0.75rem;"><i class="fa-solid fa-shield-halved me-1"></i>Tier 1</span>
+                            <span style="font-size:0.8rem;color:var(--text-muted);">4 Accounts</span>
+                        </div>
+                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Administrator</h4>
+                        <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4;">Full system settings, user provisioning, security audits & permissions</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge" style="background:rgba(99,102,241,0.15);color:var(--primary-light);font-size:0.75rem;"><i class="fa-solid fa-user-tie me-1"></i>Tier 2</span>
+                            <span style="font-size:0.8rem;color:var(--text-muted);">8 Accounts</span>
+                        </div>
+                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">HR Officer</h4>
+                        <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4;">Staff records, leave & attendance management, onboarding & payroll</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;font-size:0.75rem;"><i class="fa-solid fa-briefcase me-1"></i>Tier 3</span>
+                            <span style="font-size:0.8rem;color:var(--text-muted);">18 Accounts</span>
+                        </div>
+                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Manager</h4>
+                        <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4;">Departmental staff approvals, reviews, team rosters & performance</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge" style="background:rgba(16,185,129,0.15);color:#10b981;font-size:0.75rem;"><i class="fa-solid fa-user me-1"></i>Tier 4</span>
+                            <span style="font-size:0.8rem;color:var(--text-muted);">112 Accounts</span>
+                        </div>
+                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Staff Member</h4>
+                        <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4;">Self-service profile, leave applications, attendance check-in & payslips</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table Card -->
+            <div class="module-card">
+                <div class="module-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>
+                        <h3 class="module-card-title"><i class="fa-solid fa-users-gear me-2" style="color:var(--primary);"></i>Registered User Accounts</h3>
+                        <p class="module-card-subtitle">Manage authorization levels, login statuses and credential resets</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <div class="input-group input-group-sm" style="width:200px;">
+                            <span class="input-group-text" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-muted);"><i class="fa-solid fa-search"></i></span>
+                            <input type="text" class="form-control" id="userSearch" placeholder="Search accounts..." style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                        </div>
+                        <select class="form-select form-select-sm" id="roleFilter" style="width:140px;background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                            <option value="">All Roles</option>
+                            <option value="Administrator">Administrator</option>
+                            <option value="HR Officer">HR Officer</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Staff Member">Staff Member</option>
+                        </select>
+                        <select class="form-select form-select-sm" id="statusFilter" style="width:120px;background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="Suspended">Suspended</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="module-card-body p-0">
+                    <div class="table-responsive">
+                        <table class="module-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>User Profile</th>
+                                    <th>System Role</th>
+                                    <th>Department</th>
+                                    <th>2FA Status</th>
+                                    <th>Last Login</th>
+                                    <th>Account Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;background:#ef4444;font-size:0.75rem;">SA</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">System Administrator</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);">admin@workops.io</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(239,68,68,0.15);color:#ef4444;font-size:0.75rem;">Administrator</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">IT & Operations</td>
+                                    <td><span class="badge bg-success" style="font-size:0.7rem;"><i class="fa-solid fa-lock me-1"></i>Enabled</span></td>
+                                    <td style="color:var(--text-muted);font-size:0.8rem;">Just now (Active)</td>
+                                    <td><span class="status-badge status-present">Active</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="editUser('admin@workops.io', 'Administrator')"><i class="fa-solid fa-sliders"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;background:var(--primary);font-size:0.75rem;">JD</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">John Doe</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);">hr@workops.io</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(99,102,241,0.15);color:var(--primary-light);font-size:0.75rem;">HR Officer</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">Human Resources</td>
+                                    <td><span class="badge bg-success" style="font-size:0.7rem;"><i class="fa-solid fa-lock me-1"></i>Enabled</span></td>
+                                    <td style="color:var(--text-muted);font-size:0.8rem;">Today, 09:12 AM</td>
+                                    <td><span class="status-badge status-present">Active</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="editUser('hr@workops.io', 'HR Officer')"><i class="fa-solid fa-sliders"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;background:#f59e0b;font-size:0.75rem;">DK</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">David Kim</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);">manager@workops.io</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;font-size:0.75rem;">Manager</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">Engineering</td>
+                                    <td><span class="badge bg-success" style="font-size:0.7rem;"><i class="fa-solid fa-lock me-1"></i>Enabled</span></td>
+                                    <td style="color:var(--text-muted);font-size:0.8rem;">Today, 08:45 AM</td>
+                                    <td><span class="status-badge status-present">Active</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="editUser('manager@workops.io', 'Manager')"><i class="fa-solid fa-sliders"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;background:#10b981;font-size:0.75rem;">SJ</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">Sarah Jenkins</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);">staff@workops.io</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(16,185,129,0.15);color:#10b981;font-size:0.75rem;">Staff Member</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">Engineering</td>
+                                    <td><span class="badge bg-secondary" style="font-size:0.7rem;">Optional</span></td>
+                                    <td style="color:var(--text-muted);font-size:0.8rem;">Yesterday, 04:30 PM</td>
+                                    <td><span class="status-badge status-present">Active</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="editUser('staff@workops.io', 'Staff Member')"><i class="fa-solid fa-sliders"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-avatar" style="width:34px;height:34px;background:#64748b;font-size:0.75rem;">AP</div>
+                                            <div>
+                                                <div style="font-weight:600;color:var(--text-primary);">Aarav Patel</div>
+                                                <div style="font-size:0.75rem;color:var(--text-muted);">a.patel@workops.io</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge" style="background:rgba(16,185,129,0.15);color:#10b981;font-size:0.75rem;">Staff Member</span></td>
+                                    <td style="color:var(--text-secondary);font-size:0.875rem;">Engineering</td>
+                                    <td><span class="badge bg-secondary" style="font-size:0.7rem;">Optional</span></td>
+                                    <td style="color:var(--text-muted);font-size:0.8rem;">Sep 11, 2026</td>
+                                    <td><span class="status-badge status-present">Active</span></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-light py-1 px-2" onclick="editUser('a.patel@workops.io', 'Staff Member')"><i class="fa-solid fa-sliders"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal: Role Permissions Matrix -->
+<div class="modal fade" id="rbacMatrixModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title"><i class="fa-solid fa-table-cells me-2" style="color:var(--primary);"></i>Role & Permissions Matrix (RBAC)</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped mb-0" style="background:transparent;font-size:0.85rem;">
+                        <thead>
+                            <tr style="border-color:var(--border-color);">
+                                <th>Functional Capability</th>
+                                <th class="text-center text-danger">Admin</th>
+                                <th class="text-center text-primary">HR Officer</th>
+                                <th class="text-center text-warning">Manager</th>
+                                <th class="text-center text-success">Staff Member</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>System Configuration & Global Settings</td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                            </tr>
+                            <tr>
+                                <td>User Provisioning & Role Assignments</td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Manage Staff Records & Onboarding</td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Payroll & Salary Processing</td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i> (Self Payslip only)</td>
+                            </tr>
+                            <tr>
+                                <td>Approve / Reject Leave Requests</td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i> (Team)</td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Perform Staff Performance Appraisals</td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i> (Team)</td>
+                                <td class="text-center text-danger"><i class="fa-solid fa-xmark"></i> (Self Review only)</td>
+                            </tr>
+                            <tr>
+                                <td>Check Attendance & Apply for Leave</td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                                <td class="text-center text-success"><i class="fa-solid fa-check"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: New User Account -->
+<div class="modal fade" id="newUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title"><i class="fa-solid fa-user-plus me-2" style="color:var(--primary);"></i>Provision User Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="newUserForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.85rem;font-weight:600;">Full Name *</label>
+                        <input type="text" class="form-control" required placeholder="Jane Smith" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.85rem;font-weight:600;">Work Email Address *</label>
+                        <input type="email" class="form-control" required placeholder="j.smith@workops.io" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Assign Role *</label>
+                            <select class="form-select" required style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                                <option value="Staff Member">Staff Member</option>
+                                <option value="Manager">Manager</option>
+                                <option value="HR Officer">HR Officer</option>
+                                <option value="Administrator">Administrator</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Department *</label>
+                            <select class="form-select" required style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                                <option value="Engineering">Engineering</option>
+                                <option value="Design">Design</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sendInvite" checked>
+                            <label class="form-check-label" for="sendInvite" style="font-size:0.85rem;color:var(--text-secondary);">
+                                Send password creation activation link to user's email
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-module-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container-custom" id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Session loader
+(function initSession(){
+    const u = JSON.parse(localStorage.getItem('workops_user') || '{"name":"John Doe","role":"HR Officer","email":"john.doe@workops.io"}');
+    document.querySelectorAll('.session-name').forEach(el=>el.textContent = u.name);
+    document.querySelectorAll('.session-role').forEach(el=>el.textContent = u.role);
+    const initials = u.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    document.querySelectorAll('.session-avatar').forEach(el=>el.textContent = initials);
+})();
+
+// Theme toggle
+const themeBtn = document.getElementById('theme-btn');
+themeBtn.addEventListener('click', ()=>{
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    themeBtn.innerHTML = next === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+});
+
+// Toast helper
+function showToast(type, msg){
+    const icons = {success:'fa-check-circle',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
+    const colors = {success:'var(--success)',error:'var(--danger)',info:'var(--info)',warning:'var(--warning)'};
+    const t = document.createElement('div');
+    t.className = 'workops-toast';
+    t.innerHTML = `<i class="fa-solid ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;"></i><span style="font-size:0.875rem;color:var(--text-primary);">${msg}</span>`;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(()=>t.remove(), 4000);
+}
+
+function editUser(email, role){
+    showToast('info', `Editing authorization profile for ${email} (${role})`);
+}
+
+document.getElementById('newUserForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    showToast('success', 'User account created and invitation email dispatched!');
+    bootstrap.Modal.getInstance(document.getElementById('newUserModal')).hide();
+    this.reset();
+});
+
+// Filtering
+document.getElementById('userSearch').addEventListener('input', filterUsers);
+document.getElementById('roleFilter').addEventListener('change', filterUsers);
+document.getElementById('statusFilter').addEventListener('change', filterUsers);
+
+function filterUsers(){
+    const search = document.getElementById('userSearch').value.toLowerCase();
+    const role = document.getElementById('roleFilter').value.toLowerCase();
+    const status = document.getElementById('statusFilter').value.toLowerCase();
+
+    document.querySelectorAll('#usersTable tbody tr').forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const matchSearch = !search || text.includes(search);
+        const matchRole = !role || text.includes(role);
+        const matchStatus = !status || text.includes(status);
+        row.style.display = (matchSearch && matchRole && matchStatus) ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>

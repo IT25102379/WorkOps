@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps — Leave Management</title>
+    <meta name="description" content="Submit, track and approve leave requests in the WorkOps Staff Management System.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/modules.css">
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-header">Core Modules</div>
+            <a href="../dashboard.html" class="nav-link-custom"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <a href="attendance.html" class="nav-link-custom"><i class="fa-solid fa-user-clock"></i><span>Attendance</span></a>
+            <a href="leave.html" class="nav-link-custom active"><i class="fa-solid fa-calendar-days"></i><span>Leave Management</span></a>
+            <a href="payroll.html" class="nav-link-custom"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll & Salary</span></a>
+            <a href="performance.html" class="nav-link-custom"><i class="fa-solid fa-award"></i><span>Performance</span></a>
+            <div class="nav-header mt-3">Administration</div>
+            <a href="employees.html" class="nav-link-custom"><i class="fa-solid fa-users"></i><span>Employees</span></a>
+            <a href="departments.html" class="nav-link-custom"><i class="fa-solid fa-building"></i><span>Departments</span></a>
+            <a href="users.html" class="nav-link-custom"><i class="fa-solid fa-user-shield"></i><span>User Access</span></a>
+            <a href="settings.html" class="nav-link-custom"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-snippet" onclick="window.location='profile.html'">
+                <div class="user-avatar session-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name session-name">John Doe</div>
+                    <div class="user-role session-role">Staff Member</div>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;" onclick="event.stopPropagation();localStorage.removeItem('workops_user');window.location='../index.html';"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1 class="topbar-title"><i class="fa-solid fa-calendar-days me-2" style="color:#f59e0b;"></i>Leave Management</h1>
+                <p class="topbar-subtitle">Submit requests · Manage approvals · Track balances</p>
+            </div>
+            <div class="topbar-actions">
+                <a href="../home.html" class="topbar-icon-btn" title="Home"><i class="fa-solid fa-house"></i></a>
+                <button class="topbar-icon-btn" title="Notifications"><i class="fa-solid fa-bell"></i><span class="topbar-notif-dot"></span></button>
+                <a href="profile.html" class="topbar-icon-btn"><i class="fa-solid fa-circle-user"></i></a>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <!-- Leave Balance Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-12"><h2 style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin:0 0 4px;">MY LEAVE BALANCES</h2></div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#10b981,#34d399);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Annual Leave</div>
+                            <div class="mod-stat-value">14 <span style="font-size:1rem;color:var(--text-muted);">/ 21</span></div>
+                            <div class="progress-bar-custom mt-2"><div class="progress-fill" style="width:66%;background:linear-gradient(90deg,#10b981,#34d399);"></div></div>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(16,185,129,0.15);color:#10b981;"><i class="fa-solid fa-sun"></i></div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#6366f1,#818cf8);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Sick Leave</div>
+                            <div class="mod-stat-value">8 <span style="font-size:1rem;color:var(--text-muted);">/ 14</span></div>
+                            <div class="progress-bar-custom mt-2"><div class="progress-fill" style="width:57%;background:linear-gradient(90deg,#6366f1,#818cf8);"></div></div>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(99,102,241,0.15);color:#818cf8;"><i class="fa-solid fa-kit-medical"></i></div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#f59e0b,#fbbf24);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Casual Leave</div>
+                            <div class="mod-stat-value">4 <span style="font-size:1rem;color:var(--text-muted);">/ 7</span></div>
+                            <div class="progress-bar-custom mt-2"><div class="progress-fill" style="width:57%;background:linear-gradient(90deg,#f59e0b,#fbbf24);"></div></div>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;"><i class="fa-solid fa-mug-hot"></i></div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#a855f7,#c084fc);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Other Leave</div>
+                            <div class="mod-stat-value">3 <span style="font-size:1rem;color:var(--text-muted);">/ 5</span></div>
+                            <div class="progress-bar-custom mt-2"><div class="progress-fill" style="width:60%;background:linear-gradient(90deg,#a855f7,#c084fc);"></div></div>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(168,85,247,0.15);color:#a855f7;"><i class="fa-solid fa-circle-nodes"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Submit Leave Request -->
+                <div class="col-lg-4">
+                    <div class="data-panel h-100">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title"><i class="fa-solid fa-paper-plane me-2" style="color:#f59e0b;"></i>Submit Leave Request</h2>
+                        </div>
+                        <div class="p-4">
+                            <form id="leave-request-form">
+                                <div class="mb-3">
+                                    <label class="form-label" for="leave-type">Leave Type</label>
+                                    <select class="form-select" id="leave-type" required>
+                                        <option value="">Select type...</option>
+                                        <option>Annual Leave</option>
+                                        <option>Sick Leave</option>
+                                        <option>Casual Leave</option>
+                                        <option>Maternity Leave</option>
+                                        <option>Paternity Leave</option>
+                                        <option>Study Leave</option>
+                                        <option>Unpaid Leave</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="leave-from">From Date</label>
+                                    <input type="date" class="form-control" id="leave-from" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="leave-to">To Date</label>
+                                    <input type="date" class="form-control" id="leave-to" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Duration</label>
+                                    <div style="padding:10px 14px;background:var(--bg-tertiary);border-radius:var(--radius-md);font-size:0.875rem;color:var(--text-primary);border:1px solid var(--border-color);">
+                                        <span id="leave-duration-display">Select dates to calculate</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="leave-reason">Reason</label>
+                                    <textarea class="form-control" id="leave-reason" rows="3" placeholder="Briefly describe your reason..." required></textarea>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="leave-handover">Handover To (Optional)</label>
+                                    <input type="text" class="form-control" id="leave-handover" placeholder="Colleague's name">
+                                </div>
+                                <button type="submit" class="btn btn-workops btn-workops-primary w-100" id="submit-leave-btn">
+                                    <i class="fa-solid fa-paper-plane me-1"></i> Submit Request
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leave Requests Table -->
+                <div class="col-lg-8">
+                    <div class="data-panel">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title"><i class="fa-solid fa-list-check me-2" style="color:#f59e0b;"></i>Leave Requests</h2>
+                            <div class="data-panel-actions">
+                                <select class="form-select form-select-sm" id="leave-status-filter" style="width:auto;font-size:0.8rem;">
+                                    <option value="">All Status</option>
+                                    <option>Pending</option>
+                                    <option>Approved</option>
+                                    <option>Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Type</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Days</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leave-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Leave History Calendar Placeholder -->
+                    <div class="data-panel mt-4">
+                        <div class="data-panel-header">
+                            <h2 class="data-panel-title"><i class="fa-solid fa-calendar-week me-2" style="color:#a855f7;"></i>Leave Calendar — September 2026</h2>
+                        </div>
+                        <div class="p-4" id="leave-calendar-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="toast-container"></div>
+<button class="sidebar-toggle" id="sidebar-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){const u=JSON.parse(localStorage.getItem('workops_user')||'{}');if(u.fullName){document.querySelectorAll('.session-name').forEach(el=>el.textContent=u.fullName);document.querySelectorAll('.session-role').forEach(el=>el.textContent=(u.designation||u.role||''));document.querySelectorAll('.session-avatar').forEach(el=>el.textContent=u.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase());}})();
+document.getElementById('sidebar-toggle-btn').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('show');});
+document.getElementById('sidebar-overlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('show');});
+
+const leaveData = [
+    {emp:'Amara Perera',type:'Annual Leave',from:'2026-09-10',to:'2026-09-12',days:3,status:'Approved'},
+    {emp:'John Doe',type:'Sick Leave',from:'2026-09-15',to:'2026-09-15',days:1,status:'Pending'},
+    {emp:'Kasun Silva',type:'Casual Leave',from:'2026-09-20',to:'2026-09-21',days:2,status:'Pending'},
+    {emp:'Dilani Wickrama',type:'Annual Leave',from:'2026-09-25',to:'2026-09-30',days:5,status:'Approved'},
+    {emp:'Roshan Bandara',type:'Sick Leave',from:'2026-09-08',to:'2026-09-09',days:2,status:'Rejected'},
+    {emp:'Shani Kumari',type:'Study Leave',from:'2026-10-01',to:'2026-10-05',days:5,status:'Pending'},
+];
+const statusBadge={Approved:'<span class="badge-status badge-approved">Approved</span>',Pending:'<span class="badge-status badge-pending">Pending</span>',Rejected:'<span class="badge-status badge-rejected">Rejected</span>'};
+function renderLeave(data){
+    document.getElementById('leave-tbody').innerHTML=data.map(l=>`
+        <tr>
+            <td style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">${l.emp}</td>
+            <td><span style="font-size:0.78rem;background:rgba(245,158,11,0.1);color:#f59e0b;padding:3px 10px;border-radius:999px;border:1px solid rgba(245,158,11,0.2);">${l.type}</span></td>
+            <td style="font-size:0.82rem;">${l.from}</td>
+            <td style="font-size:0.82rem;">${l.to}</td>
+            <td style="font-size:0.82rem;font-weight:600;color:var(--text-primary);">${l.days}d</td>
+            <td>${statusBadge[l.status]}</td>
+            <td>
+                <div class="d-flex gap-1">
+                    ${l.status==='Pending'?`<button class="action-btn action-btn-approve" title="Approve" onclick="approveLeave(this)"><i class="fa-solid fa-check"></i></button><button class="action-btn action-btn-reject" title="Reject" onclick="rejectLeave(this)"><i class="fa-solid fa-xmark"></i></button>`:'<button class="action-btn action-btn-view" title="View"><i class="fa-solid fa-eye"></i></button>'}
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+renderLeave(leaveData);
+
+document.getElementById('leave-status-filter').addEventListener('change',function(){const s=this.value;renderLeave(s?leaveData.filter(l=>l.status===s):leaveData);});
+
+function approveLeave(btn){const row=btn.closest('tr');row.querySelector('.badge-status').outerHTML='<span class="badge-status badge-approved">Approved</span>';btn.closest('.d-flex').innerHTML='<button class="action-btn action-btn-view"><i class="fa-solid fa-eye"></i></button>';showToast('success','Leave request approved!');}
+function rejectLeave(btn){const row=btn.closest('tr');row.querySelector('.badge-status').outerHTML='<span class="badge-status badge-rejected">Rejected</span>';btn.closest('.d-flex').innerHTML='<button class="action-btn action-btn-view"><i class="fa-solid fa-eye"></i></button>';showToast('warning','Leave request rejected.');}
+
+// Duration calc
+document.getElementById('leave-from').addEventListener('change',calcDuration);
+document.getElementById('leave-to').addEventListener('change',calcDuration);
+function calcDuration(){
+    const f=document.getElementById('leave-from').value,t=document.getElementById('leave-to').value;
+    if(f&&t){const diff=Math.round((new Date(t)-new Date(f))/(1000*60*60*24))+1;document.getElementById('leave-duration-display').textContent=diff>0?`${diff} working day(s)`:'Invalid range';}
+}
+
+// Calendar
+const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const cal=document.getElementById('leave-calendar-grid');
+let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
+days.forEach(d=>html+=`<div style="text-align:center;font-size:0.7rem;font-weight:700;color:var(--text-muted);padding:6px;">${d}</div>`);
+for(let i=0;i<2;i++)html+=`<div></div>`;// Sep starts Tuesday
+for(let d=1;d<=30;d++){
+    const isLeave=[10,11,12,25,26,27,28,29,30].includes(d);
+    const isPending=[15,20,21].includes(d);
+    const isToday=d===14;
+    html+=`<div style="text-align:center;padding:8px 4px;border-radius:8px;font-size:0.82rem;font-weight:${isToday?'700':'500'};cursor:pointer;transition:all 0.2s;background:${isLeave?'rgba(16,185,129,0.15)':isPending?'rgba(245,158,11,0.12)':isToday?'rgba(99,102,241,0.25)':'transparent'};color:${isLeave?'#10b981':isPending?'#f59e0b':isToday?'#818cf8':'var(--text-secondary)'};border:${isToday?'1px solid rgba(99,102,241,0.4)':'1px solid transparent'};">${d}</div>`;
+}
+html+=`</div>`;
+html+=`<div class="d-flex gap-3 mt-3 flex-wrap">
+    <span style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(16,185,129,0.3);display:inline-block;"></span>Approved</span>
+    <span style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(245,158,11,0.3);display:inline-block;"></span>Pending</span>
+    <span style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:3px;background:rgba(99,102,241,0.3);display:inline-block;"></span>Today</span>
+</div>`;
+cal.innerHTML=html;
+
+// Submit form
+document.getElementById('leave-request-form').addEventListener('submit',function(e){e.preventDefault();showToast('success','Leave request submitted! Awaiting manager approval.');this.reset();document.getElementById('leave-duration-display').textContent='Select dates to calculate';});
+
+function showToast(type,msg){const icons={success:'fa-check-circle',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};const colors={success:'var(--success)',error:'var(--danger)',info:'var(--info)',warning:'var(--warning)'};const t=document.createElement('div');t.className='workops-toast';t.innerHTML=`<i class="fa-solid ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;"></i><span style="font-size:0.875rem;color:var(--text-primary);">${msg}</span>`;document.getElementById('toast-container').appendChild(t);setTimeout(()=>t.remove(),4000);}
+</script>
+</body>
+</html>

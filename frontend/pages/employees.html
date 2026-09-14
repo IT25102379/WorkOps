@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps — Employee Management</title>
+    <meta name="description" content="Manage employee profiles, add or update staff records, and control department assignments in WorkOps.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/modules.css">
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-header">Core Modules</div>
+            <a href="../dashboard.html" class="nav-link-custom"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <a href="attendance.html" class="nav-link-custom"><i class="fa-solid fa-user-clock"></i><span>Attendance</span></a>
+            <a href="leave.html" class="nav-link-custom"><i class="fa-solid fa-calendar-days"></i><span>Leave Management</span></a>
+            <a href="payroll.html" class="nav-link-custom"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll & Salary</span></a>
+            <a href="performance.html" class="nav-link-custom"><i class="fa-solid fa-award"></i><span>Performance</span></a>
+            <div class="nav-header mt-3">Administration</div>
+            <a href="employees.html" class="nav-link-custom active"><i class="fa-solid fa-users"></i><span>Employees</span></a>
+            <a href="departments.html" class="nav-link-custom"><i class="fa-solid fa-building"></i><span>Departments</span></a>
+            <a href="users.html" class="nav-link-custom"><i class="fa-solid fa-user-shield"></i><span>User Access</span></a>
+            <a href="settings.html" class="nav-link-custom"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-snippet" onclick="window.location='profile.html'">
+                <div class="user-avatar session-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name session-name">John Doe</div>
+                    <div class="user-role session-role">HR Officer</div>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;" title="Logout" onclick="event.stopPropagation();localStorage.removeItem('workops_user');window.location='../index.html';"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1 class="topbar-title"><i class="fa-solid fa-users me-2" style="color:#818cf8;"></i>Employee Management</h1>
+                <p class="topbar-subtitle">Manage staff profiles, departments and employment records</p>
+            </div>
+            <div class="topbar-actions">
+                <div class="topbar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="form-control" id="topbar-search-input" placeholder="Search employees...">
+                </div>
+                <a href="../home.html" class="topbar-icon-btn" title="Home"><i class="fa-solid fa-house"></i></a>
+                <button class="topbar-icon-btn" title="Notifications" id="notif-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="topbar-notif-dot"></span>
+                </button>
+                <a href="profile.html" class="topbar-icon-btn" title="My Profile"><i class="fa-solid fa-circle-user"></i></a>
+            </div>
+        </div>
+
+        <!-- Page Body -->
+        <div class="page-body">
+            <!-- Stat Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#6366f1,#818cf8);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Total Employees</div>
+                            <div class="mod-stat-value">312</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-arrow-up fa-xs"></i> +8 this month</span>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(99,102,241,0.15);color:#818cf8;">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#10b981,#34d399);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Active Staff</div>
+                            <div class="mod-stat-value">298</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-arrow-up fa-xs"></i> 95.5% active</span>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#f59e0b,#fbbf24);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Departments</div>
+                            <div class="mod-stat-value">8</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-building fa-xs"></i> Across 3 sites</span>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#ef4444,#f87171);">
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">New This Month</div>
+                            <div class="mod-stat-value">14</div>
+                            <span class="mod-stat-change down"><i class="fa-solid fa-arrow-down fa-xs"></i> -2 vs last month</span>
+                        </div>
+                        <div class="mod-stat-icon" style="background:rgba(239,68,68,0.15);color:#ef4444;">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Table Panel -->
+            <div class="data-panel">
+                <div class="data-panel-header">
+                    <h2 class="data-panel-title"><i class="fa-solid fa-table-list me-2" style="color:#818cf8;"></i>Staff Directory</h2>
+                    <div class="data-panel-actions">
+                        <button class="btn btn-sm btn-workops-outline btn-workops" id="btn-export" style="font-size:0.8rem;">
+                            <i class="fa-solid fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-sm btn-workops-primary btn-workops" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" id="btn-add-emp">
+                            <i class="fa-solid fa-plus"></i> Add Employee
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <div class="filter-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="form-control" id="emp-search" placeholder="Search by name, email, ID...">
+                    </div>
+                    <select class="form-select" style="width:auto;" id="dept-filter">
+                        <option value="">All Departments</option>
+                        <option>Engineering</option>
+                        <option>Human Resources</option>
+                        <option>Finance</option>
+                        <option>Marketing</option>
+                        <option>Operations</option>
+                        <option>IT & Security</option>
+                    </select>
+                    <select class="form-select" style="width:auto;" id="status-filter">
+                        <option value="">All Status</option>
+                        <option>Active</option>
+                        <option>On Leave</option>
+                        <option>Inactive</option>
+                    </select>
+                    <select class="form-select" style="width:auto;" id="role-filter">
+                        <option value="">All Roles</option>
+                        <option>Manager</option>
+                        <option>Senior Engineer</option>
+                        <option>HR Officer</option>
+                        <option>Payroll Officer</option>
+                        <option>IT Admin</option>
+                    </select>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="data-table" id="emp-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all" class="form-check-input"></th>
+                                <th>Employee</th>
+                                <th>Employee ID</th>
+                                <th>Department</th>
+                                <th>Role / Position</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="emp-tbody">
+                            <!-- Rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border-color);flex-wrap:wrap;gap:10px;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);" id="pagination-info">Showing 1–10 of 312 employees</div>
+                    <div class="d-flex gap-2">
+                        <button class="action-btn action-btn-view" id="prev-page"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="action-btn action-btn-view" style="width:auto;padding:0 12px;font-size:0.8rem;" id="page-1">1</button>
+                        <button class="action-btn action-btn-edit" style="width:auto;padding:0 12px;font-size:0.8rem;" id="page-2">2</button>
+                        <button class="action-btn action-btn-view" style="width:auto;padding:0 12px;font-size:0.8rem;" id="page-3">3</button>
+                        <button class="action-btn action-btn-view" id="next-page"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ── Add Employee Modal ── -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeModalLabel">
+                    <i class="fa-solid fa-user-plus me-2" style="color:#818cf8;"></i>Add New Employee
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="add-emp-form">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-first-name">First Name</label>
+                            <input type="text" class="form-control" id="emp-first-name" placeholder="e.g. John" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-last-name">Last Name</label>
+                            <input type="text" class="form-control" id="emp-last-name" placeholder="e.g. Doe" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-email">Email Address</label>
+                            <input type="email" class="form-control" id="emp-email" placeholder="john.doe@company.com" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-phone">Phone Number</label>
+                            <input type="tel" class="form-control" id="emp-phone" placeholder="+94 77 123 4567">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-dept">Department</label>
+                            <select class="form-select" id="emp-dept" required>
+                                <option value="">Select department...</option>
+                                <option>Engineering</option>
+                                <option>Human Resources</option>
+                                <option>Finance</option>
+                                <option>Marketing</option>
+                                <option>Operations</option>
+                                <option>IT & Security</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-position">Position / Title</label>
+                            <input type="text" class="form-control" id="emp-position" placeholder="e.g. Senior Engineer">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-role">System Role</label>
+                            <select class="form-select" id="emp-role" required>
+                                <option value="">Select role...</option>
+                                <option>Staff Member</option>
+                                <option>Manager</option>
+                                <option>HR Officer</option>
+                                <option>Payroll Officer</option>
+                                <option>IT Admin</option>
+                                <option>Administrator</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-join-date">Join Date</label>
+                            <input type="date" class="form-control" id="emp-join-date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-salary">Basic Salary (LKR)</label>
+                            <input type="number" class="form-control" id="emp-salary" placeholder="e.g. 85000">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="emp-employment-type">Employment Type</label>
+                            <select class="form-select" id="emp-employment-type">
+                                <option>Full-time</option>
+                                <option>Part-time</option>
+                                <option>Contract</option>
+                                <option>Intern</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="emp-address">Address</label>
+                            <input type="text" class="form-control" id="emp-address" placeholder="No. 123, Example Street, Colombo">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="emp-notes">Notes (Optional)</label>
+                            <textarea class="form-control" id="emp-notes" rows="2" placeholder="Any additional information..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-workops btn-workops-outline" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="add-emp-form" class="btn btn-workops btn-workops-primary" id="save-emp-btn">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Save Employee
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── View Employee Modal ── -->
+<div class="modal fade" id="viewEmployeeModal" tabindex="-1" aria-labelledby="viewEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewEmployeeModalLabel"><i class="fa-solid fa-id-card me-2" style="color:#06b6d4;"></i>Employee Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="view-emp-body">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Mobile sidebar toggle -->
+<button class="sidebar-toggle" id="sidebar-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ── Session user ──────────────────────────────────────────────────────────
+(function(){
+    const u = JSON.parse(localStorage.getItem('workops_user') || '{}');
+    if(u.fullName){
+        document.querySelectorAll('.session-name').forEach(el=>el.textContent=u.fullName);
+        document.querySelectorAll('.session-role').forEach(el=>el.textContent=(u.designation||u.role||''));
+        document.querySelectorAll('.session-avatar').forEach(el=>el.textContent=u.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase());
+    }
+})();
+
+// ── Sidebar mobile toggle ─────────────────────────────────────────────────
+document.getElementById('sidebar-toggle-btn').addEventListener('click',()=>{
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('show');
+});
+document.getElementById('sidebar-overlay').addEventListener('click',()=>{
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('show');
+});
+
+// ── Employee sample data ──────────────────────────────────────────────────
+const employees = [
+    {id:'EMP001',name:'Amara Perera',email:'amara.p@workops.io',dept:'Engineering',role:'Senior Engineer',join:'2023-03-15',status:'Active',color:'#6366f1'},
+    {id:'EMP002',name:'Kasun Silva',email:'kasun.s@workops.io',dept:'Human Resources',role:'HR Officer',join:'2022-07-01',status:'Active',color:'#f59e0b'},
+    {id:'EMP003',name:'Nimal Fernando',email:'nimal.f@workops.io',dept:'Finance',role:'Payroll Officer',join:'2021-11-20',status:'Active',color:'#10b981'},
+    {id:'EMP004',name:'Dilani Wickrama',email:'dilani.w@workops.io',dept:'Engineering',role:'Full Stack Developer',join:'2024-01-10',status:'Active',color:'#a855f7'},
+    {id:'EMP005',name:'Roshan Bandara',email:'roshan.b@workops.io',dept:'Marketing',role:'Marketing Manager',join:'2022-05-18',status:'On Leave',color:'#06b6d4'},
+    {id:'EMP006',name:'Shani Kumari',email:'shani.k@workops.io',dept:'IT & Security',role:'IT Admin',join:'2023-09-01',status:'Active',color:'#ef4444'},
+    {id:'EMP007',name:'Dinesh Jayasuriya',email:'dinesh.j@workops.io',dept:'Operations',role:'Operations Lead',join:'2020-08-22',status:'Active',color:'#f59e0b'},
+    {id:'EMP008',name:'Priya Ratnayake',email:'priya.r@workops.io',dept:'Engineering',role:'QA Engineer',join:'2024-02-14',status:'Active',color:'#818cf8'},
+    {id:'EMP009',name:'Lalith Mendis',email:'lalith.m@workops.io',dept:'Finance',role:'Financial Analyst',join:'2023-06-30',status:'Inactive',color:'#6b7280'},
+    {id:'EMP010',name:'Chamari Gunawardena',email:'chamari.g@workops.io',dept:'Human Resources',role:'Recruiter',join:'2024-03-05',status:'Active',color:'#ec4899'},
+];
+
+const statusBadge = {
+    'Active':'<span class="badge-status badge-present">Active</span>',
+    'On Leave':'<span class="badge-status badge-late">On Leave</span>',
+    'Inactive':'<span class="badge-status badge-absent">Inactive</span>'
+};
+
+function renderEmployees(data){
+    const tbody = document.getElementById('emp-tbody');
+    tbody.innerHTML = data.map(e=>`
+        <tr>
+            <td><input type="checkbox" class="form-check-input emp-check" data-id="${e.id}"></td>
+            <td>
+                <div class="emp-info">
+                    <div class="emp-avatar" style="background:${e.color}22;color:${e.color};">${e.name.split(' ').map(n=>n[0]).join('').substring(0,2)}</div>
+                    <div>
+                        <div class="emp-name">${e.name}</div>
+                        <div class="emp-email">${e.email}</div>
+                    </div>
+                </div>
+            </td>
+            <td><code style="color:#818cf8;font-size:0.8rem;">${e.id}</code></td>
+            <td style="color:var(--text-primary);font-size:0.85rem;">${e.dept}</td>
+            <td style="font-size:0.85rem;">${e.role}</td>
+            <td style="font-size:0.82rem;">${e.join}</td>
+            <td>${statusBadge[e.status]||''}</td>
+            <td>
+                <div class="d-flex gap-1">
+                    <button class="action-btn action-btn-view" title="View" onclick="viewEmployee('${e.id}')"><i class="fa-solid fa-eye"></i></button>
+                    <button class="action-btn action-btn-edit" title="Edit" onclick="editEmployee('${e.id}')"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn action-btn-delete" title="Deactivate" onclick="deactivateEmployee('${e.id}')"><i class="fa-solid fa-user-slash"></i></button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+renderEmployees(employees);
+
+// Search filter
+document.getElementById('emp-search').addEventListener('input', function(){
+    const q = this.value.toLowerCase();
+    const filtered = employees.filter(e=>
+        e.name.toLowerCase().includes(q)||e.email.toLowerCase().includes(q)||e.id.toLowerCase().includes(q)
+    );
+    renderEmployees(filtered);
+});
+
+// Dept filter
+document.getElementById('dept-filter').addEventListener('change', function(){
+    const d = this.value;
+    renderEmployees(d ? employees.filter(e=>e.dept===d) : employees);
+});
+
+// Status filter
+document.getElementById('status-filter').addEventListener('change', function(){
+    const s = this.value;
+    renderEmployees(s ? employees.filter(e=>e.status===s) : employees);
+});
+
+// View employee
+function viewEmployee(id){
+    const e = employees.find(x=>x.id===id);
+    if(!e) return;
+    document.getElementById('view-emp-body').innerHTML = `
+        <div class="d-flex align-items-center gap-4 mb-4">
+            <div style="width:72px;height:72px;border-radius:18px;background:${e.color}22;color:${e.color};display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;">
+                ${e.name.split(' ').map(n=>n[0]).join('').substring(0,2)}
+            </div>
+            <div>
+                <h4 style="color:var(--text-primary);font-weight:700;margin:0;">${e.name}</h4>
+                <div style="color:var(--text-muted);font-size:0.875rem;">${e.role} — ${e.dept}</div>
+                <div class="mt-1">${statusBadge[e.status]}</div>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6"><div class="info-row"><span class="info-row-label">Employee ID</span><span class="info-row-value" style="color:#818cf8;font-family:monospace;">${e.id}</span></div></div>
+            <div class="col-md-6"><div class="info-row"><span class="info-row-label">Email</span><span class="info-row-value">${e.email}</span></div></div>
+            <div class="col-md-6"><div class="info-row"><span class="info-row-label">Department</span><span class="info-row-value">${e.dept}</span></div></div>
+            <div class="col-md-6"><div class="info-row"><span class="info-row-label">Position</span><span class="info-row-value">${e.role}</span></div></div>
+            <div class="col-md-6"><div class="info-row"><span class="info-row-label">Join Date</span><span class="info-row-value">${e.join}</span></div></div>
+            <div class="col-md-6"><div class="info-row"><span class="info-row-label">Status</span><span class="info-row-value">${e.status}</span></div></div>
+        </div>
+    `;
+    new bootstrap.Modal(document.getElementById('viewEmployeeModal')).show();
+}
+
+function editEmployee(id){ showToast('info', `Edit form for employee ${id} — connect to backend API`); }
+function deactivateEmployee(id){ showToast('warning', `Employee ${id} deactivated`); }
+
+// Add employee form
+document.getElementById('add-emp-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    showToast('success','Employee added successfully!');
+    bootstrap.Modal.getInstance(document.getElementById('addEmployeeModal')).hide();
+    this.reset();
+});
+
+// Select all
+document.getElementById('select-all').addEventListener('change',function(){
+    document.querySelectorAll('.emp-check').forEach(cb=>cb.checked=this.checked);
+});
+
+// Toast helper
+function showToast(type, msg){
+    const icons = {success:'fa-check-circle',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
+    const colors = {success:'var(--success)',error:'var(--danger)',info:'var(--info)',warning:'var(--warning)'};
+    const t = document.createElement('div');
+    t.className = 'workops-toast';
+    t.innerHTML = `<i class="fa-solid ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;"></i><span style="font-size:0.875rem;color:var(--text-primary);">${msg}</span>`;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(()=>t.remove(),4000);
+}
+</script>
+</body>
+</html>

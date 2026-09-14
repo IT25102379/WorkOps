@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps — Department Management</title>
+    <meta name="description" content="Organize staff teams, department hierarchies, budget allocations, and unit leads in WorkOps.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/modules.css">
+</head>
+<body>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="app-wrapper">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-header">Core Modules</div>
+            <a href="../dashboard.html" class="nav-link-custom"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <a href="attendance.html" class="nav-link-custom"><i class="fa-solid fa-user-clock"></i><span>Attendance</span></a>
+            <a href="leave.html" class="nav-link-custom"><i class="fa-solid fa-calendar-days"></i><span>Leave Management</span></a>
+            <a href="payroll.html" class="nav-link-custom"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll & Salary</span></a>
+            <a href="performance.html" class="nav-link-custom"><i class="fa-solid fa-award"></i><span>Performance</span></a>
+            <div class="nav-header mt-3">Administration</div>
+            <a href="employees.html" class="nav-link-custom"><i class="fa-solid fa-users"></i><span>Employees</span></a>
+            <a href="departments.html" class="nav-link-custom active"><i class="fa-solid fa-building"></i><span>Departments</span></a>
+            <a href="users.html" class="nav-link-custom"><i class="fa-solid fa-user-shield"></i><span>User Access</span></a>
+            <a href="settings.html" class="nav-link-custom"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-snippet" onclick="window.location='profile.html'">
+                <div class="user-avatar session-avatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name session-name">John Doe</div>
+                    <div class="user-role session-role">HR Officer</div>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;" title="Logout" onclick="event.stopPropagation();localStorage.removeItem('workops_user');window.location='../index.html';"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1 class="topbar-title"><i class="fa-solid fa-building me-2" style="color:#06b6d4;"></i>Department Management</h1>
+                <p class="topbar-subtitle">Organizational units, head of departments, operational budgets & team rosters</p>
+            </div>
+            <div class="topbar-actions">
+                <button class="theme-toggle" id="theme-btn" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+                <button class="btn-module-primary" data-bs-toggle="modal" data-bs-target="#newDeptModal">
+                    <i class="fa-solid fa-plus"></i> Add Department
+                </button>
+            </div>
+        </div>
+
+        <div class="module-body">
+            <!-- Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-info" style="background:rgba(6,182,212,0.12);">
+                            <i class="fa-solid fa-sitemap"></i>
+                        </div>
+                        <div class="stats-value">8</div>
+                        <div class="stats-label">Active Departments</div>
+                        <div class="stats-change text-info mt-2"><i class="fa-solid fa-check"></i> Across 3 global hubs</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-primary" style="background:rgba(99,102,241,0.12);">
+                            <i class="fa-solid fa-people-roof"></i>
+                        </div>
+                        <div class="stats-value">128</div>
+                        <div class="stats-label">Total Assigned Staff</div>
+                        <div class="stats-change positive mt-2"><i class="fa-solid fa-arrow-up"></i> +12 new this month</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-success" style="background:rgba(16,185,129,0.12);">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                        </div>
+                        <div class="stats-value">$4.25M</div>
+                        <div class="stats-label">Total Annual Budget</div>
+                        <div class="stats-change positive mt-2"><i class="fa-solid fa-chart-pie"></i> 64% utilized YTD</div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="stats-icon text-warning" style="background:rgba(245,158,11,0.12);">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <div class="stats-value">14</div>
+                        <div class="stats-label">Open Requisitions</div>
+                        <div class="stats-change text-warning mt-2"><i class="fa-solid fa-briefcase"></i> Active hiring</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Search & Filter -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div class="input-group" style="max-width:320px;">
+                    <span class="input-group-text" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-muted);"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" class="form-control" id="searchDept" placeholder="Search departments..." style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="filterDepts('all')">All (8)</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="filterDepts('Tech')">Tech & Product</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="filterDepts('Business')">Business & Sales</button>
+                </div>
+            </div>
+
+            <!-- Departments Grid -->
+            <div class="row g-4" id="deptGrid">
+                <!-- Dept 1 -->
+                <div class="col-md-6 col-xl-4 dept-item" data-category="Tech">
+                    <div class="module-card h-100 d-flex flex-column">
+                        <div class="module-card-body flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:48px;height:48px;border-radius:12px;background:rgba(99,102,241,0.15);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                        <i class="fa-solid fa-code"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin:0;">Engineering</h4>
+                                        <span class="badge" style="background:rgba(99,102,241,0.12);color:var(--primary-light);font-size:0.75rem;">ENG • 48 Members</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm text-secondary p-1" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    <ul class="dropdown-menu dropdown-menu-end" style="background:var(--bg-card);border:1px solid var(--border-color);">
+                                        <li><a class="dropdown-item text-secondary" href="#" onclick="showToast('info','Exporting department directory...')">Export Roster</a></li>
+                                        <li><a class="dropdown-item text-secondary" href="#" onclick="showToast('info','Editing settings...')">Edit Settings</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5;margin-bottom:16px;">
+                                Software architecture, platform infrastructure, cloud security, and product engineering.
+                            </p>
+                            
+                            <div class="p-2.5 rounded mb-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="user-avatar" style="width:30px;height:30px;font-size:0.75rem;background:#4f46e5;">DK</div>
+                                    <div class="flex-grow-1">
+                                        <div style="font-size:0.7rem;color:var(--text-muted);">HEAD OF DEPARTMENT</div>
+                                        <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">David Kim (VP Tech)</div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Active</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-muted" style="font-size:0.8rem;margin-bottom:4px;">
+                                    <span>Annual Budget: <strong>$1.8M</strong></span>
+                                    <span>68% spent</span>
+                                </div>
+                                <div class="progress" style="height:6px;background:var(--bg-secondary);">
+                                    <div class="progress-bar bg-primary" style="width:68%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color:var(--border-color) !important;background:var(--bg-secondary);">
+                            <span style="font-size:0.8rem;color:var(--text-muted);"><i class="fa-solid fa-briefcase text-warning me-1"></i> 6 Openings</span>
+                            <button class="btn btn-sm btn-outline-light py-1 px-3" onclick="viewDept('Engineering', 'David Kim', '48', '$1.8M', '6')">View Roster</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dept 2 -->
+                <div class="col-md-6 col-xl-4 dept-item" data-category="Tech">
+                    <div class="module-card h-100 d-flex flex-column">
+                        <div class="module-card-body flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:48px;height:48px;border-radius:12px;background:rgba(236,72,153,0.15);color:#ec4899;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin:0;">Product Design</h4>
+                                        <span class="badge" style="background:rgba(236,72,153,0.12);color:#ec4899;font-size:0.75rem;">DSN • 16 Members</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm text-secondary p-1" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5;margin-bottom:16px;">
+                                User experience architecture, visual design systems, brand guidelines, and usability labs.
+                            </p>
+                            
+                            <div class="p-2.5 rounded mb-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="user-avatar" style="width:30px;height:30px;font-size:0.75rem;background:#ec4899;">MC</div>
+                                    <div class="flex-grow-1">
+                                        <div style="font-size:0.7rem;color:var(--text-muted);">HEAD OF DEPARTMENT</div>
+                                        <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Michael Chen (Design Dir)</div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Active</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-muted" style="font-size:0.8rem;margin-bottom:4px;">
+                                    <span>Annual Budget: <strong>$550k</strong></span>
+                                    <span>52% spent</span>
+                                </div>
+                                <div class="progress" style="height:6px;background:var(--bg-secondary);">
+                                    <div class="progress-bar" style="width:52%;background:#ec4899;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color:var(--border-color) !important;background:var(--bg-secondary);">
+                            <span style="font-size:0.8rem;color:var(--text-muted);"><i class="fa-solid fa-briefcase text-warning me-1"></i> 2 Openings</span>
+                            <button class="btn btn-sm btn-outline-light py-1 px-3" onclick="viewDept('Product Design', 'Michael Chen', '16', '$550k', '2')">View Roster</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dept 3 -->
+                <div class="col-md-6 col-xl-4 dept-item" data-category="Business">
+                    <div class="module-card h-100 d-flex flex-column">
+                        <div class="module-card-body flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:48px;height:48px;border-radius:12px;background:rgba(245,158,11,0.15);color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                        <i class="fa-solid fa-users-gear"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin:0;">Human Resources</h4>
+                                        <span class="badge" style="background:rgba(245,158,11,0.12);color:#f59e0b;font-size:0.75rem;">HR • 12 Members</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm text-secondary p-1" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5;margin-bottom:16px;">
+                                Talent acquisition, employee wellbeing, culture, payroll operations, and regulatory compliance.
+                            </p>
+                            
+                            <div class="p-2.5 rounded mb-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="user-avatar session-avatar" style="width:30px;height:30px;font-size:0.75rem;background:#f59e0b;">JD</div>
+                                    <div class="flex-grow-1">
+                                        <div style="font-size:0.7rem;color:var(--text-muted);">HEAD OF DEPARTMENT</div>
+                                        <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">John Doe (HR Director)</div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Active</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-muted" style="font-size:0.8rem;margin-bottom:4px;">
+                                    <span>Annual Budget: <strong>$420k</strong></span>
+                                    <span>60% spent</span>
+                                </div>
+                                <div class="progress" style="height:6px;background:var(--bg-secondary);">
+                                    <div class="progress-bar" style="width:60%;background:#f59e0b;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color:var(--border-color) !important;background:var(--bg-secondary);">
+                            <span style="font-size:0.8rem;color:var(--text-muted);"><i class="fa-solid fa-briefcase text-warning me-1"></i> 1 Opening</span>
+                            <button class="btn btn-sm btn-outline-light py-1 px-3" onclick="viewDept('Human Resources', 'John Doe', '12', '$420k', '1')">View Roster</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dept 4 -->
+                <div class="col-md-6 col-xl-4 dept-item" data-category="Business">
+                    <div class="module-card h-100 d-flex flex-column">
+                        <div class="module-card-body flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:48px;height:48px;border-radius:12px;background:rgba(16,185,129,0.15);color:#10b981;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                        <i class="fa-solid fa-chart-line"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin:0;">Sales & Revenue</h4>
+                                        <span class="badge" style="background:rgba(16,185,129,0.12);color:#10b981;font-size:0.75rem;">SLS • 24 Members</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm text-secondary p-1" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5;margin-bottom:16px;">
+                                Global enterprise account acquisition, outbound sales pipelines, solutions consulting.
+                            </p>
+                            
+                            <div class="p-2.5 rounded mb-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="user-avatar" style="width:30px;height:30px;font-size:0.75rem;background:#10b981;">AC</div>
+                                    <div class="flex-grow-1">
+                                        <div style="font-size:0.7rem;color:var(--text-muted);">HEAD OF DEPARTMENT</div>
+                                        <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Amanda Clark (VP Sales)</div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Active</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-muted" style="font-size:0.8rem;margin-bottom:4px;">
+                                    <span>Annual Budget: <strong>$950k</strong></span>
+                                    <span>72% spent</span>
+                                </div>
+                                <div class="progress" style="height:6px;background:var(--bg-secondary);">
+                                    <div class="progress-bar" style="width:72%;background:#10b981;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color:var(--border-color) !important;background:var(--bg-secondary);">
+                            <span style="font-size:0.8rem;color:var(--text-muted);"><i class="fa-solid fa-briefcase text-warning me-1"></i> 3 Openings</span>
+                            <button class="btn btn-sm btn-outline-light py-1 px-3" onclick="viewDept('Sales & Revenue', 'Amanda Clark', '24', '$950k', '3')">View Roster</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dept 5 -->
+                <div class="col-md-6 col-xl-4 dept-item" data-category="Business">
+                    <div class="module-card h-100 d-flex flex-column">
+                        <div class="module-card-body flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:48px;height:48px;border-radius:12px;background:rgba(6,182,212,0.15);color:#06b6d4;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                        <i class="fa-solid fa-bullhorn"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin:0;">Marketing</h4>
+                                        <span class="badge" style="background:rgba(6,182,212,0.12);color:#06b6d4;font-size:0.75rem;">MKT • 14 Members</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm text-secondary p-1" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5;margin-bottom:16px;">
+                                Brand campaigns, content marketing, digital growth analytics, developer relations, and events.
+                            </p>
+                            
+                            <div class="p-2.5 rounded mb-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="user-avatar" style="width:30px;height:30px;font-size:0.75rem;background:#06b6d4;">LT</div>
+                                    <div class="flex-grow-1">
+                                        <div style="font-size:0.7rem;color:var(--text-muted);">HEAD OF DEPARTMENT</div>
+                                        <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Lucas Taylor (CMO)</div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Active</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-muted" style="font-size:0.8rem;margin-bottom:4px;">
+                                    <span>Annual Budget: <strong>$620k</strong></span>
+                                    <span>58% spent</span>
+                                </div>
+                                <div class="progress" style="height:6px;background:var(--bg-secondary);">
+                                    <div class="progress-bar" style="width:58%;background:#06b6d4;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color:var(--border-color) !important;background:var(--bg-secondary);">
+                            <span style="font-size:0.8rem;color:var(--text-muted);"><i class="fa-solid fa-briefcase text-warning me-1"></i> 2 Openings</span>
+                            <button class="btn btn-sm btn-outline-light py-1 px-3" onclick="viewDept('Marketing', 'Lucas Taylor', '14', '$620k', '2')">View Roster</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dept 6 -->
+                <div class="col-md-6 col-xl-4 dept-item" data-category="Tech">
+                    <div class="module-card h-100 d-flex flex-column">
+                        <div class="module-card-body flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.15);color:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                        <i class="fa-solid fa-server"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin:0;">DevOps & Infra</h4>
+                                        <span class="badge" style="background:rgba(139,92,246,0.12);color:#8b5cf6;font-size:0.75rem;">OPS • 14 Members</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm text-secondary p-1" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                </div>
+                            </div>
+                            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5;margin-bottom:16px;">
+                                Kubernetes cluster ops, CI/CD automated deployments, site reliability, SOC2 compliance.
+                            </p>
+                            
+                            <div class="p-2.5 rounded mb-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="user-avatar" style="width:30px;height:30px;font-size:0.75rem;background:#8b5cf6;">RH</div>
+                                    <div class="flex-grow-1">
+                                        <div style="font-size:0.7rem;color:var(--text-muted);">HEAD OF DEPARTMENT</div>
+                                        <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Rachel Hayes (Head of Infra)</div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size:0.65rem;">Active</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between text-muted" style="font-size:0.8rem;margin-bottom:4px;">
+                                    <span>Annual Budget: <strong>$480k</strong></span>
+                                    <span>70% spent</span>
+                                </div>
+                                <div class="progress" style="height:6px;background:var(--bg-secondary);">
+                                    <div class="progress-bar" style="width:70%;background:#8b5cf6;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 border-top d-flex justify-content-between align-items-center" style="border-color:var(--border-color) !important;background:var(--bg-secondary);">
+                            <span style="font-size:0.8rem;color:var(--text-muted);"><i class="fa-solid fa-briefcase text-warning me-1"></i> 1 Opening</span>
+                            <button class="btn btn-sm btn-outline-light py-1 px-3" onclick="viewDept('DevOps & Infra', 'Rachel Hayes', '14', '$480k', '1')">View Roster</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal: New Department -->
+<div class="modal fade" id="newDeptModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title"><i class="fa-solid fa-building me-2" style="color:var(--primary);"></i>Create Department</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="newDeptForm">
+                <div class="modal-body">
+                    <div class="row g-2 mb-3">
+                        <div class="col-8">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Department Name *</label>
+                            <input type="text" class="form-control" required placeholder="e.g. Artificial Intelligence Labs" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Code *</label>
+                            <input type="text" class="form-control" required placeholder="e.g. AI-LAB" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.85rem;font-weight:600;">Head of Department (Lead) *</label>
+                        <select class="form-select" required style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                            <option value="">Select Department Head...</option>
+                            <option value="David Kim">David Kim</option>
+                            <option value="Sarah Jenkins">Sarah Jenkins</option>
+                            <option value="Michael Chen">Michael Chen</option>
+                            <option value="John Doe">John Doe</option>
+                        </select>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Annual Budget (USD) *</label>
+                            <input type="number" class="form-control" placeholder="500000" required style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" style="font-size:0.85rem;font-weight:600;">Location / Hub</label>
+                            <select class="form-select" style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);">
+                                <option value="HQ - San Francisco">HQ - San Francisco</option>
+                                <option value="London Office">London Office</option>
+                                <option value="Singapore Hub">Singapore Hub</option>
+                                <option value="Remote Global">Remote Global</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" style="font-size:0.85rem;font-weight:600;">Description & Scope</label>
+                        <textarea class="form-control" rows="3" placeholder="Define this department's mandate and primary responsibilities..." style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-primary);"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-module-primary">Create Department</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: View Department Roster -->
+<div class="modal fade" id="rosterModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-primary);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+                <h5 class="modal-title" id="rosterTitle"><i class="fa-solid fa-building me-2" style="color:var(--primary);"></i>Department Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="rosterBody">
+                <!-- Dynamically filled -->
+            </div>
+            <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-module-primary" onclick="showToast('info','Redirecting to Employee Directory...')"><i class="fa-solid fa-users me-1"></i> Manage Staff</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container-custom" id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Session loader
+(function initSession(){
+    const u = JSON.parse(localStorage.getItem('workops_user') || '{"name":"John Doe","role":"HR Officer","email":"john.doe@workops.io"}');
+    document.querySelectorAll('.session-name').forEach(el=>el.textContent = u.name);
+    document.querySelectorAll('.session-role').forEach(el=>el.textContent = u.role);
+    const initials = u.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    document.querySelectorAll('.session-avatar').forEach(el=>el.textContent = initials);
+})();
+
+// Theme toggle
+const themeBtn = document.getElementById('theme-btn');
+themeBtn.addEventListener('click', ()=>{
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    themeBtn.innerHTML = next === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+});
+
+// Toast helper
+function showToast(type, msg){
+    const icons = {success:'fa-check-circle',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
+    const colors = {success:'var(--success)',error:'var(--danger)',info:'var(--info)',warning:'var(--warning)'};
+    const t = document.createElement('div');
+    t.className = 'workops-toast';
+    t.innerHTML = `<i class="fa-solid ${icons[type]}" style="color:${colors[type]};font-size:1.1rem;"></i><span style="font-size:0.875rem;color:var(--text-primary);">${msg}</span>`;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(()=>t.remove(), 4000);
+}
+
+function viewDept(name, lead, count, budget, openings){
+    document.getElementById('rosterTitle').innerHTML = `<i class="fa-solid fa-building me-2" style="color:var(--primary);"></i> ${name} Department Roster`;
+    document.getElementById('rosterBody').innerHTML = `
+        <div class="row g-3 mb-4">
+            <div class="col-4">
+                <div class="p-3 rounded text-center" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                    <div style="font-size:0.75rem;color:var(--text-muted);">TEAM SIZE</div>
+                    <div style="font-size:1.4rem;font-weight:700;color:var(--text-primary);">${count} Members</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="p-3 rounded text-center" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                    <div style="font-size:0.75rem;color:var(--text-muted);">ANNUAL BUDGET</div>
+                    <div style="font-size:1.4rem;font-weight:700;color:#10b981;">${budget}</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="p-3 rounded text-center" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+                    <div style="font-size:0.75rem;color:var(--text-muted);">OPEN ROLES</div>
+                    <div style="font-size:1.4rem;font-weight:700;color:var(--warning);">${openings} Active</div>
+                </div>
+            </div>
+        </div>
+        <h6 style="color:var(--text-primary);font-weight:600;margin-bottom:12px;"><i class="fa-solid fa-crown text-warning me-2"></i>Department Head</h6>
+        <div class="p-2.5 rounded d-flex align-items-center gap-3 mb-3" style="background:var(--bg-secondary);border:1px solid var(--border-color);">
+            <div class="user-avatar" style="width:36px;height:36px;background:var(--primary);">${lead.split(' ').map(n=>n[0]).join('')}</div>
+            <div>
+                <div style="font-weight:600;color:var(--text-primary);">${lead}</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">Direct Reports: ${count} staff</div>
+            </div>
+        </div>
+    `;
+    new bootstrap.Modal(document.getElementById('rosterModal')).show();
+}
+
+function filterDepts(cat){
+    const items = document.querySelectorAll('.dept-item');
+    items.forEach(el => {
+        if(cat === 'all' || el.getAttribute('data-category') === cat){
+            el.style.display = '';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+}
+
+document.getElementById('searchDept').addEventListener('input', function(){
+    const val = this.value.toLowerCase();
+    document.querySelectorAll('.dept-item').forEach(el => {
+        el.style.display = el.innerText.toLowerCase().includes(val) ? '' : 'none';
+    });
+});
+
+document.getElementById('newDeptForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    showToast('success', 'New department created successfully!');
+    bootstrap.Modal.getInstance(document.getElementById('newDeptModal')).hide();
+    this.reset();
+});
+</script>
+</body>
+</html>
