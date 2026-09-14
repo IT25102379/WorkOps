@@ -227,9 +227,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AttendanceResponseDTO> getFilteredAttendance(AttendanceFilterDTO filterDTO) {
+    public List<AttendanceResponseDTO> getFilteredAttendance(AttendanceFilterDTO filterDTO, String username, boolean canViewAll) {
         if (filterDTO == null) {
             filterDTO = new AttendanceFilterDTO();
+        }
+
+        if (!canViewAll) {
+            Employee employee = resolveEmployee(null, username);
+            filterDTO.setEmployeeId(employee.getId());
         }
 
         List<Attendance> records = attendanceRepository.filterAttendance(

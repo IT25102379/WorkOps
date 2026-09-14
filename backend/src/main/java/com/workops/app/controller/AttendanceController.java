@@ -65,13 +65,20 @@ public class AttendanceController {
     @GetMapping("/records")
     @Operation(summary = "Search and filter attendance records by date range, department, status, and name")
     public ResponseEntity<ApiResponse<List<AttendanceResponseDTO>>> getAttendanceRecords(
-            @ModelAttribute AttendanceFilterDTO filterDTO
+            @ModelAttribute AttendanceFilterDTO filterDTO,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        List<AttendanceResponseDTO> records = attendanceService.getFilteredAttendance(filterDTO);
+        String username = userDetails != null ? userDetails.getUsername() : "anonymousUser";
+        boolean canViewAll = userDetails != null && userDetails.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")
+                        || authority.getAuthority().equals("ROLE_HR")
+                        || authority.getAuthority().equals("ROLE_MANAGER"));
+        List<AttendanceResponseDTO> records = attendanceService.getFilteredAttendance(filterDTO, username, canViewAll);
         return ResponseEntity.ok(ApiResponse.ok(records));
     }
 
     @GetMapping("/kpis")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HR', 'ROLE_MANAGER')")
     @Operation(summary = "Retrieve real-time KPI metrics for attendance summary cards")
     public ResponseEntity<ApiResponse<AttendanceKpiDTO>> getAttendanceKpis(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
@@ -92,6 +99,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/corrections")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_HR', 'ROLE_MANAGER')")
     @Operation(summary = "List attendance correction requests (all or filtered by status)")
     public ResponseEntity<ApiResponse<List<AttendanceCorrectionRequestDTO>>> getCorrectionRequests(
             @RequestParam(required = false) RequestStatus status

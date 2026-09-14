@@ -87,7 +87,9 @@ class AppController {
             .filter(Boolean)
             .map(role => role.toUpperCase());
 
-        if (!roles.includes('ROLE_HR')) return;
+        const isEmployee = roles.includes('ROLE_STAFF');
+        const isHr = roles.includes('ROLE_HR');
+        if (!isEmployee && !isHr) return;
 
         document.querySelectorAll('.nav-link-custom').forEach(link => {
             const isAttendanceLink = link.getAttribute('href')?.includes('attendance.html');

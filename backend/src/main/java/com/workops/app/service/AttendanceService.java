@@ -15,7 +15,7 @@ public interface AttendanceService {
 
     TodayStatusDTO getTodayStatus(String username);
 
-    List<AttendanceResponseDTO> getFilteredAttendance(AttendanceFilterDTO filterDTO);
+    List<AttendanceResponseDTO> getFilteredAttendance(AttendanceFilterDTO filterDTO, String username, boolean canViewAll);
 
     AttendanceKpiDTO getAttendanceKpis(LocalDate date);
 
