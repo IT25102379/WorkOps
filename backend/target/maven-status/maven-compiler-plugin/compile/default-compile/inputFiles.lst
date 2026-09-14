@@ -1,8 +1,11 @@
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\controller\AttendanceController.java
+C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\dto\AccountSummaryDTO.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\entity\AttendanceRequest.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\entity\enums\RequestType.java
+C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\service\impl\UserAccountServiceImpl.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\repository\EmployeeRepository.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\service\impl\ContactMessageServiceImpl.java
+C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\controller\UserAccountController.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\entity\Employee.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\entity\enums\AttendanceStatus.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\repository\DepartmentRepository.java
@@ -12,6 +15,7 @@ C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\W
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\service\AttendanceService.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\entity\Attendance.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\config\WebMvcConfig.java
+C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\service\UserAccountService.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\dto\AuthResponse.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\entity\Department.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\dto\ContactMessageRequest.java
@@ -25,6 +29,7 @@ C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\W
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\security\UserDetailsServiceImpl.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\exception\ResourceNotFoundException.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\repository\AttendanceRepository.java
+C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\dto\SignupRequest.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\repository\ContactMessageRepository.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\repository\UserRepository.java
 C:\Users\acer\OneDrive - Sri Lanka Institute of Information Technology\Desktop\WorkOps\backend\src\main\java\com\workops\app\WorkOpsApplication.java

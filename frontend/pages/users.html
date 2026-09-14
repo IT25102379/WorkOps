@@ -256,6 +256,13 @@
                     </div>
                 </div>
             </div>
+            <div class="module-card mt-4">
+                <div class="module-card-header d-flex justify-content-between align-items-center">
+                    <div><h3 class="module-card-title"><i class="fa-solid fa-toggle-on me-2" style="color:#10b981;"></i>Live Account Controls</h3><p class="module-card-subtitle">Activate or deactivate employee access to WorkOps and attendance.</p></div>
+                    <button class="btn btn-sm btn-outline-secondary" id="refresh-accounts"><i class="fa-solid fa-rotate me-1"></i>Refresh</button>
+                </div>
+                <div class="module-card-body p-0"><div class="table-responsive"><table class="module-table"><thead><tr><th>Employee</th><th>Username</th><th>Role</th><th>Department</th><th>Status</th><th class="text-end">Access</th></tr></thead><tbody id="live-accounts-body"><tr><td colspan="6" class="text-center text-muted py-4">Loading live accounts...</td></tr></tbody></table></div></div>
+            </div>
         </div>
     </main>
 </div>
@@ -402,6 +409,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+const usersApiUrl = 'http://localhost:8080/api/v1/users';
+
 // Session loader
 (function initSession(){
     const u = JSON.parse(localStorage.getItem('workops_user') || '{"name":"John Doe","role":"HR Officer","email":"john.doe@workops.io"}');
@@ -425,6 +434,42 @@ function showToast(type, msg){
     Swal.fire({ toast: true, position: 'top-end', icon: type, title: msg, showConfirmButton: false, timer: 4500, timerProgressBar: true });
 }
 
+async function loadLiveAccounts(){
+    const body = document.getElementById('live-accounts-body');
+    try {
+        const response = await fetch(usersApiUrl, { headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('workops_token') || ''}` } });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || 'Unable to load accounts');
+        body.innerHTML = result.data.map(account => `
+            <tr>
+                <td><strong>${escapeHtml(account.fullName)}</strong><div class="small text-muted">${escapeHtml(account.email)}</div></td>
+                <td>${escapeHtml(account.username)}</td>
+                <td>${escapeHtml(account.role.replace('ROLE_', ''))}</td>
+                <td>${escapeHtml(account.departmentName)}</td>
+                <td><span class="status-badge ${account.active ? 'status-present' : 'status-rejected'}">${account.active ? 'Active' : 'Inactive'}</span></td>
+                <td class="text-end"><button class="btn btn-sm ${account.active ? 'btn-outline-danger' : 'btn-outline-success'}" onclick="toggleAccount(${account.userId}, ${!account.active})"><i class="fa-solid fa-power-off me-1"></i>${account.active ? 'Deactivate' : 'Activate'}</button></td>
+            </tr>`).join('');
+    } catch (error) {
+        body.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-4">${escapeHtml(error.message)}</td></tr>`;
+    }
+}
+
+function escapeHtml(value){
+    return String(value ?? '').replace(/[&<>'"]/g, character => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' }[character]));
+}
+
+async function toggleAccount(userId, active){
+    try {
+        const response = await fetch(`${usersApiUrl}/${userId}/status?active=${active}`, { method:'PATCH', headers:{ 'Accept':'application/json', 'Authorization':`Bearer ${localStorage.getItem('workops_token') || ''}` } });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.message || 'Unable to update account status');
+        showToast('success', result.message);
+        loadLiveAccounts();
+    } catch (error) {
+        showToast('error', error.message);
+    }
+}
+
 function editUser(email, role){
     showToast('info', `Editing authorization profile for ${email} (${role})`);
 }
@@ -440,6 +485,8 @@ document.getElementById('newUserForm').addEventListener('submit', function(e){
 document.getElementById('userSearch').addEventListener('input', filterUsers);
 document.getElementById('roleFilter').addEventListener('change', filterUsers);
 document.getElementById('statusFilter').addEventListener('change', filterUsers);
+document.getElementById('refresh-accounts').addEventListener('click', loadLiveAccounts);
+loadLiveAccounts();
 
 function filterUsers(){
     const search = document.getElementById('userSearch').value.toLowerCase();

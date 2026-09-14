@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkOps - Create Employee Account</title>
+    <link rel="icon" type="image/svg+xml" href="public/workops-icon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root { --signup-ink:#101b2d; --signup-paper:#f5f7fb; --signup-lime:#d9f85a; --signup-teal:#168c91; }
+        * { letter-spacing:0 !important; }
+        body { font-family:'Manrope',sans-serif; background:var(--signup-paper); }
+        .signup-page { min-height:100vh; display:grid; place-items:center; padding:26px; position:relative; overflow:hidden; background:var(--signup-paper); }
+        .signup-page::before,.signup-page::after { content:''; position:absolute; border-radius:50%; pointer-events:none; }
+        .signup-page::before { width:480px; height:480px; right:-180px; top:-220px; background:rgba(97,213,208,.22); }
+        .signup-page::after { width:360px; height:360px; left:-180px; bottom:-180px; background:rgba(217,248,90,.2); }
+        .signup-shell { width:min(900px,100%); position:relative; z-index:1; display:grid; grid-template-columns:.8fr 1.2fr; overflow:hidden; border:1px solid rgba(16,27,45,.12); border-radius:24px; background:#fff; box-shadow:0 30px 75px rgba(16,27,45,.2); animation:rise .6s ease both; }
+        .signup-aside { padding:42px; display:flex; flex-direction:column; justify-content:center; background:linear-gradient(145deg,#12253b,#21454d); color:#fff; }
+        .signup-aside h1 { margin:0; color:#fff; font-size:clamp(2rem,4vw,3.3rem); line-height:1; letter-spacing:-.06em !important; }
+        .signup-aside p { margin:18px 0 0; color:#b7c5d6; font-size:.87rem; line-height:1.65; }
+        .signup-aside .eyebrow { margin-bottom:16px; color:var(--signup-lime); font:500 .67rem 'DM Mono',monospace; text-transform:uppercase; }
+        .signup-card { padding:40px 46px; }
+        .signup-card h2 { margin:0; color:var(--signup-ink); font-size:1.65rem; letter-spacing:-.045em !important; }
+        .signup-subtitle { margin:5px 0 26px; color:#728096; font-size:.82rem; }
+        .signup-label { display:block; margin-bottom:7px; color:#526176; font:500 .66rem 'DM Mono',monospace; text-transform:uppercase; }
+        .signup-card .form-control,.signup-card .form-select { min-height:45px; border:1px solid #dbe2ea !important; border-radius:9px !important; background:#fff !important; color:var(--signup-ink) !important; }
+        .signup-card .form-control:focus,.signup-card .form-select:focus { border-color:#65b8b2 !important; box-shadow:0 0 0 4px rgba(97,213,208,.18) !important; }
+        .signup-submit { min-height:48px; border:0; border-radius:9px; background:var(--signup-ink); color:#fff; font-weight:800; }
+        .signup-submit:hover { background:#1a314b; color:#fff; }
+        .signup-footer { margin-top:18px; color:#718096; font-size:.78rem; text-align:center; }
+        .signup-footer a { color:var(--signup-teal); font-weight:800; text-decoration:none; }
+        @keyframes rise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        @media(max-width:760px) { .signup-page { padding:14px; } .signup-shell { grid-template-columns:1fr; } .signup-aside { padding:28px; } .signup-aside h1 { font-size:2.2rem; } .signup-card { padding:30px 24px; } }
+    </style>
+</head>
+<body>
+<main class="signup-page">
+    <div class="signup-shell">
+        <section class="signup-aside">
+            <div class="eyebrow">Employee onboarding</div>
+            <h1>Your workday, connected.</h1>
+            <p>Create your employee account to access attendance, shift records and workforce self-service in WorkOps.</p>
+        </section>
+        <section class="signup-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div><h2>Create your account</h2><p class="signup-subtitle">Your account will be created as an employee profile.</p></div>
+                <a href="home.html" class="text-secondary" title="Back to home"><i class="fa-solid fa-xmark"></i></a>
+            </div>
+            <form id="signup-form">
+                <div class="row g-3">
+                    <div class="col-12"><label class="signup-label" for="fullName">Full name</label><input class="form-control" id="fullName" placeholder="Jane Smith" required></div>
+                    <div class="col-md-6"><label class="signup-label" for="username">Username</label><input class="form-control" id="username" placeholder="jane.smith" autocomplete="username" required></div>
+                    <div class="col-md-6"><label class="signup-label" for="email">Work email</label><input class="form-control" id="email" type="email" placeholder="jane@company.com" autocomplete="email" required></div>
+                    <div class="col-md-6"><label class="signup-label" for="password">Password</label><input class="form-control" id="password" type="password" placeholder="Minimum 8 characters" autocomplete="new-password" minlength="8" required></div>
+                    <div class="col-md-6"><label class="signup-label" for="phone">Phone <span class="text-muted">(optional)</span></label><input class="form-control" id="phone" placeholder="+94 77 123 4567"></div>
+                    <div class="col-md-6"><label class="signup-label" for="departmentCode">Department</label><select class="form-select" id="departmentCode" required><option value="">Select department</option><option value="ENG">Engineering & Technology</option><option value="HR">Human Resources</option><option value="FIN">Finance & Accounting</option><option value="MKT">Marketing & Sales</option></select></div>
+                    <div class="col-md-6"><label class="signup-label" for="designation">Designation</label><input class="form-control" id="designation" placeholder="Software Engineer" required></div>
+                </div>
+                <button class="btn signup-submit w-100 mt-4" id="signup-submit"><i class="fa-solid fa-user-plus me-2"></i>Create employee account</button>
+            </form>
+            <div class="signup-footer">Already have an account? <a href="login.html">Sign in</a></div>
+        </section>
+    </div>
+</main>
+<script type="module">
+    import { ApiClient } from './assets/js/api.js';
+    document.getElementById('signup-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const button = document.getElementById('signup-submit');
+        button.disabled = true;
+        button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i>Creating account...';
+        const payload = Object.fromEntries(new FormData(event.target).entries());
+        payload.fullName = document.getElementById('fullName').value.trim();
+        payload.username = document.getElementById('username').value.trim();
+        payload.email = document.getElementById('email').value.trim();
+        payload.password = document.getElementById('password').value;
+        payload.phone = document.getElementById('phone').value.trim();
+        payload.departmentCode = document.getElementById('departmentCode').value;
+        payload.designation = document.getElementById('designation').value.trim();
+        try {
+            const response = await ApiClient.post('/auth/signup', payload);
+            await Swal.fire({ icon:'success', title:'Account created', text:'Your employee account is ready. You can sign in now.', confirmButtonColor:'#101b2d' });
+            window.location.href = 'login.html';
+        } catch (error) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'error', title:'Could not create account', text:error.message || 'Please check your details and try again.', confirmButtonColor:'#ef4444' });
+        }
+    });
+</script>
+</body>
+</html>
