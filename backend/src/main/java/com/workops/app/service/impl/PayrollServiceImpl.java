@@ -279,6 +279,14 @@ public class PayrollServiceImpl implements PayrollService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public PayrollEventDTO getPayrollEventById(Long id) {
+        PayrollEvent event = payrollEventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payroll event not found with ID: " + id));
+        return mapEventToDTO(event);
+    }
+
+    @Override
     @Transactional
     public PayrollEventDTO createPayrollEvent(PayrollEventDTO eventDTO, String username) {
         PayrollEvent event = PayrollEvent.builder()
@@ -292,6 +300,33 @@ public class PayrollServiceImpl implements PayrollService {
 
         PayrollEvent saved = payrollEventRepository.save(event);
         return mapEventToDTO(saved);
+    }
+
+    @Override
+    @Transactional
+    public PayrollEventDTO updatePayrollEvent(Long id, PayrollEventDTO eventDTO, String username) {
+        PayrollEvent event = payrollEventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payroll event not found with ID: " + id));
+
+        if (eventDTO.getTitle() != null && !eventDTO.getTitle().trim().isEmpty()) {
+            event.setTitle(eventDTO.getTitle().trim());
+        }
+        if (eventDTO.getEventType() != null && !eventDTO.getEventType().trim().isEmpty()) {
+            event.setEventType(eventDTO.getEventType().trim());
+        }
+        if (eventDTO.getEventDate() != null) {
+            event.setEventDate(eventDTO.getEventDate());
+        }
+        if (eventDTO.getDescription() != null) {
+            event.setDescription(eventDTO.getDescription().trim());
+        }
+        if (eventDTO.getPriority() != null && !eventDTO.getPriority().trim().isEmpty()) {
+            event.setPriority(eventDTO.getPriority().toUpperCase());
+        }
+
+        PayrollEvent updated = payrollEventRepository.save(event);
+        log.info("Payroll event #{} updated by {}", id, username);
+        return mapEventToDTO(updated);
     }
 
     @Override

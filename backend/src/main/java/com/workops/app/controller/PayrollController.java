@@ -122,6 +122,13 @@ public class PayrollController {
         return ResponseEntity.ok(ApiResponse.ok(events));
     }
 
+    @GetMapping("/events/{id}")
+    @Operation(summary = "Retrieve single scheduled payroll event by ID")
+    public ResponseEntity<ApiResponse<PayrollEventDTO>> getEventById(@PathVariable Long id) {
+        PayrollEventDTO event = payrollService.getPayrollEventById(id);
+        return ResponseEntity.ok(ApiResponse.ok(event));
+    }
+
     @PostMapping("/events")
     @Operation(summary = "Create a new payroll event / milestone reminder")
     public ResponseEntity<ApiResponse<PayrollEventDTO>> createEvent(
@@ -134,6 +141,21 @@ public class PayrollController {
 
         PayrollEventDTO created = payrollService.createPayrollEvent(eventDTO, username);
         return ResponseEntity.ok(ApiResponse.ok("Payroll event scheduled successfully", created));
+    }
+
+    @PutMapping("/events/{id}")
+    @Operation(summary = "Update an existing scheduled payroll event")
+    public ResponseEntity<ApiResponse<PayrollEventDTO>> updateEvent(
+            @PathVariable Long id,
+            @Valid @RequestBody PayrollEventDTO eventDTO,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String username = (userDetails != null && userDetails.getUsername() != null)
+                ? userDetails.getUsername()
+                : "Payroll Officer";
+
+        PayrollEventDTO updated = payrollService.updatePayrollEvent(id, eventDTO, username);
+        return ResponseEntity.ok(ApiResponse.ok("Payroll event updated successfully", updated));
     }
 
     @DeleteMapping("/events/{id}")
