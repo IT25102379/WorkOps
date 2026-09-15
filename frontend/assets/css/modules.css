@@ -464,27 +464,51 @@
 
 .filter-bar .form-control,
 .filter-bar .form-select {
-    font-size: 0.825rem !important;
-    padding: 7px 12px !important;
+    font-size: 0.85rem !important;
+    padding: 8px 14px !important;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #e2e8f0);
 }
 
 .filter-search {
     position: relative;
     flex: 1;
-    min-width: 200px;
-    max-width: 320px;
+    min-width: 220px;
+    max-width: 360px;
+    display: flex;
+    align-items: center;
 }
 
+.filter-bar .filter-search input,
+.filter-search input.form-control,
 .filter-search input {
-    padding-left: 36px !important;
+    padding-left: 40px !important;
+    padding-right: 14px !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s ease;
+}
+
+.filter-bar .filter-search input:focus,
+.filter-search input:focus {
+    border-color: #06b6d4 !important;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15) !important;
 }
 
 .filter-search i {
     position: absolute;
-    left: 12px; top: 50%;
+    left: 14px;
+    top: 50%;
     transform: translateY(-50%);
-    color: var(--text-muted);
-    font-size: 0.8rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    pointer-events: none;
+    z-index: 2;
+    transition: color 0.2s ease;
+}
+
+.filter-search:focus-within i {
+    color: #06b6d4;
 }
 
 /* ── Action Buttons (table row) ──────────────────────────────────────────── */

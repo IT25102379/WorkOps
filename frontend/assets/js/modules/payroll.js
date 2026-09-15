@@ -28,11 +28,13 @@ class PayrollController {
         const role = (user.role || '').toUpperCase();
         
         // Update sidebar session display
-        document.querySelectorAll('.session-name').forEach(el => el.textContent = user.fullName || 'David Beck');
+        const displayName = (user.fullName && user.fullName !== 'David Beck') ? user.fullName : (user.username || 'Payroll Officer');
+        document.querySelectorAll('.session-name').forEach(el => el.textContent = displayName);
         document.querySelectorAll('.session-role').forEach(el => el.textContent = user.designation || 'Payroll Officer');
         document.querySelectorAll('.session-avatar').forEach(el => {
-            const name = user.fullName || 'PO';
-            el.textContent = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            const name = displayName || 'Payroll Officer';
+            const initials = name.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            el.textContent = initials || 'PO';
         });
     }
 

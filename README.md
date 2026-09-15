@@ -381,7 +381,7 @@ All seed accounts are initialized with the default password: **`Password@123`**
 | 👔 **Team Manager** | `alex.manager` | Alex Cross | Engineering Manager | Correction request approvals, team shift oversight |
 | 💻 **Staff Member** | `john.doe` | John Doe | Senior Full Stack Engineer | Clock-In/Out, GPS logging, personal records & requests |
 | 📈 **Marketing Staff** | `emma.watson`| Emma Watson | Growth Specialist | Flexible shift timing (09:00 - 18:00), shift tracking |
-| 💰 **Payroll Officer** | `david.fin` | David Beck | Payroll Controller | Salary computation, overtime calculation & audit |
+| 💰 **Payroll Officer** | `payroll` | Payroll Officer | Payroll Controller | Salary computation, overtime calculation & audit |
 
 > [!TIP]
 > On the login page ([`frontend/index.html`](file:///c:/Users/acer/OneDrive%20-%20Sri%20Lanka%20Institute%20of%20Information%20Technology/Desktop/WorkOps/frontend/index.html)), you can click any of the **Quick Demo Role Pills** (`Admin`, `HR Lead`, `Manager`, `Engineer`, `Payroll`) to autofill credentials instantly!
