@@ -65,6 +65,12 @@ class PayrollController {
         // Generate Payroll Modal Form Submit
         document.getElementById('payroll-run-form')?.addEventListener('submit', (e) => this.handleGeneratePayroll(e));
 
+        // Adjust Salary Form Submit & Live Calculations
+        document.getElementById('adjust-salary-form')?.addEventListener('submit', (e) => this.handleSaveAdjustment(e));
+        ['adjust-basic-salary', 'adjust-allowances', 'adjust-overtime', 'adjust-deductions'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', () => this.recalcLiveAdjustmentNet());
+        });
+
         // Create Event Form Submit
         document.getElementById('event-create-form')?.addEventListener('submit', (e) => this.handleCreateEvent(e));
 
@@ -135,6 +141,9 @@ class PayrollController {
                     <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
                     <td>
                         <div class="d-flex gap-1">
+                            <button class="action-btn action-btn-edit" style="color: #6366f1; border-color: rgba(99, 102, 241, 0.35); background: rgba(99, 102, 241, 0.08);" title="Update Allowances & Overtime (දීමනා සහ ඕටී සංශෝධනය)" onclick="window.payrollModule.openAdjustModal(${p.id || idx})">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
                             <button class="action-btn action-btn-view" title="View & Print Payslip" onclick="window.payrollModule.viewPayslip(${p.id || idx})">
                                 <i class="fa-solid fa-file-invoice"></i>
                             </button>
@@ -443,6 +452,123 @@ class PayrollController {
             await this.loadSalaryRecords();
         } catch (e) {
             WorkOps.showToast('error', e.message || 'Failed to update status');
+        }
+    }
+
+    // =========================================================================
+    // 4.1 Adjust Allowances & Overtime (දීමනා & ඕටී සංශෝධනය)
+    // =========================================================================
+    openAdjustModal(id) {
+        const p = this.records.find(x => x.id === id || x.employeeId === id) || this.records[id] || this.records[0];
+        if (!p) {
+            WorkOps.showToast('error', 'Salary record details not found.');
+            return;
+        }
+
+        const idEl = document.getElementById('adjust-record-id');
+        const nameEl = document.getElementById('adjust-emp-name');
+        const subEl = document.getElementById('adjust-emp-sub');
+        const avatarEl = document.getElementById('adjust-avatar');
+        const basicEl = document.getElementById('adjust-basic-salary');
+        const allowEl = document.getElementById('adjust-allowances');
+        const otEl = document.getElementById('adjust-overtime');
+        const dedEl = document.getElementById('adjust-deductions');
+
+        if (idEl) idEl.value = p.id || id;
+        if (nameEl) nameEl.textContent = p.employeeName || 'Employee';
+        if (subEl) subEl.textContent = `${p.employeeCode || '--'} · ${p.departmentName || 'General'} (${p.designation || 'Staff'})`;
+        if (avatarEl) {
+            const initials = (p.employeeName || 'EM').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            avatarEl.textContent = initials;
+        }
+
+        const basicVal = parseFloat(p.basicSalary) || 50000;
+        const allowVal = parseFloat(p.allowances) || (basicVal * 0.15);
+        const otVal = parseFloat(p.overtimePay) || 0;
+        const dedVal = parseFloat(p.deductions) || (basicVal * 0.08);
+
+        if (basicEl) basicEl.value = basicVal.toFixed(2);
+        if (allowEl) allowEl.value = allowVal.toFixed(2);
+        if (otEl) otEl.value = otVal.toFixed(2);
+        if (dedEl) dedEl.value = dedVal.toFixed(2);
+
+        this.recalcLiveAdjustmentNet();
+
+        const modal = new bootstrap.Modal(document.getElementById('adjustSalaryModal'));
+        modal.show();
+    }
+
+    recalcLiveAdjustmentNet() {
+        const basic = parseFloat(document.getElementById('adjust-basic-salary')?.value) || 0;
+        const allow = parseFloat(document.getElementById('adjust-allowances')?.value) || 0;
+        const ot = parseFloat(document.getElementById('adjust-overtime')?.value) || 0;
+        let ded = parseFloat(document.getElementById('adjust-deductions')?.value);
+
+        if (isNaN(ded)) {
+            ded = basic * 0.08;
+            const dedEl = document.getElementById('adjust-deductions');
+            if (dedEl) dedEl.value = ded.toFixed(2);
+        }
+
+        const net = basic + allow + ot - ded;
+        const netEl = document.getElementById('adjust-live-net');
+        if (netEl) netEl.textContent = this.fmt(net);
+    }
+
+    async handleSaveAdjustment(e) {
+        e.preventDefault();
+        const recordId = document.getElementById('adjust-record-id')?.value;
+        const basicSalary = parseFloat(document.getElementById('adjust-basic-salary')?.value);
+        const allowances = parseFloat(document.getElementById('adjust-allowances')?.value);
+        const overtimePay = parseFloat(document.getElementById('adjust-overtime')?.value);
+        const deductions = parseFloat(document.getElementById('adjust-deductions')?.value);
+
+        if (isNaN(basicSalary) || basicSalary < 0) {
+            WorkOps.showToast('warning', 'Please enter a valid non-negative basic salary.', 'Validation Error');
+            return;
+        }
+
+        if (isNaN(allowances) || allowances < 0) {
+            WorkOps.showToast('warning', 'Please enter a valid non-negative allowances amount.', 'Validation Error');
+            return;
+        }
+
+        if (isNaN(overtimePay) || overtimePay < 0) {
+            WorkOps.showToast('warning', 'Please enter a valid non-negative overtime pay amount.', 'Validation Error');
+            return;
+        }
+
+        const btn = document.getElementById('btn-save-adjustment');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Saving to Database...';
+        }
+
+        try {
+            const payload = {
+                basicSalary: basicSalary,
+                allowances: allowances,
+                overtimePay: overtimePay,
+                deductions: isNaN(deductions) ? (basicSalary * 0.08) : deductions,
+                payrollMonth: this.currentMonth,
+                payrollYear: this.currentYear
+            };
+
+            await ApiClient.put(`/payroll/${recordId}/adjust`, payload);
+            WorkOps.showToast('success', 'Employee Allowances and Overtime updated and recalculation saved to database!');
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('adjustSalaryModal'));
+            if (modal) modal.hide();
+
+            await Promise.all([this.loadSalaryRecords(), this.loadPayrollHistory()]);
+        } catch (error) {
+            console.error('Save adjustment error:', error);
+            WorkOps.showToast('error', error.message || 'Failed to update salary adjustments');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check me-1"></i>Save Updates';
+            }
         }
     }
 

@@ -16,6 +16,8 @@ public interface PayrollService {
 
     PayrollDTO updatePaymentStatus(Long id, String status, String username);
 
+    PayrollDTO adjustPayroll(Long id, PayrollAdjustmentDTO adjustmentDTO, String username);
+
     List<PayrollDTO> getPayrollHistory();
 
     List<PayrollEventDTO> getPayrollEvents();

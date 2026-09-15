@@ -79,6 +79,21 @@ public class PayrollController {
         return ResponseEntity.ok(ApiResponse.ok("Payroll status updated to " + updated.getPaymentStatus(), updated));
     }
 
+    @PutMapping("/{id}/adjust")
+    @Operation(summary = "Adjust allowances, overtime, and salary components for an employee payroll record")
+    public ResponseEntity<ApiResponse<PayrollDTO>> adjustPayroll(
+            @PathVariable Long id,
+            @Valid @RequestBody PayrollAdjustmentDTO adjustmentDTO,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String username = (userDetails != null && userDetails.getUsername() != null)
+                ? userDetails.getUsername()
+                : "Payroll Officer";
+
+        PayrollDTO updated = payrollService.adjustPayroll(id, adjustmentDTO, username);
+        return ResponseEntity.ok(ApiResponse.ok("Payroll allowances and overtime updated successfully", updated));
+    }
+
     @GetMapping("/history")
     @Operation(summary = "Retrieve historical salary and payroll run summaries")
     public ResponseEntity<ApiResponse<List<PayrollDTO>>> getPayrollHistory() {
