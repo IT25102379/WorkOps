@@ -21,4 +21,6 @@ public interface OvertimeService {
     OvertimeRequestDTO updateOvertimeStatus(Long id, OvertimeStatusUpdateDTO statusDTO, String username);
 
     void deleteOvertime(Long id, String username);
+
+    List<com.workops.app.dto.EmployeeSummaryDTO> getActiveEmployees();
 }

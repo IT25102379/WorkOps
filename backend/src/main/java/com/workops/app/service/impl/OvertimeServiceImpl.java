@@ -179,6 +179,23 @@ public class OvertimeServiceImpl implements OvertimeService {
         log.info("Overtime record #{} deleted by {}", id, username);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<com.workops.app.dto.EmployeeSummaryDTO> getActiveEmployees() {
+        return employeeRepository.findAll().stream()
+                .map(emp -> com.workops.app.dto.EmployeeSummaryDTO.builder()
+                        .id(emp.getId())
+                        .employeeCode(emp.getEmployeeCode())
+                        .firstName(emp.getFirstName())
+                        .lastName(emp.getLastName())
+                        .fullName(emp.getFullName())
+                        .departmentName(emp.getDepartment() != null ? emp.getDepartment().getName() : "General")
+                        .designation(emp.getDesignation())
+                        .email(emp.getEmail())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     private Employee resolveEmployee(Long employeeId, String employeeCode, String username) {
         if (employeeId != null) {
             return employeeRepository.findById(employeeId)

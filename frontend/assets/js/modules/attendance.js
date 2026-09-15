@@ -435,10 +435,46 @@ class AttendanceController {
         // Reset modal state on open
         document.getElementById('btn-open-create-ot')?.addEventListener('click', () => {
             this.resetOvertimeForm();
+            this.loadEmployeeOptions();
         });
 
         // Submit form (Create or Update)
         document.getElementById('overtime-form')?.addEventListener('submit', (e) => this.handleSaveOvertime(e));
+
+        // Initial load of real database employees
+        this.loadEmployeeOptions();
+    }
+
+    async loadEmployeeOptions() {
+        const select = document.getElementById('ot-form-employee');
+        if (!select) return;
+
+        try {
+            const res = await ApiClient.get('/overtime/employees');
+            const employees = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+            if (employees.length) {
+                const currentSelected = select.value;
+                select.innerHTML = employees.map(emp => {
+                    const name = (emp.fullName || (emp.firstName + ' ' + (emp.lastName || '')).trim()) || 'Employee';
+                    const dept = emp.departmentName || 'General';
+                    const desig = emp.designation ? ` · ${emp.designation}` : '';
+                    return `
+                        <option value="${emp.employeeCode}" 
+                                data-id="${emp.id}" 
+                                data-name="${name}" 
+                                data-dept="${dept}">
+                            ${emp.employeeCode} — ${name} (${dept}${desig})
+                        </option>
+                    `;
+                }).join('');
+
+                if (currentSelected && Array.from(select.options).some(o => o.value === currentSelected)) {
+                    select.value = currentSelected;
+                }
+            }
+        } catch (error) {
+            console.warn('Could not load real employees from DB:', error);
+        }
     }
 
     resetOvertimeForm() {
@@ -626,9 +662,11 @@ class AttendanceController {
         }
     }
 
-    handleEditOvertime(id) {
+    async handleEditOvertime(id) {
         const record = this.otRecords.find(r => r.id === id);
         if (!record) return;
+
+        await this.loadEmployeeOptions();
 
         document.getElementById('ot-form-id').value = record.id;
         document.getElementById('ot-modal-title-text').textContent = `Edit Overtime Record #${record.id} — ${record.employeeName || ''}`;

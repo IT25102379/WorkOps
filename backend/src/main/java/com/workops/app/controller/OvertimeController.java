@@ -39,6 +39,13 @@ public class OvertimeController {
         return new ResponseEntity<>(ApiResponse.ok("Overtime request created successfully", created), HttpStatus.CREATED);
     }
 
+    @GetMapping("/employees")
+    @Operation(summary = "Retrieve all real employee profiles from the database for form selection")
+    public ResponseEntity<ApiResponse<List<com.workops.app.dto.EmployeeSummaryDTO>>> getEmployees() {
+        List<com.workops.app.dto.EmployeeSummaryDTO> employees = overtimeService.getActiveEmployees();
+        return ResponseEntity.ok(ApiResponse.ok(employees));
+    }
+
     @GetMapping
     @Operation(summary = "Retrieve all Overtime records with optional filters (Date, Status, Search)")
     public ResponseEntity<ApiResponse<List<OvertimeRequestDTO>>> getAllOvertime(

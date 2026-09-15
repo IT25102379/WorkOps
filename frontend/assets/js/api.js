@@ -489,6 +489,21 @@ export const ApiClient = {
             return { success: true, message: 'Overtime request created successfully (Client Mode)', data: newOt };
         }
 
+        // 10b. Get Employees for Dropdown
+        if ((endpoint.includes('/overtime/employees') || endpoint === '/employees') && options.method === 'GET') {
+            return {
+                success: true,
+                data: [
+                    { id: 1, employeeCode: 'EMP-001', fullName: 'System Administrator', departmentName: 'Engineering & Technology', designation: 'Chief Technology Officer' },
+                    { id: 2, employeeCode: 'EMP-002', fullName: 'Sarah Connor', departmentName: 'Human Resources', designation: 'Head of Human Resources' },
+                    { id: 3, employeeCode: 'EMP-003', fullName: 'Alex Cross', departmentName: 'Engineering & Technology', designation: 'Engineering Manager' },
+                    { id: 4, employeeCode: 'EMP-004', fullName: 'John Doe', departmentName: 'Engineering & Technology', designation: 'Senior Full Stack Engineer' },
+                    { id: 5, employeeCode: 'EMP-005', fullName: 'Emma Watson', departmentName: 'Marketing & Sales', designation: 'Growth Marketing Specialist' },
+                    { id: 6, employeeCode: 'EMP-006', fullName: 'David Beck', departmentName: 'Finance & Accounting', designation: 'Payroll Controller' }
+                ]
+            };
+        }
+
         // 11. Overtime (OT) - Read All / Filter
         if (endpoint.startsWith('/overtime') && options.method === 'GET') {
             if (!mockDB.overtime) mockDB.overtime = [];
