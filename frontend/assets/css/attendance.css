@@ -8,9 +8,10 @@
     overflow: hidden;
     background: linear-gradient(135deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.85) 100%);
     border: 1px solid var(--border-color);
-    padding: 32px;
+    padding: 24px;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-card);
+    width: 100%;
 }
 
 .clock-hero-card::before {
@@ -26,7 +27,7 @@
 }
 
 .digital-time-display {
-    font-size: 3.2rem;
+    font-size: clamp(2.2rem, 3.4vw, 3.2rem);
     font-weight: 800;
     letter-spacing: -0.04em;
     font-variant-numeric: tabular-nums;
@@ -35,7 +36,7 @@
 }
 
 .digital-date-display {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 500;
     color: var(--text-secondary);
     margin-top: 4px;
@@ -45,15 +46,15 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 18px;
+    padding: 8px 16px;
     border-radius: var(--radius-md);
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid var(--border-color);
-    margin-top: 14px;
+    margin-top: 12px;
 }
 
 .elapsed-timer-text {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #38bdf8;
     font-variant-numeric: tabular-nums;
@@ -61,16 +62,18 @@
 
 /* Action Clock Toggle Button */
 .btn-clock-toggle {
-    min-width: 220px;
-    height: 60px;
-    font-size: 1.1rem;
+    min-width: 180px;
+    max-width: 100%;
+    height: 52px;
+    font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.02em;
     border-radius: var(--radius-lg);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
+    padding: 0 24px;
     transition: var(--transition-smooth);
     border: none;
     cursor: pointer;
@@ -477,3 +480,111 @@
     margin-bottom: 24px;
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
 }
+
+/* Overtime (OT) Specific Styles */
+.ot-section-card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+}
+
+.ot-kpi-chip {
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: rgba(241, 245, 249, 0.7);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.ot-badge.ot-approved {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.ot-badge.ot-pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.ot-badge.ot-rejected {
+    background: rgba(239, 68, 68, 0.12);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.ot-rate-pill {
+    background: #f3e8ff;
+    color: #7e22ce;
+    border: 1px solid #d8b4fe;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.ot-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.ot-action-edit {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+.ot-action-edit:hover {
+    background: #4f46e5;
+    color: #ffffff;
+}
+
+.ot-action-approve {
+    background: #ecfdf5;
+    color: #059669;
+}
+.ot-action-approve:hover {
+    background: #059669;
+    color: #ffffff;
+}
+
+.ot-action-reject {
+    background: #fff7ed;
+    color: #ea580c;
+}
+.ot-action-reject:hover {
+    background: #ea580c;
+    color: #ffffff;
+}
+
+.ot-action-delete {
+    background: #fef2f2;
+    color: #dc2626;
+}
+.ot-action-delete:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+

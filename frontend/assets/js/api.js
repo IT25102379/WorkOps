@@ -143,6 +143,46 @@ function initializeMockData() {
                     status: 'PENDING',
                     createdAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
                 }
+            ],
+            overtime: [
+                {
+                    id: 1,
+                    employeeId: 1,
+                    employeeCode: 'EMP-004',
+                    employeeName: 'John Doe',
+                    departmentName: 'Engineering & Technology',
+                    otDate: new Date().toISOString().split('T')[0],
+                    startTime: '17:30',
+                    endTime: '20:30',
+                    otHours: 3.0,
+                    multiplierRate: 1.5,
+                    taskDescription: 'Q3 Release Backend Migration & Performance Profiling',
+                    reason: 'Critical server deployment deadline',
+                    status: 'APPROVED',
+                    createdBy: 'HR Manager',
+                    approvedBy: 'HR Manager',
+                    approvedAt: new Date().toISOString().replace('T', ' ').substring(0, 19),
+                    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
+                },
+                {
+                    id: 2,
+                    employeeId: 2,
+                    employeeCode: 'EMP-005',
+                    employeeName: 'Emma Watson',
+                    departmentName: 'Marketing & Sales',
+                    otDate: new Date().toISOString().split('T')[0],
+                    startTime: '18:00',
+                    endTime: '20:00',
+                    otHours: 2.0,
+                    multiplierRate: 1.5,
+                    taskDescription: 'International Campaign Launch Preparations',
+                    reason: 'Urgent client creative assets delivery',
+                    status: 'PENDING',
+                    createdBy: 'HR Manager',
+                    approvedBy: null,
+                    approvedAt: null,
+                    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 19)
+                }
             ]
         };
         localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(initialMock));
@@ -238,6 +278,12 @@ export const ApiClient = {
         return this.request(endpoint, {
             method: 'PUT',
             body: JSON.stringify(data)
+        });
+    },
+
+    async delete(endpoint) {
+        return this.request(endpoint, {
+            method: 'DELETE'
         });
     },
 
@@ -405,6 +451,108 @@ export const ApiClient = {
         // 9. Fetch Generated Reports
         if (endpoint.startsWith('/attendance/reports/logs') && options.method === 'GET') {
             return { success: true, data: mockDB.generatedReports || [] };
+        }
+
+        // 10. Overtime (OT) - Create Request
+        if (endpoint === '/overtime' && options.method === 'POST') {
+            const body = JSON.parse(options.body || '{}');
+            if (!mockDB.overtime) mockDB.overtime = [];
+            
+            const startH = body.startTime ? parseFloat(body.startTime.split(':')[0]) + parseFloat(body.startTime.split(':')[1] || 0) / 60 : 17.5;
+            const endH = body.endTime ? parseFloat(body.endTime.split(':')[0]) + parseFloat(body.endTime.split(':')[1] || 0) / 60 : 20.5;
+            const diffH = (endH > startH) ? (endH - startH) : (24 - startH + endH);
+            const calculatedHours = body.otHours || Math.round(diffH * 100) / 100 || 2.0;
+
+            const newOt = {
+                id: Date.now(),
+                employeeId: body.employeeId || 1,
+                employeeCode: body.employeeCode || 'EMP-004',
+                employeeName: body.employeeName || 'John Doe',
+                departmentName: body.departmentName || 'Engineering & Technology',
+                otDate: body.otDate || todayStr,
+                startTime: body.startTime || '17:30',
+                endTime: body.endTime || '20:30',
+                otHours: calculatedHours,
+                multiplierRate: body.multiplierRate || 1.5,
+                taskDescription: body.taskDescription || 'General Overtime Work',
+                reason: body.reason || 'Project Delivery Milestone',
+                status: (body.status || 'PENDING').toUpperCase(),
+                createdBy: body.createdBy || 'HR Manager',
+                approvedBy: (body.status === 'APPROVED') ? 'HR Manager' : null,
+                approvedAt: (body.status === 'APPROVED') ? now.toISOString().replace('T', ' ').substring(0, 19) : null,
+                createdAt: now.toISOString().replace('T', ' ').substring(0, 19),
+                updatedAt: now.toISOString().replace('T', ' ').substring(0, 19)
+            };
+
+            mockDB.overtime.unshift(newOt);
+            saveMockDB(mockDB);
+            return { success: true, message: 'Overtime request created successfully (Client Mode)', data: newOt };
+        }
+
+        // 11. Overtime (OT) - Read All / Filter
+        if (endpoint.startsWith('/overtime') && options.method === 'GET') {
+            if (!mockDB.overtime) mockDB.overtime = [];
+            if (endpoint.includes('/my')) {
+                return { success: true, data: mockDB.overtime };
+            }
+            const idMatch = endpoint.match(/\/overtime\/(\d+)$/);
+            if (idMatch) {
+                const single = mockDB.overtime.find(o => o.id === parseInt(idMatch[1]));
+                return single ? { success: true, data: single } : { success: false, message: 'Not found' };
+            }
+            return { success: true, data: mockDB.overtime };
+        }
+
+        // 12. Overtime (OT) - Update Status (Approve / Reject)
+        if (endpoint.includes('/overtime/') && endpoint.includes('/status') && options.method === 'PUT') {
+            const body = JSON.parse(options.body || '{}');
+            const idMatch = endpoint.match(/\/overtime\/(\d+)\/status/);
+            const otId = idMatch ? parseInt(idMatch[1]) : null;
+            const target = (mockDB.overtime || []).find(o => o.id === otId);
+            if (target) {
+                target.status = (body.status || 'APPROVED').toUpperCase();
+                target.approvedBy = 'HR Manager';
+                target.approvedAt = now.toISOString().replace('T', ' ').substring(0, 19);
+                target.updatedAt = now.toISOString().replace('T', ' ').substring(0, 19);
+                if (body.reviewComment) {
+                    target.reason = (target.reason || '') + ' [Review: ' + body.reviewComment + ']';
+                }
+                saveMockDB(mockDB);
+            }
+            return { success: true, message: `Overtime marked as ${target?.status}`, data: target };
+        }
+
+        // 13. Overtime (OT) - Update Details (Edit Form)
+        if (endpoint.match(/\/overtime\/\d+$/) && options.method === 'PUT') {
+            const body = JSON.parse(options.body || '{}');
+            const idMatch = endpoint.match(/\/overtime\/(\d+)$/);
+            const otId = idMatch ? parseInt(idMatch[1]) : null;
+            const target = (mockDB.overtime || []).find(o => o.id === otId);
+            if (target) {
+                if (body.employeeName) target.employeeName = body.employeeName;
+                if (body.employeeCode) target.employeeCode = body.employeeCode;
+                if (body.departmentName) target.departmentName = body.departmentName;
+                if (body.otDate) target.otDate = body.otDate;
+                if (body.startTime) target.startTime = body.startTime;
+                if (body.endTime) target.endTime = body.endTime;
+                if (body.otHours) target.otHours = body.otHours;
+                if (body.multiplierRate) target.multiplierRate = body.multiplierRate;
+                if (body.taskDescription) target.taskDescription = body.taskDescription;
+                if (body.reason) target.reason = body.reason;
+                if (body.status) target.status = body.status.toUpperCase();
+                target.updatedAt = now.toISOString().replace('T', ' ').substring(0, 19);
+                saveMockDB(mockDB);
+            }
+            return { success: true, message: 'Overtime record updated', data: target };
+        }
+
+        // 14. Overtime (OT) - Delete Record
+        if (endpoint.match(/\/overtime\/\d+$/) && options.method === 'DELETE') {
+            const idMatch = endpoint.match(/\/overtime\/(\d+)$/);
+            const otId = idMatch ? parseInt(idMatch[1]) : null;
+            mockDB.overtime = (mockDB.overtime || []).filter(o => o.id !== otId);
+            saveMockDB(mockDB);
+            return { success: true, message: 'Overtime record deleted successfully' };
         }
 
         // Default mock response

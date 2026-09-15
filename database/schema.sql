@@ -366,3 +366,71 @@ BEGIN
     CREATE INDEX idx_generated_reports_created_at ON dbo.generated_reports (created_at);
 END;
 GO
+
+
+USE workops_db;
+GO
+
+IF OBJECT_ID('dbo.contact_messages', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.contact_messages (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        full_name NVARCHAR(150) NOT NULL,
+        email NVARCHAR(150) NOT NULL,
+        subject NVARCHAR(100) NULL,
+        message NVARCHAR(MAX) NOT NULL,
+        status NVARCHAR(20) NOT NULL DEFAULT 'NEW'
+            CONSTRAINT chk_contact_messages_status CHECK (status IN ('NEW', 'READ', 'RESOLVED')),
+        created_at DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    CREATE INDEX idx_contact_messages_status ON dbo.contact_messages (status);
+    CREATE INDEX idx_contact_messages_created_at ON dbo.contact_messages (created_at);
+END;
+GO
+
+SELECT TOP 50 *
+FROM dbo.contact_messages
+ORDER BY created_at DESC;
+GO
+
+-- ---------------------------------------------------------------------
+-- 10. Table: overtime_requests (Overtime Allocations & CRUD Form Manager)
+-- ---------------------------------------------------------------------
+IF OBJECT_ID('dbo.overtime_requests', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.overtime_requests (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        employee_id BIGINT NOT NULL,
+        employee_code NVARCHAR(50) NULL,
+        employee_name NVARCHAR(150) NULL,
+        department_name NVARCHAR(100) NULL,
+        ot_date DATE NOT NULL,
+        start_time TIME(0) NOT NULL,
+        end_time TIME(0) NOT NULL,
+        ot_hours DECIMAL(4, 2) NOT NULL,
+        multiplier_rate DECIMAL(3, 2) NOT NULL DEFAULT 1.50,
+        task_description NVARCHAR(500) NULL,
+        reason NVARCHAR(500) NULL,
+        status NVARCHAR(30) NOT NULL DEFAULT 'PENDING'
+            CONSTRAINT chk_overtime_status CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED')),
+        created_by NVARCHAR(100) NULL,
+        approved_by NVARCHAR(100) NULL,
+        approved_at DATETIME2 NULL,
+        created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
+        updated_at DATETIME2 NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT fk_overtime_employee FOREIGN KEY (employee_id) REFERENCES dbo.employees (id)
+    );
+
+    CREATE INDEX idx_overtime_employee_id ON dbo.overtime_requests (employee_id);
+    CREATE INDEX idx_overtime_ot_date ON dbo.overtime_requests (ot_date);
+    CREATE INDEX idx_overtime_status ON dbo.overtime_requests (status);
+
+    -- Sample Seed Data
+    INSERT INTO dbo.overtime_requests (employee_id, employee_code, employee_name, department_name, ot_date, start_time, end_time, ot_hours, multiplier_rate, task_description, reason, status, created_by, approved_by, approved_at)
+    VALUES 
+    (1, 'EMP-004', 'John Doe', 'Engineering & Technology', CAST(GETDATE() AS DATE), '17:30:00', '20:30:00', 3.00, 1.50, 'Q3 Release Backend Migration & Performance Profiling', 'Critical server deployment deadline', 'APPROVED', 'HR Manager', 'HR Manager', GETDATE()),
+    (2, 'EMP-005', 'Emma Watson', 'Marketing & Sales', CAST(GETDATE() AS DATE), '18:00:00', '20:00:00', 2.00, 1.50, 'International Campaign Launch Preparations', 'Urgent client creative assets delivery', 'PENDING', 'HR Manager', NULL, NULL);
+END;
+GO
+

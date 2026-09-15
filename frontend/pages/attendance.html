@@ -181,8 +181,8 @@
             </div>
 
             <!-- KPI Summary Metric Cards -->
-            <div class="row g-4 mb-4">
-                <div class="col-12 col-sm-6 col-xl-3">
+            <div class="row g-3 g-lg-4 mb-4">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="kpi-card kpi-success">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="kpi-label">Total Present Today</span>
@@ -197,7 +197,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="kpi-card kpi-warning">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="kpi-label">Late Arrivals</span>
@@ -212,7 +212,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="kpi-card">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="kpi-label">On-Time Percentage</span>
@@ -227,7 +227,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="kpi-card kpi-purple">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="kpi-label">Overtime Hours</span>
@@ -343,8 +343,185 @@
                 </div>
             </div>
 
+            <!-- ========================================================= -->
+            <!-- Overtime (OT) Request & Form Management (HR Manager CRUD) -->
+            <!-- ========================================================= -->
+            <div class="row g-4 mt-2">
+                <div class="col-12">
+                    <div class="table-custom-container">
+                        <!-- OT Header -->
+                        <div class="table-custom-header p-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="table-header-icon" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h5 class="mb-0 fs-6 fw-bold">Overtime (OT) Allocations & Form Manager</h5>
+                                        <span class="badge bg-purple-subtle text-purple font-monospace" style="font-size: 0.72rem; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe;">HR CRUD Engine</span>
+                                    </div>
+                                    <span class="small text-muted">Create, track, edit, approve, and delete overtime assignments for workforce</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-workops-primary px-3 shadow-sm" id="btn-open-create-ot" data-bs-toggle="modal" data-bs-target="#overtimeModal">
+                                    <i class="fa-solid fa-plus me-1"></i> Create OT Form / Request
+                                </button>
+                                <span class="badge bg-secondary px-3 py-2 rounded-pill font-monospace" id="ot-records-count">Loading OT...</span>
+                            </div>
+                        </div>
+
+                        <!-- OT Quick Stats Bar -->
+                        <div class="p-3 border-bottom bg-light d-flex flex-wrap gap-3">
+                            <div class="ot-kpi-chip flex-grow-1">
+                                <div class="kpi-icon-box text-purple" style="width: 38px; height: 38px; font-size: 1rem; background: #f3e8ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #7e22ce;">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted text-uppercase" style="font-size: 0.7rem; font-weight: 700;">Total OT Hours</div>
+                                    <div class="fw-bold fs-6" id="ot-stat-hours">0.0h</div>
+                                </div>
+                            </div>
+                            <div class="ot-kpi-chip flex-grow-1">
+                                <div class="kpi-icon-box text-success" style="width: 38px; height: 38px; font-size: 1rem; background: #ecfdf5; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #059669;">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted text-uppercase" style="font-size: 0.7rem; font-weight: 700;">Approved Records</div>
+                                    <div class="fw-bold fs-6" id="ot-stat-approved">0</div>
+                                </div>
+                            </div>
+                            <div class="ot-kpi-chip flex-grow-1">
+                                <div class="kpi-icon-box text-warning" style="width: 38px; height: 38px; font-size: 1rem; background: #fffbeb; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #d97706;">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                </div>
+                                <div>
+                                    <div class="small text-muted text-uppercase" style="font-size: 0.7rem; font-weight: 700;">Pending Review</div>
+                                    <div class="fw-bold fs-6" id="ot-stat-pending">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OT Records Table -->
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>OT Date</th>
+                                        <th>Time Slot</th>
+                                        <th>Duration & Rate</th>
+                                        <th>Project / Justification</th>
+                                        <th>Status</th>
+                                        <th>Approved By</th>
+                                        <th class="text-end">CRUD Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="overtime-table-body">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
+</div>
+
+<!-- ========================================================= -->
+<!-- Modal: Create / Edit Overtime Form (HR Manager CRUD)       -->
+<!-- ========================================================= -->
+<div class="modal fade" id="overtimeModal" tabindex="-1" aria-labelledby="overtimeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="overtimeModalLabel">
+                    <i class="fa-solid fa-bolt text-purple me-2" style="color: #7e22ce;"></i>
+                    <span id="ot-modal-title-text">Create Overtime (OT) Request / Allocation</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="overtime-form">
+                <input type="hidden" id="ot-form-id" value="">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <!-- Target Employee -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Target Employee <span class="text-danger">*</span></label>
+                            <select class="form-select" id="ot-form-employee" required>
+                                <option value="EMP-004" data-id="1" data-name="John Doe" data-dept="Engineering & Technology">EMP-004 — John Doe (Engineering)</option>
+                                <option value="EMP-005" data-id="2" data-name="Emma Watson" data-dept="Marketing & Sales">EMP-005 — Emma Watson (Marketing)</option>
+                                <option value="EMP-003" data-id="3" data-name="Alex Cross" data-dept="Engineering & Technology">EMP-003 — Alex Cross (Engineering Manager)</option>
+                                <option value="EMP-002" data-id="4" data-name="Sarah Connor" data-dept="Human Resources">EMP-002 — Sarah Connor (HR Specialist)</option>
+                            </select>
+                        </div>
+
+                        <!-- OT Date -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Date of Overtime <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="ot-form-date" required>
+                        </div>
+
+                        <!-- Start & End Time -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Start Time <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control" id="ot-form-start-time" value="17:30" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">End Time <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control" id="ot-form-end-time" value="20:30" required>
+                        </div>
+
+                        <!-- Calculated Hours -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">OT Hours</label>
+                            <input type="number" step="0.5" min="0.5" max="24" class="form-control font-monospace" id="ot-form-hours" value="3.0" required>
+                        </div>
+
+                        <!-- Multiplier / Rate -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Multiplier / Rate</label>
+                            <select class="form-select" id="ot-form-multiplier">
+                                <option value="1.50">1.50x — Standard Weekday Overtime</option>
+                                <option value="2.00">2.00x — Weekend / Double Shift Overtime</option>
+                                <option value="2.50">2.50x — Public Holiday / Critical Overtime</option>
+                            </select>
+                        </div>
+
+                        <!-- Initial Status -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Status</label>
+                            <select class="form-select" id="ot-form-status">
+                                <option value="APPROVED">APPROVED (Authorized immediately)</option>
+                                <option value="PENDING">PENDING (Awaiting Review)</option>
+                                <option value="REJECTED">REJECTED</option>
+                            </select>
+                        </div>
+
+                        <!-- Task Description -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Task / Project Description <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="ot-form-task" placeholder="e.g. Q3 Release Backend Migration & Performance Profiling" required>
+                        </div>
+
+                        <!-- Justification / Reason -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Business Justification / Remarks</label>
+                            <textarea class="form-control" id="ot-form-reason" rows="2" placeholder="Describe the reason for overtime allocation..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-workops-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-workops-primary" id="btn-save-ot">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Save OT Form & Save to Database
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Modal: Submit Attendance Correction -->
