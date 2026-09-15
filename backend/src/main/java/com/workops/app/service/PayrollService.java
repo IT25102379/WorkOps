@@ -24,7 +24,11 @@ public interface PayrollService {
 
     List<PayrollEventDTO> getPayrollEvents();
 
+    PayrollEventDTO getPayrollEventById(Long id);
+
     PayrollEventDTO createPayrollEvent(PayrollEventDTO eventDTO, String username);
+
+    PayrollEventDTO updatePayrollEvent(Long id, PayrollEventDTO eventDTO, String username);
 
     void deletePayrollEvent(Long id, String username);
 }

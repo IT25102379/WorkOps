@@ -87,18 +87,52 @@
         }
         .payroll-stat-card {
             height: 100% !important;
-            min-height: 145px !important;
+            min-height: 135px !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: flex-start !important;
+            justify-content: space-between !important;
+            gap: 16px !important;
+            padding: 22px 24px !important;
+        }
+        .payroll-stat-card .mod-stat-info {
+            flex: 1 !important;
+            min-width: 0 !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
-            padding: 20px 22px !important;
         }
-        .payroll-stat-card .mod-stat-value {
-            font-size: 1.35rem !important;
+        .payroll-stat-card .mod-stat-label {
+            font-size: 0.72rem !important;
             font-weight: 700 !important;
+            color: var(--text-muted) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.04em !important;
+            margin-bottom: 6px !important;
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
+        }
+        .payroll-stat-card .mod-stat-value {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            color: var(--text-primary) !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            margin-bottom: 8px !important;
+            line-height: 1.2 !important;
+        }
+        .payroll-stat-card .mod-stat-icon {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 12px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 1.2rem !important;
+            flex-shrink: 0 !important;
+            margin-top: 2px !important;
         }
         @media print {
             body * { visibility: hidden; }
@@ -175,52 +209,52 @@
             </div>
 
             <!-- Summary Stat Cards -->
-            <div class="row g-3 mb-4">
+            <div class="row g-4 mb-4">
                 <div class="col-sm-6 col-xl-3">
                     <div class="mod-stat-card payroll-stat-card stat-card-gradient-cyan">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="mod-stat-label mb-0" style="font-size:0.75rem;font-weight:700;letter-spacing:0.04em;">Total Net Payroll</div>
-                            <div class="mod-stat-icon" style="background:rgba(6,182,212,0.12);color:#06b6d4;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Total Net Payroll</div>
+                            <div class="mod-stat-value font-mono" id="stat-total-net">LKR 0.00</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-database fa-xs"></i> Live Database</span>
                         </div>
-                        <div class="mod-stat-value font-mono my-1" id="stat-total-net">LKR 0.00</div>
-                        <div>
-                            <span class="mod-stat-change up" style="font-size:0.72rem;padding:2px 8px;"><i class="fa-solid fa-database fa-xs"></i> Live Database Calculation</span>
+                        <div class="mod-stat-icon" style="background:rgba(6,182,212,0.15);color:#06b6d4;">
+                            <i class="fa-solid fa-sack-dollar"></i>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
                     <div class="mod-stat-card payroll-stat-card stat-card-gradient-green">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="mod-stat-label mb-0" style="font-size:0.75rem;font-weight:700;letter-spacing:0.04em;">Processed Employees</div>
-                            <div class="mod-stat-icon" style="background:rgba(16,185,129,0.12);color:#10b981;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;"><i class="fa-solid fa-users-viewfinder"></i></div>
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Processed Staff</div>
+                            <div class="mod-stat-value font-mono" id="stat-paid-count">0 / 0 Paid</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-check fa-xs"></i> Monthly Status</span>
                         </div>
-                        <div class="mod-stat-value font-mono my-1" id="stat-paid-count">0 / 0 Processed</div>
-                        <div>
-                            <span class="mod-stat-change up" style="font-size:0.72rem;padding:2px 8px;"><i class="fa-solid fa-check fa-xs"></i> Monthly Status</span>
+                        <div class="mod-stat-icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
+                            <i class="fa-solid fa-users-viewfinder"></i>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
                     <div class="mod-stat-card payroll-stat-card stat-card-gradient-purple">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="mod-stat-label mb-0" style="font-size:0.75rem;font-weight:700;letter-spacing:0.04em;">Total Overtime Pay</div>
-                            <div class="mod-stat-icon" style="background:rgba(168,85,247,0.12);color:#a855f7;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;"><i class="fa-solid fa-business-time"></i></div>
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Total Overtime Pay</div>
+                            <div class="mod-stat-value font-mono" id="stat-total-ot">LKR 0.00</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-clock fa-xs"></i> Approved OT</span>
                         </div>
-                        <div class="mod-stat-value font-mono my-1" id="stat-total-ot">LKR 0.00</div>
-                        <div>
-                            <span class="mod-stat-change up" style="font-size:0.72rem;padding:2px 8px;"><i class="fa-solid fa-clock fa-xs"></i> Approved OT Claims</span>
+                        <div class="mod-stat-icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">
+                            <i class="fa-solid fa-business-time"></i>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
                     <div class="mod-stat-card payroll-stat-card stat-card-gradient-red">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="mod-stat-label mb-0" style="font-size:0.75rem;font-weight:700;letter-spacing:0.04em;">Statutory Deductions</div>
-                            <div class="mod-stat-icon" style="background:rgba(239,68,68,0.12);color:#ef4444;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;"><i class="fa-solid fa-receipt"></i></div>
+                        <div class="mod-stat-info">
+                            <div class="mod-stat-label">Statutory Deductions</div>
+                            <div class="mod-stat-value font-mono" id="stat-total-deductions">LKR 0.00</div>
+                            <span class="mod-stat-change down"><i class="fa-solid fa-calculator fa-xs"></i> EPF (8%) + Tax</span>
                         </div>
-                        <div class="mod-stat-value font-mono my-1" id="stat-total-deductions">LKR 0.00</div>
-                        <div>
-                            <span class="mod-stat-change down" style="font-size:0.72rem;padding:2px 8px;"><i class="fa-solid fa-calculator fa-xs"></i> EPF (8%) + Tax</span>
+                        <div class="mod-stat-icon" style="background:rgba(239,68,68,0.15);color:#ef4444;">
+                            <i class="fa-solid fa-receipt"></i>
                         </div>
                     </div>
                 </div>
@@ -293,16 +327,8 @@
                 <div class="data-panel mb-4">
                     <div class="data-panel-header">
                         <h2 class="data-panel-title"><i class="fa-solid fa-clock-rotate-left me-2" style="color:#a855f7;"></i>Overtime Computation Engine</h2>
-                        <div class="data-panel-actions">
-                            <span class="badge bg-purple-subtle text-purple font-mono px-3 py-2" style="background:#f3e8ff; color:#7e22ce; border:1px solid #d8b4fe;">
-                                Formula: (Basic Salary ÷ 200 hrs) × 1.5 × OT Hours
-                            </span>
-                        </div>
                     </div>
-                    <div class="p-3 bg-light border-bottom d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <div class="small text-muted">
-                            <i class="fa-solid fa-check-circle text-success me-1"></i> Live aggregation of all approved requests from <code>dbo.overtime_requests</code>.
-                        </div>
+                    <div class="p-3 bg-light border-bottom d-flex align-items-center justify-content-end flex-wrap gap-3">
                         <div class="d-flex gap-3 align-items-center">
                             <div class="small">Total Approved Hours: <strong class="text-purple font-mono" id="ot-calc-total-hours" style="color:#7e22ce;">0.0 hrs</strong></div>
                             <div class="small">Total OT Payout: <strong class="text-success font-mono" id="ot-calc-total-payout">LKR 0.00</strong></div>
@@ -342,9 +368,6 @@
                                 <h2 class="data-panel-title"><i class="fa-solid fa-wand-magic-sparkles me-2" style="color:#06b6d4;"></i>Execute Monthly Payroll Run</h2>
                             </div>
                             <div class="p-4">
-                                <p class="text-muted small mb-4">
-                                    Executing the payroll run will calculate base pay, incorporate approved overtime claims from <code>dbo.overtime_requests</code>, calculate standard statutory EPF & tax deductions, and commit the ledger to <code>dbo.payroll</code>.
-                                </p>
                                 <form id="payroll-run-form">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
@@ -386,7 +409,7 @@
                                         </label>
                                     </div>
                                     <button type="submit" class="btn btn-workops btn-workops-primary w-100 py-2" id="btn-execute-payroll">
-                                        <i class="fa-solid fa-bolt me-2"></i> Execute & Save Payroll to Database
+                                        <i class="fa-solid fa-floppy-disk me-2"></i>Save Payroll
                                     </button>
                                 </form>
                             </div>
@@ -416,7 +439,7 @@
                                     <i class="fa-solid fa-database text-primary fs-5 mt-1"></i>
                                     <div>
                                         <div class="fw-bold text-dark small">Audit Trail & Generated Reports</div>
-                                        <div class="text-muted" style="font-size:0.75rem;">Every generation run writes an audit report to <code>dbo.generated_reports</code> for HR and Finance oversight.</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Every generation run logs an official audit report for HR and Finance oversight.</div>
                                     </div>
                                 </div>
                             </div>
@@ -460,33 +483,17 @@
             <!-- TAB 5: EVENT MANAGEMENT (ඉවෙන්ට් සහ දින දර්ශනය) -->
             <!-- ============================================================= -->
             <div class="payroll-tab-content" id="tab-event-mgmt">
-                <div class="row g-4">
-                    <div class="col-lg-8">
-                        <div class="data-panel">
-                            <div class="data-panel-header">
-                                <h2 class="data-panel-title"><i class="fa-solid fa-calendar-check me-2" style="color:#f59e0b;"></i>Payroll Calendar & Deadlines</h2>
-                                <div class="data-panel-actions">
-                                    <button class="btn btn-sm btn-workops btn-workops-primary" data-bs-toggle="modal" data-bs-target="#createEventModal">
-                                        <i class="fa-solid fa-plus me-1"></i>Schedule Event
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-4" id="payroll-events-container">
-                                <div class="text-center py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading scheduled events...</div>
-                            </div>
+                <div class="data-panel mb-4">
+                    <div class="data-panel-header">
+                        <h2 class="data-panel-title"><i class="fa-solid fa-calendar-check me-2" style="color:#f59e0b;"></i>Payroll Calendar & Deadlines</h2>
+                        <div class="data-panel-actions">
+                            <button class="btn btn-sm btn-workops btn-workops-primary" data-bs-toggle="modal" data-bs-target="#createEventModal">
+                                <i class="fa-solid fa-plus me-1"></i>Schedule Event
+                            </button>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="data-panel">
-                            <div class="data-panel-header">
-                                <h2 class="data-panel-title"><i class="fa-solid fa-bullhorn me-2" style="color:#06b6d4;"></i>Event Guidelines</h2>
-                            </div>
-                            <div class="p-4 small text-muted">
-                                <p class="mb-3"><strong class="text-dark">Payroll Cutoff:</strong> Final date for employees & managers to submit OT requests and attendance adjustments.</p>
-                                <p class="mb-3"><strong class="text-dark">Salary Payout:</strong> Scheduled bank remittance date for employee salary direct deposits.</p>
-                                <p class="mb-0"><strong class="text-dark">Statutory Filing:</strong> Deadlines for submitting EPF/ETF and APIT/PAYE returns to tax authorities.</p>
-                            </div>
-                        </div>
+                    <div class="p-4" id="payroll-events-container">
+                        <div class="text-center py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading scheduled events...</div>
                     </div>
                 </div>
             </div>
@@ -669,6 +676,80 @@
                     <button type="button" class="btn btn-workops btn-workops-outline" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-workops btn-workops-primary" id="btn-save-adjustment">
                         <i class="fa-solid fa-check me-1"></i>Save Updates
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- View Event Modal -->
+<div class="modal fade" id="viewEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa-solid fa-calendar-day me-2 text-primary"></i>Event Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="view-event-content">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-workops btn-workops-outline" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-workops btn-workops-primary" id="btn-view-to-edit"><i class="fa-solid fa-pen me-1"></i>Edit Event</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Event Modal -->
+<div class="modal fade" id="editEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2" style="color:#6366f1;"></i>Edit Payroll Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="event-edit-form">
+                <input type="hidden" id="edit-event-id">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Event Title</label>
+                        <input type="text" class="form-control" id="edit-event-title" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Event Type</label>
+                            <select class="form-select" id="edit-event-type" required>
+                                <option value="PAYROLL_CUTOFF">Payroll Cutoff</option>
+                                <option value="SALARY_PAYOUT">Salary Payout</option>
+                                <option value="TAX_FILING">Tax Filing</option>
+                                <option value="BONUS_PAY">Bonus Payout</option>
+                                <option value="HOLIDAY">Holiday</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Priority</label>
+                            <select class="form-select" id="edit-event-priority">
+                                <option value="HIGH">High Priority</option>
+                                <option value="MEDIUM">Medium Priority</option>
+                                <option value="LOW">Low Priority</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Target Date</label>
+                        <input type="date" class="form-control" id="edit-event-date" required>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label small fw-semibold">Description / Notes</label>
+                        <textarea class="form-control" id="edit-event-desc" rows="3" placeholder="Optional notes..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-workops btn-workops-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-workops btn-workops-primary" id="btn-save-edit-event">
+                        <i class="fa-solid fa-check me-1"></i>Update Event
                     </button>
                 </div>
             </form>

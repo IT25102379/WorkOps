@@ -74,6 +74,14 @@ class PayrollController {
         // Create Event Form Submit
         document.getElementById('event-create-form')?.addEventListener('submit', (e) => this.handleCreateEvent(e));
 
+        // Edit Event Form Submit
+        document.getElementById('event-edit-form')?.addEventListener('submit', (e) => this.handleUpdateEvent(e));
+        document.getElementById('btn-view-to-edit')?.addEventListener('click', () => {
+            if (this.currentViewingEventId) {
+                this.openEditEventModal(this.currentViewingEventId);
+            }
+        });
+
         // Export Actions
         document.getElementById('export-payroll-csv-btn')?.addEventListener('click', () => this.exportSalaryCSV());
         document.getElementById('export-payroll-pdf-btn')?.addEventListener('click', () => this.exportSalaryPDF());
@@ -289,7 +297,7 @@ class PayrollController {
         const btn = document.getElementById('btn-execute-payroll');
         if (btn) {
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Calculating & Persisting to Database...';
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Saving Payroll...';
         }
 
         try {
@@ -315,7 +323,7 @@ class PayrollController {
         } finally {
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-bolt me-2"></i> Execute & Save Payroll to Database';
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk me-2"></i> Save Payroll';
             }
         }
     }
@@ -651,12 +659,141 @@ class PayrollController {
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-outline-danger" title="Delete event" onclick="window.payrollModule.deleteEvent(${ev.id})">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
+                    <div class="d-flex gap-1 align-items-center">
+                        <button class="btn btn-sm btn-outline-primary py-1 px-2" title="View event details" onclick="window.payrollModule.viewEvent(${ev.id})">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary py-1 px-2" style="color:#6366f1; border-color:#c7d2fe; background:#eef2ff;" title="Edit event" onclick="window.payrollModule.openEditEventModal(${ev.id})">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete event" onclick="window.payrollModule.deleteEvent(${ev.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             `;
         }).join('');
+    }
+
+    viewEvent(id) {
+        const ev = this.events.find(x => x.id === id);
+        if (!ev) return;
+        this.currentViewingEventId = id;
+
+        const typeLabels = {
+            PAYROLL_CUTOFF: 'Payroll Cutoff',
+            SALARY_PAYOUT: 'Salary Payout',
+            TAX_FILING: 'Tax Filing',
+            BONUS_PAY: 'Bonus Payout',
+            HOLIDAY: 'Holiday'
+        };
+
+        const content = document.getElementById('view-event-content');
+        if (content) {
+            content.innerHTML = `
+                <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                    <div style="width:46px; height:46px; border-radius:12px; background:linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.25rem;">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 text-dark">${ev.title}</h5>
+                        <span class="badge bg-primary-subtle text-primary font-monospace mt-1">${typeLabels[ev.eventType] || ev.eventType}</span>
+                        <span class="badge bg-warning-subtle text-warning font-monospace mt-1 ms-1">${ev.priority || 'MEDIUM'} Priority</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small text-uppercase fw-bold" style="font-size:0.7rem;">Target Date</div>
+                    <div class="fs-6 font-monospace fw-semibold text-dark"><i class="fa-solid fa-calendar-day me-2 text-primary"></i>${ev.eventDate}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted small text-uppercase fw-bold" style="font-size:0.7rem;">Description / Guidelines</div>
+                    <div class="p-3 rounded-3 bg-light text-dark small border">${ev.description || 'No additional guidelines recorded.'}</div>
+                </div>
+                <div class="text-muted font-monospace" style="font-size:0.75rem;">
+                    <i class="fa-solid fa-user-pen me-1"></i> Scheduled by: <strong>${ev.createdBy || 'Payroll Officer'}</strong>
+                </div>
+            `;
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('viewEventModal'));
+        modal.show();
+    }
+
+    openEditEventModal(id) {
+        const ev = this.events.find(x => x.id === id);
+        if (!ev) return;
+
+        const idEl = document.getElementById('edit-event-id');
+        const titleEl = document.getElementById('edit-event-title');
+        const typeEl = document.getElementById('edit-event-type');
+        const priorityEl = document.getElementById('edit-event-priority');
+        const dateEl = document.getElementById('edit-event-date');
+        const descEl = document.getElementById('edit-event-desc');
+
+        if (idEl) idEl.value = ev.id;
+        if (titleEl) titleEl.value = ev.title || '';
+        if (typeEl) typeEl.value = ev.eventType || 'PAYROLL_CUTOFF';
+        if (priorityEl) priorityEl.value = ev.priority || 'MEDIUM';
+        if (dateEl) dateEl.value = ev.eventDate || '';
+        if (descEl) descEl.value = ev.description || '';
+
+        const viewModal = bootstrap.Modal.getInstance(document.getElementById('viewEventModal'));
+        if (viewModal) viewModal.hide();
+
+        const editModal = new bootstrap.Modal(document.getElementById('editEventModal'));
+        editModal.show();
+    }
+
+    async handleUpdateEvent(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-event-id')?.value;
+        const title = document.getElementById('edit-event-title')?.value?.trim();
+        const eventType = document.getElementById('edit-event-type')?.value;
+        const eventDate = document.getElementById('edit-event-date')?.value;
+        const priority = document.getElementById('edit-event-priority')?.value || 'MEDIUM';
+        const description = document.getElementById('edit-event-desc')?.value?.trim() || '';
+
+        if (!title || title.length < 3) {
+            WorkOps.showToast('warning', 'Event title must be at least 3 characters long.', 'Validation Error');
+            return;
+        }
+
+        if (!eventDate) {
+            WorkOps.showToast('warning', 'Please select a valid target date.', 'Validation Error');
+            return;
+        }
+
+        const btn = document.getElementById('btn-save-edit-event');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Updating...';
+        }
+
+        try {
+            const payload = {
+                title,
+                eventType,
+                eventDate,
+                priority,
+                description
+            };
+
+            await ApiClient.put(`/payroll/events/${id}`, payload);
+            WorkOps.showToast('success', 'Payroll event updated successfully in database.');
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editEventModal'));
+            if (modal) modal.hide();
+
+            await this.loadEvents();
+        } catch (error) {
+            console.error('Update event error:', error);
+            WorkOps.showToast('error', error.message || 'Failed to update event');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check me-1"></i> Update Event';
+            }
+        }
     }
 
     async handleCreateEvent(e) {
@@ -703,9 +840,25 @@ class PayrollController {
     }
 
     async deleteEvent(id) {
+        const ev = this.events.find(x => x.id === id);
+        const title = ev?.title || 'this event';
+
+        const result = await Swal.fire({
+            title: 'Delete Payroll Event?',
+            text: `Are you sure you want to remove "${title}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fa-solid fa-trash me-1"></i> Yes, delete it',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b'
+        });
+
+        if (!result.isConfirmed) return;
+
         try {
             await ApiClient.delete(`/payroll/events/${id}`);
-            WorkOps.showToast('success', 'Event removed.');
+            WorkOps.showToast('success', 'Event removed from calendar.');
             await this.loadEvents();
         } catch (e) {
             WorkOps.showToast('error', e.message || 'Could not delete event');
