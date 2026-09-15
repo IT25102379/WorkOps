@@ -179,7 +179,7 @@ class PayrollController {
         const netFooterEl = document.getElementById('payroll-total-net-footer');
 
         if (netEl) netEl.textContent = this.fmt(totalNet);
-        if (countEl) countEl.textContent = `${paidCount} / ${data.length} Processed`;
+        if (countEl) countEl.textContent = `${paidCount} / ${data.length} Paid`;
         if (otEl) otEl.textContent = this.fmt(totalOt);
         if (dedEl) dedEl.textContent = this.fmt(totalDeductions);
         if (netFooterEl) netFooterEl.textContent = this.fmt(totalNet);
