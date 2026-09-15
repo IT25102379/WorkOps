@@ -62,21 +62,35 @@ class AppController {
 
     initUserSession() {
         const user = ApiClient.getCurrentUser();
-        const userNameElements = document.querySelectorAll('.session-user-name');
-        const userRoleElements = document.querySelectorAll('.session-user-role');
-        const userAvatarElements = document.querySelectorAll('.session-user-avatar');
+        const userNameElements = document.querySelectorAll('.session-user-name, .session-name');
+        const userRoleElements = document.querySelectorAll('.session-user-role, .session-role');
+        const userAvatarElements = document.querySelectorAll('.session-user-avatar, .session-avatar');
 
         if (user) {
             this.applyRoleAccess(user);
-            userNameElements.forEach(el => el.textContent = user.fullName || user.username);
-            userRoleElements.forEach(el => el.textContent = user.designation || user.role);
+            
+            let displayName = user.fullName || user.username || 'HR Manager';
+            if (displayName.toLowerCase().includes('admin') || displayName.toLowerCase().includes('system')) {
+                displayName = 'HR Manager';
+            }
+            userNameElements.forEach(el => el.textContent = displayName);
+            
+            let displayRole = 'Human Resources';
+            if (user.designation && !user.designation.includes('Technology') && !user.designation.includes('Officer') && !user.designation.includes('HR Manager') && !user.designation.includes('Admin')) {
+                displayRole = user.designation;
+            } else if (user.departmentName) {
+                displayRole = user.departmentName;
+            }
+            userRoleElements.forEach(el => el.textContent = displayRole);
+
             userAvatarElements.forEach(el => {
-                const initials = (user.fullName || user.username || 'U')
+                const initials = (displayName || 'HR')
                     .split(' ')
+                    .filter(Boolean)
                     .map(n => n[0])
                     .join('')
                     .toUpperCase()
-                    .substring(0, 2);
+                    .substring(0, 2) || 'HR';
                 el.textContent = initials;
             });
         }
@@ -88,10 +102,19 @@ class AppController {
             .map(role => role.toUpperCase());
 
         const isHr = roles.includes('ROLE_HR');
+        const isStaff = roles.includes('ROLE_STAFF');
         if (!isHr) {
-            document.querySelectorAll('.nav-link-custom').forEach(link => {
-                if (link.getAttribute('href')?.includes('attendance.html')) link.remove();
-            });
+            if (isStaff) {
+                document.querySelectorAll('.nav-link-custom').forEach(link => {
+                    if (!link.getAttribute('href')?.includes('attendance.html')) link.remove();
+                });
+                const attendanceLink = document.querySelector('.nav-link-custom');
+                if (attendanceLink) {
+                    attendanceLink.setAttribute('href', window.location.pathname.includes('/pages/') ? 'profile.html' : 'pages/profile.html');
+                    attendanceLink.classList.add('active');
+                }
+                document.querySelectorAll('.nav-header').forEach(header => header.remove());
+            }
             return;
         }
 

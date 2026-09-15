@@ -24,12 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Attendance Management", description = "Endpoints for Clock-In/Out, Live Timers, Geofencing, KPIs & Correction Requests")
 @SecurityRequirement(name = "BearerAuth")
-@PreAuthorize("hasAuthority('ROLE_HR')")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
     @PostMapping("/clock-in")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Perform employee clock-in with GPS verification, shift status & IP audit")
     public ResponseEntity<ApiResponse<AttendanceResponseDTO>> clockIn(
             @Valid @RequestBody ClockInRequest request,
@@ -42,6 +42,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/clock-out")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Perform employee clock-out, compute work duration, overtime and early departure")
     public ResponseEntity<ApiResponse<AttendanceResponseDTO>> clockOut(
             @Valid @RequestBody ClockOutRequest request,
@@ -54,6 +55,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/status/today")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Get current shift status, live elapsed timer, and department geofence coordinates")
     public ResponseEntity<ApiResponse<TodayStatusDTO>> getTodayStatus(
             @AuthenticationPrincipal UserDetails userDetails
@@ -89,6 +91,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/corrections")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Submit a missed clock-in/out or time correction request")
     public ResponseEntity<ApiResponse<AttendanceCorrectionRequestDTO>> submitCorrection(
             @Valid @RequestBody AttendanceCorrectionRequestDTO requestDTO,
@@ -120,5 +123,25 @@ public class AttendanceController {
         String username = (userDetails != null) ? userDetails.getUsername() : "anonymousUser";
         AttendanceCorrectionRequestDTO result = attendanceService.reviewCorrectionRequest(id, reviewDTO, username);
         return ResponseEntity.ok(ApiResponse.ok("Correction request processed successfully", result));
+    }
+
+    @PostMapping("/reports/log")
+    @Operation(summary = "Log an exported attendance report (PDF / CSV) into database audit log")
+    public ResponseEntity<ApiResponse<GeneratedReportDTO>> logReport(
+            @RequestBody GeneratedReportDTO reportDTO,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String username = (userDetails != null && userDetails.getUsername() != null) 
+                ? userDetails.getUsername() 
+                : (reportDTO != null && reportDTO.getGeneratedBy() != null ? reportDTO.getGeneratedBy() : "HR Manager");
+        GeneratedReportDTO logged = attendanceService.logGeneratedReport(reportDTO, username);
+        return ResponseEntity.ok(ApiResponse.ok("Report logged to database successfully", logged));
+    }
+
+    @GetMapping("/reports/logs")
+    @Operation(summary = "Retrieve all exported report audit logs from database")
+    public ResponseEntity<ApiResponse<List<GeneratedReportDTO>>> getReportLogs() {
+        List<GeneratedReportDTO> logs = attendanceService.getGeneratedReports();
+        return ResponseEntity.ok(ApiResponse.ok(logs));
     }
 }

@@ -8,9 +8,10 @@
     overflow: hidden;
     background: linear-gradient(135deg, rgba(31, 41, 55, 0.7) 0%, rgba(17, 24, 39, 0.85) 100%);
     border: 1px solid var(--border-color);
-    padding: 32px;
+    padding: 24px;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-card);
+    width: 100%;
 }
 
 .clock-hero-card::before {
@@ -26,7 +27,7 @@
 }
 
 .digital-time-display {
-    font-size: 3.2rem;
+    font-size: clamp(2.2rem, 3.4vw, 3.2rem);
     font-weight: 800;
     letter-spacing: -0.04em;
     font-variant-numeric: tabular-nums;
@@ -35,7 +36,7 @@
 }
 
 .digital-date-display {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 500;
     color: var(--text-secondary);
     margin-top: 4px;
@@ -45,15 +46,15 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 18px;
+    padding: 8px 16px;
     border-radius: var(--radius-md);
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid var(--border-color);
-    margin-top: 14px;
+    margin-top: 12px;
 }
 
 .elapsed-timer-text {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #38bdf8;
     font-variant-numeric: tabular-nums;
@@ -61,16 +62,18 @@
 
 /* Action Clock Toggle Button */
 .btn-clock-toggle {
-    min-width: 220px;
-    height: 60px;
-    font-size: 1.1rem;
+    min-width: 180px;
+    max-width: 100%;
+    height: 52px;
+    font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.02em;
     border-radius: var(--radius-lg);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
+    padding: 0 24px;
     transition: var(--transition-smooth);
     border: none;
     cursor: pointer;
@@ -214,11 +217,27 @@
 
 /* Data Table Styling */
 .table-custom-container {
-    background: var(--bg-glass-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.table-custom-header {
+    background: #f8fafc;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.table-header-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(79, 70, 229, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
 }
 
 .table-custom {
@@ -230,43 +249,342 @@
 }
 
 .table-custom th {
-    background: var(--bg-secondary);
-    color: var(--text-muted);
-    font-size: 0.775rem;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     white-space: nowrap;
 }
 
 .table-custom td {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 0.9rem;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.88rem;
     vertical-align: middle;
     background: transparent;
     color: var(--text-primary);
+    white-space: nowrap;
 }
 
 .table-custom tbody tr {
-    transition: var(--transition-fast);
+    transition: all 0.2s ease;
 }
 
 .table-custom tbody tr:hover {
-    background-color: var(--bg-glass-hover);
+    background-color: rgba(79, 70, 229, 0.03);
 }
 
 .table-custom tbody tr:last-child td {
     border-bottom: none;
 }
 
+/* User Avatar & Metadata in Table */
+.user-avatar-stylish {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    flex-shrink: 0;
+}
+
+.employee-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.employee-meta .emp-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.employee-meta .emp-code {
+    font-size: 0.75rem;
+    color: #64748b;
+    letter-spacing: 0.02em;
+}
+
+/* Date Display */
+.cell-date {
+    font-size: 0.84rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+/* Time Pills (Clock In / Clock Out) */
+.time-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.time-pill.in-time {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #047857;
+}
+
+.time-pill.out-time {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #b91c1c;
+}
+
+.time-pill.empty-time {
+    background: rgba(100, 116, 139, 0.08);
+    border: 1px dashed rgba(100, 116, 139, 0.25);
+    color: #94a3b8;
+}
+
+/* Duration Cell */
+.duration-cell {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.duration-number {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.duration-unit {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Status Badges / Pills */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.status-present {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.status-late {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.status-overtime {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-halfday {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.status-early {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+}
+
+.status-absent {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.status-default {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* Geofence Badges */
+.geo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.geo-pill.geo-verified {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.geo-pill.geo-unverified {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* Action Button */
+.btn-table-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #4f46e5;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-table-action:hover {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    transform: translateY(-1px);
+}
+
 /* Filter Toolbar */
 .filter-toolbar {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
     padding: 20px 24px;
     margin-bottom: 24px;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
 }
+
+/* Overtime (OT) Specific Styles */
+.ot-section-card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+}
+
+.ot-kpi-chip {
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: rgba(241, 245, 249, 0.7);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.ot-badge.ot-approved {
+    background: rgba(16, 185, 129, 0.12);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.ot-badge.ot-pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.ot-badge.ot-rejected {
+    background: rgba(239, 68, 68, 0.12);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.ot-rate-pill {
+    background: #f3e8ff;
+    color: #7e22ce;
+    border: 1px solid #d8b4fe;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.ot-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.ot-action-edit {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+.ot-action-edit:hover {
+    background: #4f46e5;
+    color: #ffffff;
+}
+
+.ot-action-approve {
+    background: #ecfdf5;
+    color: #059669;
+}
+.ot-action-approve:hover {
+    background: #059669;
+    color: #ffffff;
+}
+
+.ot-action-reject {
+    background: #fff7ed;
+    color: #ea580c;
+}
+.ot-action-reject:hover {
+    background: #ea580c;
+    color: #ffffff;
+}
+
+.ot-action-delete {
+    background: #fef2f2;
+    color: #dc2626;
+}
+.ot-action-delete:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+

@@ -24,7 +24,10 @@ public class TodayStatusDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate todayDate;
 
+    @com.fasterxml.jackson.annotation.JsonProperty("isClockedIn")
     private boolean isClockedIn;
+
+    @com.fasterxml.jackson.annotation.JsonProperty("isClockedOut")
     private boolean isClockedOut;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

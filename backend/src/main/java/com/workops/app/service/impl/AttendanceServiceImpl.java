@@ -33,6 +33,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceRequestRepository attendanceRequestRepository;
     private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
+    private final GeneratedReportRepository generatedReportRepository;
 
     @Value("${workops.geofence.enforce-verification:false}")
     private boolean enforceGeofence;
@@ -495,6 +496,55 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .reviewedByName(reviewer != null ? reviewer.getUsername() : null)
                 .reviewComment(r.getReviewComment())
                 .reviewedAt(r.getReviewedAt())
+                .createdAt(r.getCreatedAt())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public GeneratedReportDTO logGeneratedReport(GeneratedReportDTO dto, String username) {
+        if (dto == null) {
+            dto = new GeneratedReportDTO();
+        }
+
+        GeneratedReport report = GeneratedReport.builder()
+                .reportTitle(dto.getReportTitle() != null ? dto.getReportTitle() : "Attendance Management Report")
+                .reportType(dto.getReportType() != null ? dto.getReportType().toUpperCase() : "PDF")
+                .module(dto.getModule() != null ? dto.getModule().toUpperCase() : "ATTENDANCE")
+                .fileName(dto.getFileName())
+                .recordCount(dto.getRecordCount() != null ? dto.getRecordCount() : 0)
+                .filterCriteria(dto.getFilterCriteria())
+                .generatedBy(username != null ? username : (dto.getGeneratedBy() != null ? dto.getGeneratedBy() : "HR Manager"))
+                .status("COMPLETED")
+                .build();
+
+        GeneratedReport saved = generatedReportRepository.save(report);
+        log.info("Logged generated report to database: ID={}, Title={}, Type={}, Records={}",
+                saved.getId(), saved.getReportTitle(), saved.getReportType(), saved.getRecordCount());
+
+        return mapReportToDTO(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<GeneratedReportDTO> getGeneratedReports() {
+        return generatedReportRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(this::mapReportToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private GeneratedReportDTO mapReportToDTO(GeneratedReport r) {
+        return GeneratedReportDTO.builder()
+                .id(r.getId())
+                .reportTitle(r.getReportTitle())
+                .reportType(r.getReportType())
+                .module(r.getModule())
+                .fileName(r.getFileName())
+                .recordCount(r.getRecordCount())
+                .filterCriteria(r.getFilterCriteria())
+                .generatedBy(r.getGeneratedBy())
+                .status(r.getStatus())
                 .createdAt(r.getCreatedAt())
                 .build();
     }

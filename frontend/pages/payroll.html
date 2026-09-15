@@ -8,12 +8,90 @@
     <meta name="description" content="Process payroll, manage salary records, calculate overtime, and generate payslips in WorkOps.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/modules.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .payroll-tab-nav {
+            display: flex;
+            gap: 8px;
+            background: var(--card-bg, #ffffff);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+        .payroll-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted, #64748b);
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .payroll-tab-btn:hover {
+            color: var(--text-primary, #0f172a);
+            background: rgba(6, 182, 212, 0.08);
+        }
+        .payroll-tab-btn.active {
+            background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+        }
+        .payroll-tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        .payroll-tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stat-card-gradient-cyan {
+            --msc-gradient: linear-gradient(90deg, #06b6d4, #38bdf8);
+        }
+        .stat-card-gradient-green {
+            --msc-gradient: linear-gradient(90deg, #10b981, #34d399);
+        }
+        .stat-card-gradient-purple {
+            --msc-gradient: linear-gradient(90deg, #a855f7, #c084fc);
+        }
+        .stat-card-gradient-red {
+            --msc-gradient: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        .badge-status.badge-approved {
+            background: rgba(16, 185, 129, 0.12);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .badge-status.badge-pending {
+            background: rgba(6, 182, 212, 0.12);
+            color: #0891b2;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        @media print {
+            body * { visibility: hidden; }
+            #payslipModal, #payslipModal * { visibility: visible; }
+            #payslipModal { position: absolute; left: 0; top: 0; width: 100%; }
+            .modal-footer, .btn-close { display: none !important; }
+        }
+    </style>
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -26,143 +104,462 @@
             <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
         </div>
         <div class="sidebar-nav">
-            <div class="nav-header">Core Modules</div>
-            <a href="../dashboard.html" class="nav-link-custom"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
-            <a href="attendance.html" class="nav-link-custom"><i class="fa-solid fa-user-clock"></i><span>Attendance</span></a>
-            <a href="leave.html" class="nav-link-custom"><i class="fa-solid fa-calendar-days"></i><span>Leave Management</span></a>
-            <a href="payroll.html" class="nav-link-custom active"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll & Salary</span></a>
-            <a href="performance.html" class="nav-link-custom"><i class="fa-solid fa-award"></i><span>Performance</span></a>
-            <div class="nav-header mt-3">Administration</div>
-            <a href="employees.html" class="nav-link-custom"><i class="fa-solid fa-users"></i><span>Employees</span></a>
-            <a href="departments.html" class="nav-link-custom"><i class="fa-solid fa-building"></i><span>Departments</span></a>
-            <a href="users.html" class="nav-link-custom"><i class="fa-solid fa-user-shield"></i><span>User Access</span></a>
-            <a href="settings.html" class="nav-link-custom"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+            <div class="nav-header">Payroll Officer Menu</div>
+            <a href="payroll.html" class="nav-link-custom active"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll Management</span></a>
         </div>
         <div class="sidebar-footer">
-            <div class="user-snippet" onclick="window.location='profile.html'">
+            <div class="user-snippet">
                 <div class="user-avatar session-avatar">PO</div>
                 <div class="user-info">
-                    <div class="user-name session-name">Nimal Fernando</div>
+                    <div class="user-name session-name">David Beck</div>
                     <div class="user-role session-role">Payroll Officer</div>
                 </div>
-                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;" onclick="event.stopPropagation();localStorage.removeItem('workops_user');window.location='../login.html';"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;cursor:pointer;" title="Logout" onclick="event.stopPropagation();localStorage.removeItem('workops_user');localStorage.removeItem('workops_token');window.location='../login.html';"></i>
             </div>
         </div>
     </aside>
 
     <!-- Main -->
     <main class="main-content">
+        <!-- Topbar -->
         <div class="topbar">
             <div class="topbar-left">
-                <h1 class="topbar-title"><i class="fa-solid fa-file-invoice-dollar me-2" style="color:#06b6d4;"></i>Payroll & Salary</h1>
-                <p class="topbar-subtitle">Process payroll · Manage salaries · Generate payslips</p>
+                <h1 class="topbar-title"><i class="fa-solid fa-file-invoice-dollar me-2" style="color:#06b6d4;"></i>Payroll Officer Portal</h1>
+                <p class="topbar-subtitle">Salary calculation · Overtime processing · Monthly remittance · Event deadlines</p>
             </div>
             <div class="topbar-actions">
-                <select class="form-select form-select-sm" id="payroll-month-select" style="width:auto;font-size:0.82rem;">
-                    <option>September 2026</option><option>August 2026</option><option>July 2026</option><option>June 2026</option>
+                <select class="form-select form-select-sm" id="payroll-month-select" style="width:auto; font-size:0.85rem; font-weight:600;">
+                    <option value="9-2026" selected>September 2026</option>
+                    <option value="8-2026">August 2026</option>
+                    <option value="7-2026">July 2026</option>
+                    <option value="6-2026">June 2026</option>
                 </select>
-                <button class="btn btn-workops btn-workops-primary btn-sm" id="process-payroll-btn">
-                    <i class="fa-solid fa-gears me-1"></i>Process Payroll
+                <button class="btn btn-workops btn-workops-primary btn-sm" id="quick-run-payroll-btn">
+                    <i class="fa-solid fa-bolt me-1"></i>Run Payroll
                 </button>
-                <a href="../home.html" class="topbar-icon-btn"><i class="fa-solid fa-house"></i></a>
-                <button class="topbar-icon-btn"><i class="fa-solid fa-bell"></i><span class="topbar-notif-dot"></span></button>
-                <a href="profile.html" class="topbar-icon-btn"><i class="fa-solid fa-circle-user"></i></a>
             </div>
         </div>
 
         <div class="page-body">
-            <!-- Summary Cards -->
+            <!-- 5 Module Tab Navigation -->
+            <div class="payroll-tab-nav">
+                <button class="payroll-tab-btn active" data-target="tab-salary-records">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                    <span>Salary Records</span>
+                </button>
+                <button class="payroll-tab-btn" data-target="tab-overtime-calc">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Overtime Calculation</span>
+                </button>
+                <button class="payroll-tab-btn" data-target="tab-payroll-gen">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Payroll Generation</span>
+                </button>
+                <button class="payroll-tab-btn" data-target="tab-salary-history">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Salary History & Payslips</span>
+                </button>
+                <button class="payroll-tab-btn" data-target="tab-event-mgmt">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Event Management</span>
+                </button>
+            </div>
+
+            <!-- Summary Stat Cards -->
             <div class="row g-4 mb-4">
                 <div class="col-sm-6 col-xl-3">
-                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#06b6d4,#38bdf8);">
+                    <div class="mod-stat-card stat-card-gradient-cyan">
                         <div class="mod-stat-info">
-                            <div class="mod-stat-label">Total Payroll</div>
-                            <div class="mod-stat-value" style="font-size:1.5rem;">LKR 24.8M</div>
-                            <span class="mod-stat-change up"><i class="fa-solid fa-arrow-up fa-xs"></i> +3.2% vs last month</span>
+                            <div class="mod-stat-label">Total Net Payroll</div>
+                            <div class="mod-stat-value font-mono" id="stat-total-net" style="font-size:1.35rem;">LKR 0.00</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-database fa-xs"></i> Live Database Calculation</span>
                         </div>
                         <div class="mod-stat-icon" style="background:rgba(6,182,212,0.15);color:#06b6d4;"><i class="fa-solid fa-sack-dollar"></i></div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
-                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#10b981,#34d399);">
+                    <div class="mod-stat-card stat-card-gradient-green">
                         <div class="mod-stat-info">
-                            <div class="mod-stat-label">Employees Paid</div>
-                            <div class="mod-stat-value">298</div>
-                            <span class="mod-stat-change up"><i class="fa-solid fa-check fa-xs"></i> 100% processed</span>
+                            <div class="mod-stat-label">Processed Employees</div>
+                            <div class="mod-stat-value font-mono" id="stat-paid-count">0 Processed</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-check fa-xs"></i> Monthly Status</span>
                         </div>
-                        <div class="mod-stat-icon" style="background:rgba(16,185,129,0.15);color:#10b981;"><i class="fa-solid fa-users"></i></div>
+                        <div class="mod-stat-icon" style="background:rgba(16,185,129,0.15);color:#10b981;"><i class="fa-solid fa-users-viewfinder"></i></div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
-                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#a855f7,#c084fc);">
+                    <div class="mod-stat-card stat-card-gradient-purple">
                         <div class="mod-stat-info">
-                            <div class="mod-stat-label">Overtime Pay</div>
-                            <div class="mod-stat-value" style="font-size:1.5rem;">LKR 1.2M</div>
-                            <span class="mod-stat-change up"><i class="fa-solid fa-clock fa-xs"></i> 432 OT hours</span>
+                            <div class="mod-stat-label">Total Overtime Pay</div>
+                            <div class="mod-stat-value font-mono" id="stat-total-ot" style="font-size:1.35rem;">LKR 0.00</div>
+                            <span class="mod-stat-change up"><i class="fa-solid fa-clock fa-xs"></i> Approved OT Claims</span>
                         </div>
-                        <div class="mod-stat-icon" style="background:rgba(168,85,247,0.15);color:#a855f7;"><i class="fa-solid fa-clock"></i></div>
+                        <div class="mod-stat-icon" style="background:rgba(168,85,247,0.15);color:#a855f7;"><i class="fa-solid fa-business-time"></i></div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
-                    <div class="mod-stat-card" style="--msc-gradient:linear-gradient(90deg,#ef4444,#f87171);">
+                    <div class="mod-stat-card stat-card-gradient-red">
                         <div class="mod-stat-info">
-                            <div class="mod-stat-label">Total Deductions</div>
-                            <div class="mod-stat-value" style="font-size:1.5rem;">LKR 3.4M</div>
-                            <span class="mod-stat-change down"><i class="fa-solid fa-arrow-down fa-xs"></i> EPF/ETF+Tax</span>
+                            <div class="mod-stat-label">Statutory Deductions</div>
+                            <div class="mod-stat-value font-mono" id="stat-total-deductions" style="font-size:1.35rem;">LKR 0.00</div>
+                            <span class="mod-stat-change down"><i class="fa-solid fa-calculator fa-xs"></i> EPF (8%) + Tax</span>
                         </div>
-                        <div class="mod-stat-icon" style="background:rgba(239,68,68,0.15);color:#ef4444;"><i class="fa-solid fa-minus-circle"></i></div>
+                        <div class="mod-stat-icon" style="background:rgba(239,68,68,0.15);color:#ef4444;"><i class="fa-solid fa-receipt"></i></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Payroll Table -->
-            <div class="data-panel mb-4">
-                <div class="data-panel-header">
-                    <h2 class="data-panel-title"><i class="fa-solid fa-table me-2" style="color:#06b6d4;"></i>Salary Records — September 2026</h2>
-                    <div class="data-panel-actions">
-                        <button class="btn btn-sm btn-workops btn-workops-outline" id="export-payroll-btn"><i class="fa-solid fa-download me-1"></i>Export CSV</button>
-                        <button class="btn btn-sm btn-workops btn-workops-success" id="generate-all-slips-btn"><i class="fa-solid fa-file-pdf me-1"></i>Generate All Payslips</button>
+            <!-- ============================================================= -->
+            <!-- TAB 1: SALARY RECORDS (පඩි විස්තර) -->
+            <!-- ============================================================= -->
+            <div class="payroll-tab-content active" id="tab-salary-records">
+                <div class="data-panel mb-4">
+                    <div class="data-panel-header">
+                        <h2 class="data-panel-title"><i class="fa-solid fa-table me-2" style="color:#06b6d4;"></i>Current Month Salary Ledger</h2>
+                        <div class="data-panel-actions">
+                            <button class="btn btn-sm btn-workops btn-workops-outline" id="export-payroll-csv-btn">
+                                <i class="fa-solid fa-file-csv me-1"></i>Export CSV
+                            </button>
+                            <button class="btn btn-sm btn-workops btn-workops-secondary" id="export-payroll-pdf-btn">
+                                <i class="fa-solid fa-print me-1"></i>Print Report
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="filter-bar">
-                    <div class="filter-search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" class="form-control" id="payroll-search" placeholder="Search employee...">
+                    <div class="filter-bar">
+                        <div class="filter-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" class="form-control" id="payroll-search" placeholder="Search employee name, code...">
+                        </div>
+                        <select class="form-select" style="width:auto;" id="payroll-dept-filter">
+                            <option value="">All Departments</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Human Resources">Human Resources</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="IT & Security">IT & Security</option>
+                        </select>
                     </div>
-                    <select class="form-select" style="width:auto;" id="payroll-dept-filter">
-                        <option value="">All Departments</option>
-                        <option>Engineering</option><option>Human Resources</option><option>Finance</option><option>Operations</option>
-                    </select>
-                    <select class="form-select" style="width:auto;" id="payroll-status-filter">
-                        <option value="">All Status</option>
-                        <option>Processed</option><option>Pending</option><option>On Hold</option>
-                    </select>
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Employee</th>
-                                <th>Department</th>
-                                <th>Basic Salary</th>
-                                <th>Allowances</th>
-                                <th>Overtime</th>
-                                <th>Deductions</th>
-                                <th>Net Pay</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="payroll-tbody"></tbody>
-                    </table>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border-color);flex-wrap:wrap;gap:10px;">
-                    <div style="font-size:0.8rem;color:var(--text-muted);">Showing 1–8 of 298 employees</div>
-                    <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);">Total Net: <span style="color:#06b6d4;">LKR 21,412,500</span></div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Department</th>
+                                    <th>Basic Salary</th>
+                                    <th>Allowances</th>
+                                    <th>Overtime</th>
+                                    <th>Deductions</th>
+                                    <th>Net Take-Home</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payroll-tbody">
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading salary records...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border-color);flex-wrap:wrap;gap:10px;">
+                        <div style="font-size:0.82rem;color:var(--text-muted);"><i class="fa-solid fa-circle-info me-1"></i>Data retrieved directly from database records</div>
+                        <div style="font-size:0.9rem;font-weight:700;color:var(--text-primary);">Total Period Net: <span style="color:#0891b2;" class="font-mono" id="payroll-total-net-footer">LKR 0.00</span></div>
+                    </div>
                 </div>
             </div>
+
+            <!-- ============================================================= -->
+            <!-- TAB 2: OVERTIME CALCULATION (ඕටී ගණනය කිරීම) -->
+            <!-- ============================================================= -->
+            <div class="payroll-tab-content" id="tab-overtime-calc">
+                <div class="data-panel mb-4">
+                    <div class="data-panel-header">
+                        <h2 class="data-panel-title"><i class="fa-solid fa-clock-rotate-left me-2" style="color:#a855f7;"></i>Overtime Computation Engine</h2>
+                        <div class="data-panel-actions">
+                            <span class="badge bg-purple-subtle text-purple font-mono px-3 py-2" style="background:#f3e8ff; color:#7e22ce; border:1px solid #d8b4fe;">
+                                Formula: (Basic Salary ÷ 200 hrs) × 1.5 × OT Hours
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-light border-bottom d-flex align-items-center justify-content-between flex-wrap gap-3">
+                        <div class="small text-muted">
+                            <i class="fa-solid fa-check-circle text-success me-1"></i> Live aggregation of all approved requests from <code>dbo.overtime_requests</code>.
+                        </div>
+                        <div class="d-flex gap-3 align-items-center">
+                            <div class="small">Total Approved Hours: <strong class="text-purple font-mono" id="ot-calc-total-hours" style="color:#7e22ce;">0.0 hrs</strong></div>
+                            <div class="small">Total OT Payout: <strong class="text-success font-mono" id="ot-calc-total-payout">LKR 0.00</strong></div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Base Salary</th>
+                                    <th>Approved OT Hours</th>
+                                    <th>Hourly Rate</th>
+                                    <th>Approved Claims</th>
+                                    <th>Calculated OT Payout</th>
+                                    <th>Database Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ot-calc-tbody">
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading approved overtime...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- TAB 3: PAYROLL GENERATION (පඩි සැකසීම) -->
+            <!-- ============================================================= -->
+            <div class="payroll-tab-content" id="tab-payroll-gen">
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="data-panel">
+                            <div class="data-panel-header">
+                                <h2 class="data-panel-title"><i class="fa-solid fa-wand-magic-sparkles me-2" style="color:#06b6d4;"></i>Execute Monthly Payroll Run</h2>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-muted small mb-4">
+                                    Executing the payroll run will calculate base pay, incorporate approved overtime claims from <code>dbo.overtime_requests</code>, calculate standard statutory EPF & tax deductions, and commit the ledger to <code>dbo.payroll</code>.
+                                </p>
+                                <form id="payroll-run-form">
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold small">Payroll Month</label>
+                                            <select class="form-select" id="gen-month" required>
+                                                <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                                                <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                                                <option value="7">July</option><option value="8">August</option><option value="9" selected>September</option>
+                                                <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold small">Payroll Year</label>
+                                            <select class="form-select" id="gen-year" required>
+                                                <option value="2026" selected>2026</option>
+                                                <option value="2025">2025</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold small">Target Department Scope</label>
+                                        <select class="form-select" id="gen-dept">
+                                            <option value="">All Departments (Entire Organization)</option>
+                                            <option value="1">Engineering</option>
+                                            <option value="2">Human Resources</option>
+                                            <option value="3">Finance & Payroll</option>
+                                            <option value="4">Operations</option>
+                                            <option value="5">Marketing</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold small">Additional Company Bonus per Employee (LKR)</label>
+                                        <input type="number" class="form-control" id="gen-bonus" placeholder="0.00" value="0">
+                                    </div>
+                                    <div class="form-check form-switch mb-4">
+                                        <input class="form-check-input" type="checkbox" id="gen-include-ot" checked>
+                                        <label class="form-check-label small fw-semibold" for="gen-include-ot">
+                                            Include & Compute Approved Overtime Claims
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-workops btn-workops-primary w-100 py-2" id="btn-execute-payroll">
+                                        <i class="fa-solid fa-bolt me-2"></i> Execute & Save Payroll to Database
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="data-panel h-100">
+                            <div class="data-panel-header">
+                                <h2 class="data-panel-title"><i class="fa-solid fa-shield-halved me-2" style="color:#10b981;"></i>Compliance & Rule Checks</h2>
+                            </div>
+                            <div class="p-4">
+                                <div class="d-flex align-items-start gap-3 mb-3 p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                                    <i class="fa-solid fa-circle-check text-success fs-5 mt-1"></i>
+                                    <div>
+                                        <div class="fw-bold text-dark small">EPF Employee Contribution (8%)</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Calculated automatically on Basic Salary per Sri Lankan labour regulations.</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start gap-3 mb-3 p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                                    <i class="fa-solid fa-circle-check text-success fs-5 mt-1"></i>
+                                    <div>
+                                        <div class="fw-bold text-dark small">EPF & ETF Employer Contribution (12% + 3%)</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Remittance tracked for corporate financial records and compliance reports.</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start gap-3 p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                                    <i class="fa-solid fa-database text-primary fs-5 mt-1"></i>
+                                    <div>
+                                        <div class="fw-bold text-dark small">Audit Trail & Generated Reports</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">Every generation run writes an audit report to <code>dbo.generated_reports</code> for HR and Finance oversight.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- TAB 4: SALARY HISTORY & PAYSLIPS (පසුගිය පඩි වාර්තා) -->
+            <!-- ============================================================= -->
+            <div class="payroll-tab-content" id="tab-salary-history">
+                <div class="data-panel mb-4">
+                    <div class="data-panel-header">
+                        <h2 class="data-panel-title"><i class="fa-solid fa-receipt me-2" style="color:#0891b2;"></i>Historical Payroll Runs & Digital Payslips</h2>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Pay Period</th>
+                                    <th>Employee</th>
+                                    <th>Basic Salary</th>
+                                    <th>Overtime</th>
+                                    <th>Net Salary</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payroll-history-tbody">
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading payroll history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- TAB 5: EVENT MANAGEMENT (ඉවෙන්ට් සහ දින දර්ශනය) -->
+            <!-- ============================================================= -->
+            <div class="payroll-tab-content" id="tab-event-mgmt">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="data-panel">
+                            <div class="data-panel-header">
+                                <h2 class="data-panel-title"><i class="fa-solid fa-calendar-check me-2" style="color:#f59e0b;"></i>Payroll Calendar & Deadlines</h2>
+                                <div class="data-panel-actions">
+                                    <button class="btn btn-sm btn-workops btn-workops-primary" data-bs-toggle="modal" data-bs-target="#createEventModal">
+                                        <i class="fa-solid fa-plus me-1"></i>Schedule Event
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4" id="payroll-events-container">
+                                <div class="text-center py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading scheduled events...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="data-panel">
+                            <div class="data-panel-header">
+                                <h2 class="data-panel-title"><i class="fa-solid fa-bullhorn me-2" style="color:#06b6d4;"></i>Event Guidelines</h2>
+                            </div>
+                            <div class="p-4 small text-muted">
+                                <p class="mb-3"><strong class="text-dark">Payroll Cutoff:</strong> Final date for employees & managers to submit OT requests and attendance adjustments.</p>
+                                <p class="mb-3"><strong class="text-dark">Salary Payout:</strong> Scheduled bank remittance date for employee salary direct deposits.</p>
+                                <p class="mb-0"><strong class="text-dark">Statutory Filing:</strong> Deadlines for submitting EPF/ETF and APIT/PAYE returns to tax authorities.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
+</div>
+
+<!-- ============================================================= -->
+<!-- MODALS -->
+<!-- ============================================================= -->
+
+<!-- Execute Payroll Modal -->
+<div class="modal fade" id="generatePayrollModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa-solid fa-bolt me-2" style="color:#06b6d4;"></i>Quick Payroll Execution</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="small text-muted mb-3">Execute monthly calculation for active workforce and persist payroll records into database.</p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Period</label>
+                    <input type="text" class="form-control" value="September 2026" disabled>
+                </div>
+                <div class="alert alert-info py-2 small mb-0">
+                    <i class="fa-solid fa-info-circle me-1"></i> Overtime claims and basic deductions will be processed automatically.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-workops btn-workops-outline" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-workops btn-workops-primary" onclick="document.querySelector('.payroll-tab-btn[data-target=\'tab-payroll-gen\']').click(); bootstrap.Modal.getInstance(document.getElementById('generatePayrollModal')).hide();">
+                    Open Run Wizard
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Event Modal -->
+<div class="modal fade" id="createEventModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa-solid fa-calendar-plus me-2" style="color:#f59e0b;"></i>Schedule Payroll Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="event-create-form">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Event Title</label>
+                        <input type="text" class="form-control" id="event-title" placeholder="e.g. October Payroll Cutoff" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Event Type</label>
+                            <select class="form-select" id="event-type" required>
+                                <option value="PAYROLL_CUTOFF">Payroll Cutoff</option>
+                                <option value="SALARY_PAYOUT">Salary Payout</option>
+                                <option value="TAX_FILING">Tax Filing</option>
+                                <option value="BONUS_PAY">Bonus Payout</option>
+                                <option value="HOLIDAY">Holiday</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Priority</label>
+                            <select class="form-select" id="event-priority">
+                                <option value="HIGH">High Priority</option>
+                                <option value="MEDIUM" selected>Medium Priority</option>
+                                <option value="LOW">Low Priority</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Target Date</label>
+                        <input type="date" class="form-control" id="event-date" required>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label small fw-semibold">Description / Notes</label>
+                        <textarea class="form-control" id="event-desc" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-workops btn-workops-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-workops btn-workops-primary"><i class="fa-solid fa-save me-1"></i>Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Payslip Modal -->
@@ -170,13 +567,13 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fa-solid fa-file-invoice me-2" style="color:#06b6d4;"></i>Payslip — September 2026</h5>
+                <h5 class="modal-title"><i class="fa-solid fa-file-invoice me-2" style="color:#06b6d4;"></i>Official Salary Payslip</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4" id="payslip-content"></div>
             <div class="modal-footer">
                 <button class="btn btn-workops btn-workops-outline" data-bs-dismiss="modal">Close</button>
-                <button class="btn btn-workops btn-workops-primary" onclick="window.print()"><i class="fa-solid fa-print me-1"></i>Print / PDF</button>
+                <button class="btn btn-workops btn-workops-primary" onclick="window.print()"><i class="fa-solid fa-print me-1"></i>Print / Save PDF</button>
             </div>
         </div>
     </div>
@@ -184,108 +581,18 @@
 
 <div id="toast-container"></div>
 <button class="sidebar-toggle" id="sidebar-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="../assets/js/modules/payroll.js"></script>
 <script>
-(function(){const u=JSON.parse(localStorage.getItem('workops_user')||'{}');if(u.fullName){document.querySelectorAll('.session-name').forEach(el=>el.textContent=u.fullName);document.querySelectorAll('.session-role').forEach(el=>el.textContent=(u.designation||u.role||''));document.querySelectorAll('.session-avatar').forEach(el=>el.textContent=u.fullName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase());}})();
-document.getElementById('sidebar-toggle-btn').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('show');});
-document.getElementById('sidebar-overlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('show');});
-
-const payrollData=[
-    {id:'EMP001',name:'Amara Perera',email:'amara.p@workops.io',dept:'Engineering',basic:120000,allowances:25000,overtime:8500,deductions:22000,color:'#6366f1'},
-    {id:'EMP002',name:'Kasun Silva',email:'kasun.s@workops.io',dept:'Human Resources',basic:85000,allowances:15000,overtime:0,deductions:16000,color:'#f59e0b'},
-    {id:'EMP003',name:'Nimal Fernando',email:'nimal.f@workops.io',dept:'Finance',basic:95000,allowances:20000,overtime:4200,deductions:18000,color:'#10b981'},
-    {id:'EMP004',name:'Dilani Wickrama',email:'dilani.w@workops.io',dept:'Engineering',basic:110000,allowances:22000,overtime:6000,deductions:20000,color:'#a855f7'},
-    {id:'EMP005',name:'Roshan Bandara',email:'roshan.b@workops.io',dept:'Marketing',basic:90000,allowances:18000,overtime:0,deductions:17000,color:'#06b6d4'},
-    {id:'EMP006',name:'Shani Kumari',email:'shani.k@workops.io',dept:'IT & Security',basic:130000,allowances:30000,overtime:12000,deductions:25000,color:'#ef4444'},
-    {id:'EMP007',name:'Dinesh Jayasuriya',email:'dinesh.j@workops.io',dept:'Operations',basic:100000,allowances:20000,overtime:3500,deductions:19000,color:'#f59e0b'},
-    {id:'EMP008',name:'Priya Ratnayake',email:'priya.r@workops.io',dept:'Engineering',basic:95000,allowances:18000,overtime:5000,deductions:17500,color:'#818cf8'},
-];
-
-function fmt(n){return'LKR '+n.toLocaleString();}
-function renderPayroll(data){
-    document.getElementById('payroll-tbody').innerHTML=data.map(p=>{
-        const net=p.basic+p.allowances+p.overtime-p.deductions;
-        return`<tr>
-            <td><div class="emp-info"><div class="emp-avatar" style="background:${p.color}22;color:${p.color};">${p.name.split(' ').map(n=>n[0]).join('').substring(0,2)}</div><div><div class="emp-name">${p.name}</div><div class="emp-email">${p.id}</div></div></div></td>
-            <td style="font-size:0.82rem;">${p.dept}</td>
-            <td style="font-size:0.82rem;color:var(--text-primary);font-weight:600;">${fmt(p.basic)}</td>
-            <td style="font-size:0.82rem;color:#10b981;">+${fmt(p.allowances)}</td>
-            <td style="font-size:0.82rem;color:#a855f7;">${p.overtime>0?'+'+fmt(p.overtime):'—'}</td>
-            <td style="font-size:0.82rem;color:#ef4444;">-${fmt(p.deductions)}</td>
-            <td style="font-size:0.85rem;font-weight:700;color:#06b6d4;">${fmt(net)}</td>
-            <td><span class="badge-status badge-approved">Processed</span></td>
-            <td><div class="d-flex gap-1">
-                <button class="action-btn action-btn-view" title="View Payslip" onclick="viewPayslip('${p.id}')"><i class="fa-solid fa-file-invoice"></i></button>
-                <button class="action-btn action-btn-edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
-            </div></td>
-        </tr>`;
-    }).join('');
-}
-renderPayroll(payrollData);
-
-document.getElementById('payroll-search').addEventListener('input',function(){const q=this.value.toLowerCase();renderPayroll(payrollData.filter(p=>p.name.toLowerCase().includes(q)||p.id.toLowerCase().includes(q)));});
-document.getElementById('payroll-dept-filter').addEventListener('change',function(){renderPayroll(this.value?payrollData.filter(p=>p.dept===this.value):payrollData);});
-
-function viewPayslip(id){
-    const p=payrollData.find(x=>x.id===id); if(!p) return;
-    const net=p.basic+p.allowances+p.overtime-p.deductions;
-    document.getElementById('payslip-content').innerHTML=`
-        <div style="border:1px solid var(--border-color);border-radius:12px;overflow:hidden;">
-            <div style="background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(99,102,241,0.1));padding:24px;border-bottom:1px solid var(--border-color);">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                    <div><div style="font-size:1.2rem;font-weight:800;color:#f9fafb;">Work<span style="background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Ops</span></div><div style="font-size:0.75rem;color:#6b7280;">Enterprise Staff Management System</div></div>
-                    <div style="text-align:right;"><div style="font-size:0.75rem;color:#6b7280;">Pay Period</div><div style="font-weight:700;color:#f9fafb;">September 2026</div></div>
-                </div>
-            </div>
-            <div class="p-4">
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <div style="font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Employee</div>
-                        <div style="font-size:1rem;font-weight:700;color:#f9fafb;margin-top:4px;">${p.name}</div>
-                        <div style="font-size:0.8rem;color:#6b7280;">${p.id} · ${p.dept}</div>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <div style="font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Net Pay</div>
-                        <div style="font-size:1.75rem;font-weight:800;color:#06b6d4;letter-spacing:-0.02em;">${fmt(net)}</div>
-                    </div>
-                </div>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:10px;padding:16px;">
-                            <div style="font-size:0.75rem;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">Earnings</div>
-                            <div class="info-row"><span class="info-row-label">Basic Salary</span><span class="info-row-value">${fmt(p.basic)}</span></div>
-                            <div class="info-row"><span class="info-row-label">Allowances</span><span class="info-row-value" style="color:#10b981;">+${fmt(p.allowances)}</span></div>
-                            <div class="info-row"><span class="info-row-label">Overtime Pay</span><span class="info-row-value" style="color:#a855f7;">+${fmt(p.overtime)}</span></div>
-                            <div class="info-row" style="border-top:2px solid rgba(16,185,129,0.2);margin-top:6px;padding-top:10px;"><span class="info-row-label" style="font-weight:700;color:#f9fafb;">Gross Total</span><span class="info-row-value" style="color:#10b981;font-size:1rem;">${fmt(p.basic+p.allowances+p.overtime)}</span></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:10px;padding:16px;">
-                            <div style="font-size:0.75rem;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">Deductions</div>
-                            <div class="info-row"><span class="info-row-label">EPF (Employee 8%)</span><span class="info-row-value" style="color:#ef4444;">-${fmt(Math.round(p.basic*0.08))}</span></div>
-                            <div class="info-row"><span class="info-row-label">Income Tax</span><span class="info-row-value" style="color:#ef4444;">-${fmt(p.deductions-Math.round(p.basic*0.08))}</span></div>
-                            <div class="info-row" style="border-top:2px solid rgba(239,68,68,0.2);margin-top:6px;padding-top:10px;"><span class="info-row-label" style="font-weight:700;color:#f9fafb;">Total Deductions</span><span class="info-row-value" style="color:#ef4444;font-size:1rem;">-${fmt(p.deductions)}</span></div>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(6,182,212,0.1),rgba(99,102,241,0.1));border:1px solid rgba(6,182,212,0.2);border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:0.9rem;font-weight:700;color:#f9fafb;">NET PAY</span>
-                    <span style="font-size:1.4rem;font-weight:800;color:#06b6d4;">${fmt(net)}</span>
-                </div>
-            </div>
-        </div>`;
-    new bootstrap.Modal(document.getElementById('payslipModal')).show();
-}
-
-document.getElementById('process-payroll-btn').addEventListener('click',function(){
-    this.innerHTML='<i class="fa-solid fa-circle-notch fa-spin me-1"></i>Processing...';this.disabled=true;
-    setTimeout(()=>{this.innerHTML='<i class="fa-solid fa-check me-1"></i>Payroll Processed!';this.style.background='linear-gradient(135deg,#059669,#10b981)';showToast('success','Payroll for September 2026 processed successfully!');setTimeout(()=>{this.innerHTML='<i class="fa-solid fa-gears me-1"></i>Process Payroll';this.style.background='';this.disabled=false;},3000);},2000);
-});
-
-document.getElementById('export-payroll-btn').addEventListener('click',()=>showToast('info','Exporting payroll data as CSV...'));
-document.getElementById('generate-all-slips-btn').addEventListener('click',()=>showToast('success','All 298 payslips generated successfully!'));
-
-function showToast(type,msg){Swal.fire({toast:true,position:'top-end',icon:type,title:msg,showConfirmButton:false,timer:4500,timerProgressBar:true});}
+    document.getElementById('sidebar-toggle-btn')?.addEventListener('click', () => {
+        document.getElementById('sidebar')?.classList.toggle('open');
+        document.getElementById('sidebar-overlay')?.classList.toggle('show');
+    });
+    document.getElementById('sidebar-overlay')?.addEventListener('click', () => {
+        document.getElementById('sidebar')?.classList.remove('open');
+        document.getElementById('sidebar-overlay')?.classList.remove('show');
+    });
 </script>
 </body>
 </html>
