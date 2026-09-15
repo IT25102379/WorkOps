@@ -88,10 +88,19 @@ class AppController {
             .map(role => role.toUpperCase());
 
         const isHr = roles.includes('ROLE_HR');
+        const isStaff = roles.includes('ROLE_STAFF');
         if (!isHr) {
-            document.querySelectorAll('.nav-link-custom').forEach(link => {
-                if (link.getAttribute('href')?.includes('attendance.html')) link.remove();
-            });
+            if (isStaff) {
+                document.querySelectorAll('.nav-link-custom').forEach(link => {
+                    if (!link.getAttribute('href')?.includes('attendance.html')) link.remove();
+                });
+                const attendanceLink = document.querySelector('.nav-link-custom');
+                if (attendanceLink) {
+                    attendanceLink.setAttribute('href', window.location.pathname.includes('/pages/') ? 'profile.html' : 'pages/profile.html');
+                    attendanceLink.classList.add('active');
+                }
+                document.querySelectorAll('.nav-header').forEach(header => header.remove());
+            }
             return;
         }
 

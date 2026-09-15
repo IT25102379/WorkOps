@@ -24,12 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Attendance Management", description = "Endpoints for Clock-In/Out, Live Timers, Geofencing, KPIs & Correction Requests")
 @SecurityRequirement(name = "BearerAuth")
-@PreAuthorize("hasAuthority('ROLE_HR')")
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
     @PostMapping("/clock-in")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Perform employee clock-in with GPS verification, shift status & IP audit")
     public ResponseEntity<ApiResponse<AttendanceResponseDTO>> clockIn(
             @Valid @RequestBody ClockInRequest request,
@@ -42,6 +42,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/clock-out")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Perform employee clock-out, compute work duration, overtime and early departure")
     public ResponseEntity<ApiResponse<AttendanceResponseDTO>> clockOut(
             @Valid @RequestBody ClockOutRequest request,
@@ -54,6 +55,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/status/today")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Get current shift status, live elapsed timer, and department geofence coordinates")
     public ResponseEntity<ApiResponse<TodayStatusDTO>> getTodayStatus(
             @AuthenticationPrincipal UserDetails userDetails
@@ -89,6 +91,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/corrections")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @Operation(summary = "Submit a missed clock-in/out or time correction request")
     public ResponseEntity<ApiResponse<AttendanceCorrectionRequestDTO>> submitCorrection(
             @Valid @RequestBody AttendanceCorrectionRequestDTO requestDTO,
