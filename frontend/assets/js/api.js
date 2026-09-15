@@ -114,7 +114,7 @@ function initializeMockData() {
                 {
                     id: 105,
                     employeeCode: 'EMP-006',
-                    employeeName: 'David Beck',
+                    employeeName: 'Payroll Officer',
                     departmentName: 'Finance & Accounting',
                     designation: 'Payroll Controller',
                     attendanceDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
@@ -499,7 +499,7 @@ export const ApiClient = {
                     { id: 3, employeeCode: 'EMP-003', fullName: 'Alex Cross', departmentName: 'Engineering & Technology', designation: 'Engineering Manager' },
                     { id: 4, employeeCode: 'EMP-004', fullName: 'John Doe', departmentName: 'Engineering & Technology', designation: 'Senior Full Stack Engineer' },
                     { id: 5, employeeCode: 'EMP-005', fullName: 'Emma Watson', departmentName: 'Marketing & Sales', designation: 'Growth Marketing Specialist' },
-                    { id: 6, employeeCode: 'EMP-006', fullName: 'David Beck', departmentName: 'Finance & Accounting', designation: 'Payroll Controller' }
+                    { id: 6, employeeCode: 'EMP-006', fullName: 'Payroll Officer', departmentName: 'Finance & Accounting', designation: 'Payroll Controller' }
                 ]
             };
         }

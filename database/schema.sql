@@ -305,7 +305,7 @@ INSERT INTO dbo.employees (id, user_id, department_id, employee_code, first_name
 (3, 3, 1, 'EMP-003', 'Alex', 'Cross', 'alex.cross@workops.io', '+1-555-0104', 'Engineering Manager', '08:30:00', '17:30:00', 15, 'Maria Cross', '+1-555-0105', 'ACTIVE'),
 (4, 4, 1, 'EMP-004', 'John', 'Doe', 'john.doe@workops.io', '+1-555-0106', 'Senior Full Stack Engineer', '08:30:00', '17:30:00', 15, 'Jane Doe', '+1-555-0107', 'ACTIVE'),
 (5, 5, 4, 'EMP-005', 'Emma', 'Watson', 'emma.watson@workops.io', '+1-555-0108', 'Growth Marketing Specialist', '09:00:00', '18:00:00', 15, 'Chris Watson', '+1-555-0109', 'ACTIVE'),
-(6, 6, 3, 'EMP-006', 'David', 'Beck', 'payroll@workops.io', '+1-555-0110', 'Payroll Controller', '08:30:00', '17:30:00', 15, 'Victoria Beck', '+1-555-0111', 'ACTIVE');
+(6, 6, 3, 'EMP-006', 'Payroll', 'Officer', 'payroll@workops.io', '+1-555-0110', 'Payroll Controller', '08:30:00', '17:30:00', 15, 'Finance Support', '+1-555-0111', 'ACTIVE');
 SET IDENTITY_INSERT dbo.employees OFF;
 GO
 
