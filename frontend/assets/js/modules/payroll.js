@@ -259,6 +259,21 @@ class PayrollController {
         const includeOt = document.getElementById('gen-include-ot')?.checked !== false;
         const bonus = parseFloat(document.getElementById('gen-bonus')?.value || 0);
 
+        if (isNaN(month) || month < 1 || month > 12) {
+            WorkOps.showToast('warning', 'Please select a valid payroll month (1-12).', 'Validation Error');
+            return;
+        }
+
+        if (isNaN(year) || year < 2020 || year > 2100) {
+            WorkOps.showToast('warning', 'Please enter a valid payroll year (2020 - 2100).', 'Validation Error');
+            return;
+        }
+
+        if (isNaN(bonus) || bonus < 0) {
+            WorkOps.showToast('warning', 'Bonus amount cannot be negative.', 'Validation Error');
+            return;
+        }
+
         const btn = document.getElementById('btn-execute-payroll');
         if (btn) {
             btn.disabled = true;
@@ -490,12 +505,33 @@ class PayrollController {
 
     async handleCreateEvent(e) {
         e.preventDefault();
+        const title = document.getElementById('event-title')?.value?.trim();
+        const eventType = document.getElementById('event-type')?.value;
+        const eventDate = document.getElementById('event-date')?.value;
+        const priority = document.getElementById('event-priority')?.value || 'MEDIUM';
+        const description = document.getElementById('event-desc')?.value?.trim() || '';
+
+        if (!title || title.length < 3) {
+            WorkOps.showToast('warning', 'Event title must be at least 3 characters long.', 'Validation Error');
+            return;
+        }
+
+        if (!eventDate) {
+            WorkOps.showToast('warning', 'Please select a valid target date for the event.', 'Validation Error');
+            return;
+        }
+
+        if (!eventType) {
+            WorkOps.showToast('warning', 'Please select an event type.', 'Validation Error');
+            return;
+        }
+
         const payload = {
-            title: document.getElementById('event-title')?.value || 'Payroll Event',
-            eventType: document.getElementById('event-type')?.value || 'PAYROLL_CUTOFF',
-            eventDate: document.getElementById('event-date')?.value || new Date().toISOString().split('T')[0],
-            priority: document.getElementById('event-priority')?.value || 'MEDIUM',
-            description: document.getElementById('event-desc')?.value || ''
+            title: title,
+            eventType: eventType,
+            eventDate: eventDate,
+            priority: priority,
+            description: description
         };
 
         try {
@@ -503,6 +539,7 @@ class PayrollController {
             WorkOps.showToast('success', 'New payroll event scheduled and saved to database.');
             const modal = bootstrap.Modal.getInstance(document.getElementById('createEventModal'));
             if (modal) modal.hide();
+            document.getElementById('event-create-form')?.reset();
             await this.loadEvents();
         } catch (error) {
             WorkOps.showToast('error', error.message || 'Failed to create event');

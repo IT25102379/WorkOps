@@ -157,10 +157,36 @@ class AttendanceController {
     async handleCorrectionSubmit(event) {
         event.preventDefault();
         const payload = this.view.getCorrectionFormValues();
-        if (!payload.requestedDate || !payload.reason) {
-            WorkOps.showToast('warning', 'Please fill in required fields: Date and Reason.');
+        
+        if (!payload.requestedDate) {
+            WorkOps.showToast('warning', 'Please select a valid target date for attendance correction.', 'Validation Error');
             return;
         }
+
+        if (!payload.reason || payload.reason.trim().length < 10) {
+            WorkOps.showToast('warning', 'Please provide a detailed reason/justification (minimum 10 characters).', 'Validation Error');
+            return;
+        }
+
+        if (payload.requestType === 'MISSED_CLOCK_IN' && !payload.requestedClockIn) {
+            WorkOps.showToast('warning', 'Requested Clock-In time is required for Missed Clock-In adjustments.', 'Validation Error');
+            return;
+        }
+
+        if (payload.requestType === 'MISSED_CLOCK_OUT' && !payload.requestedClockOut) {
+            WorkOps.showToast('warning', 'Requested Clock-Out time is required for Missed Clock-Out adjustments.', 'Validation Error');
+            return;
+        }
+
+        if (payload.requestedClockIn && payload.requestedClockOut) {
+            const inTime = new Date(payload.requestedClockIn);
+            const outTime = new Date(payload.requestedClockOut);
+            if (outTime <= inTime) {
+                WorkOps.showToast('warning', 'Requested Clock-Out time must be after Clock-In time.', 'Validation Error');
+                return;
+            }
+        }
+
         try {
             const response = await this.model.submitCorrection(payload);
             if (response?.success) {
@@ -170,7 +196,7 @@ class AttendanceController {
                 if (this.canViewAll) await this.refreshCorrections();
             }
         } catch (error) {
-            WorkOps.showToast('error', error.message || 'Failed to submit correction request');
+            WorkOps.showToast('error', error.message || 'Failed to submit correction request.');
         }
     }
 
@@ -613,18 +639,54 @@ class AttendanceController {
         const employeeSelect = document.getElementById('ot-form-employee');
         const selectedOpt = employeeSelect?.options[employeeSelect.selectedIndex];
 
+        const employeeCode = employeeSelect?.value?.trim();
+        if (!employeeCode) {
+            WorkOps.showToast('warning', 'Please select a target employee for the overtime allocation.', 'Validation Error');
+            return;
+        }
+
+        const otDate = document.getElementById('ot-form-date')?.value;
+        if (!otDate) {
+            WorkOps.showToast('warning', 'Please select the date of overtime.', 'Validation Error');
+            return;
+        }
+
+        const startTime = document.getElementById('ot-form-start-time')?.value;
+        const endTime = document.getElementById('ot-form-end-time')?.value;
+        if (!startTime || !endTime) {
+            WorkOps.showToast('warning', 'Both start time and end time are required.', 'Validation Error');
+            return;
+        }
+
+        if (startTime >= endTime) {
+            WorkOps.showToast('warning', `End time (${endTime}) must be after start time (${startTime}).`, 'Validation Error');
+            return;
+        }
+
+        const otHours = parseFloat(document.getElementById('ot-form-hours')?.value);
+        if (isNaN(otHours) || otHours < 0.5 || otHours > 24) {
+            WorkOps.showToast('warning', 'Overtime duration must be between 0.5 and 24.0 hours.', 'Validation Error');
+            return;
+        }
+
+        const taskDescription = document.getElementById('ot-form-task')?.value?.trim();
+        if (!taskDescription || taskDescription.length < 5) {
+            WorkOps.showToast('warning', 'Please provide a descriptive task/project description (at least 5 characters).', 'Validation Error');
+            return;
+        }
+
         const payload = {
             employeeId: selectedOpt ? parseInt(selectedOpt.getAttribute('data-id')) : 1,
-            employeeCode: employeeSelect?.value || 'EMP-004',
+            employeeCode: employeeCode,
             employeeName: selectedOpt ? selectedOpt.getAttribute('data-name') : 'John Doe',
             departmentName: selectedOpt ? selectedOpt.getAttribute('data-dept') : 'Engineering & Technology',
-            otDate: document.getElementById('ot-form-date')?.value || new Date().toISOString().split('T')[0],
-            startTime: document.getElementById('ot-form-start-time')?.value || '17:30',
-            endTime: document.getElementById('ot-form-end-time')?.value || '20:30',
-            otHours: parseFloat(document.getElementById('ot-form-hours')?.value || 3.0),
+            otDate: otDate,
+            startTime: startTime,
+            endTime: endTime,
+            otHours: otHours,
             multiplierRate: parseFloat(document.getElementById('ot-form-multiplier')?.value || 1.50),
             status: document.getElementById('ot-form-status')?.value || 'APPROVED',
-            taskDescription: document.getElementById('ot-form-task')?.value || 'General Project OT',
+            taskDescription: taskDescription,
             reason: document.getElementById('ot-form-reason')?.value || 'Assigned by HR Manager',
             createdBy: 'HR Manager'
         };

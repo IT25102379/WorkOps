@@ -75,14 +75,65 @@
         const button = document.getElementById('signup-submit');
         button.disabled = true;
         button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i>Creating account...';
-        const payload = Object.fromEntries(new FormData(event.target).entries());
-        payload.fullName = document.getElementById('fullName').value.trim();
-        payload.username = document.getElementById('username').value.trim();
-        payload.email = document.getElementById('email').value.trim();
-        payload.password = document.getElementById('password').value;
-        payload.phone = document.getElementById('phone').value.trim();
-        payload.departmentCode = document.getElementById('departmentCode').value;
-        payload.designation = document.getElementById('designation').value.trim();
+        const fullName = document.getElementById('fullName').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const phone = document.getElementById('phone').value.trim();
+        const departmentCode = document.getElementById('departmentCode').value;
+        const designation = document.getElementById('designation').value.trim();
+
+        if (fullName.length < 2) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'warning', title:'Invalid Name', text:'Full name must be at least 2 characters.', confirmButtonColor:'#101b2d' });
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9._-]{3,100}$/.test(username)) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'warning', title:'Invalid Username', text:'Username must be 3-100 characters and contain only letters, numbers, dots, hyphens, or underscores.', confirmButtonColor:'#101b2d' });
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'warning', title:'Invalid Email', text:'Please provide a valid work email address.', confirmButtonColor:'#101b2d' });
+            return;
+        }
+
+        if (password.length < 8) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'warning', title:'Password Too Short', text:'Password must contain at least 8 characters.', confirmButtonColor:'#101b2d' });
+            return;
+        }
+
+        if (phone && !/^[+]?[0-9\s\-()]{7,25}$/.test(phone)) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'warning', title:'Invalid Phone Number', text:'Please enter a valid phone number format (7-25 digits).', confirmButtonColor:'#101b2d' });
+            return;
+        }
+
+        if (!departmentCode) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'warning', title:'Select Department', text:'Please choose your assigned department.', confirmButtonColor:'#101b2d' });
+            return;
+        }
+
+        if (!designation) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-user-plus me-2"></i>Create employee account';
+            Swal.fire({ icon:'warning', title:'Designation Required', text:'Please enter your job role/designation.', confirmButtonColor:'#101b2d' });
+            return;
+        }
+
+        const payload = { fullName, username, email, password, phone, departmentCode, designation };
+
         try {
             const response = await ApiClient.post('/auth/signup', payload);
             await Swal.fire({ icon:'success', title:'Account created', text:'Your employee account is ready. You can sign in now.', confirmButtonColor:'#101b2d' });
