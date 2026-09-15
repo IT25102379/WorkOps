@@ -34,14 +34,77 @@ public class PayrollServiceImpl implements PayrollService {
         if (month == null) month = LocalDate.now().getMonthValue();
         if (year == null) year = LocalDate.now().getYear();
 
-        List<Payroll> records = payrollRepository.filterPayroll(month, year, departmentId, search);
+        final int targetMonth = month;
+        final int targetYear = year;
 
-        // If no records exist yet for this month, generate preview from active employees
-        if (records.isEmpty()) {
-            return generatePreviewRecords(month, year, departmentId);
+        // Fetch all active employees matching department filter if provided
+        List<Employee> employees = (departmentId != null)
+                ? employeeRepository.findByDepartmentId(departmentId)
+                : employeeRepository.findAll();
+
+        // Fetch existing saved payroll records for this month/year
+        List<Payroll> existingRecords = payrollRepository.findAll().stream()
+                .filter(p -> p.getPayrollMonth() != null && p.getPayrollMonth() == targetMonth
+                        && p.getPayrollYear() != null && p.getPayrollYear() == targetYear)
+                .collect(Collectors.toList());
+
+        Map<Long, Payroll> existingMap = existingRecords.stream()
+                .filter(p -> p.getEmployee() != null)
+                .collect(Collectors.toMap(p -> p.getEmployee().getId(), p -> p, (a, b) -> a));
+
+        List<PayrollOvertimeSummaryDTO> otSummaries = calculateOvertimeSummary(targetMonth, targetYear);
+        Map<Long, BigDecimal> otMap = otSummaries.stream()
+                .collect(Collectors.toMap(PayrollOvertimeSummaryDTO::getEmployeeId, PayrollOvertimeSummaryDTO::getTotalOtPayout, (a, b) -> a));
+
+        List<PayrollDTO> result = new ArrayList<>();
+
+        for (Employee emp : employees) {
+            if (existingMap.containsKey(emp.getId())) {
+                result.add(mapToDTO(existingMap.get(emp.getId())));
+            } else {
+                BigDecimal basic = getBaseSalaryForEmployee(emp);
+                BigDecimal ot = otMap.getOrDefault(emp.getId(), BigDecimal.ZERO);
+                BigDecimal allowances = basic.multiply(new BigDecimal("0.15")).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal epf = basic.multiply(new BigDecimal("0.08")).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal tax = (basic.compareTo(new BigDecimal("100000")) > 0)
+                        ? basic.subtract(new BigDecimal("100000")).multiply(new BigDecimal("0.06")).setScale(2, RoundingMode.HALF_UP)
+                        : BigDecimal.ZERO;
+                BigDecimal deductions = epf.add(tax);
+                BigDecimal net = basic.add(ot).add(allowances).subtract(deductions);
+
+                result.add(PayrollDTO.builder()
+                        .id(emp.getId())
+                        .employeeId(emp.getId())
+                        .employeeCode(emp.getEmployeeCode())
+                        .employeeName(emp.getFullName())
+                        .departmentName(emp.getDepartment() != null ? emp.getDepartment().getName() : "General")
+                        .designation(emp.getDesignation())
+                        .email(emp.getEmail())
+                        .payrollMonth(targetMonth)
+                        .payrollYear(targetYear)
+                        .basicSalary(basic)
+                        .overtimePay(ot)
+                        .allowances(allowances)
+                        .deductions(deductions)
+                        .tax(tax)
+                        .netSalary(net)
+                        .paymentStatus("DRAFT")
+                        .paymentDate(LocalDate.now())
+                        .createdAt(LocalDateTime.now())
+                        .build());
+            }
         }
 
-        return records.stream().map(this::mapToDTO).collect(Collectors.toList());
+        if (search != null && !search.trim().isEmpty()) {
+            String query = search.trim().toLowerCase();
+            result = result.stream().filter(r ->
+                    (r.getEmployeeName() != null && r.getEmployeeName().toLowerCase().contains(query)) ||
+                    (r.getEmployeeCode() != null && r.getEmployeeCode().toLowerCase().contains(query)) ||
+                    (r.getDepartmentName() != null && r.getDepartmentName().toLowerCase().contains(query))
+            ).collect(Collectors.toList());
+        }
+
+        return result;
     }
 
     @Override
@@ -238,6 +301,19 @@ public class PayrollServiceImpl implements PayrollService {
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with ID: " + id));
         payrollEventRepository.delete(event);
         log.info("Payroll event #{} deleted by {}", id, username);
+    }
+
+    @Override
+    @Transactional
+    public void deletePayroll(Long id, String username) {
+        log.info("Deleting payroll record #{} by {}", id, username);
+        Optional<Payroll> pOpt = payrollRepository.findById(id);
+        if (pOpt.isPresent()) {
+            payrollRepository.delete(pOpt.get());
+            log.info("Payroll record #{} successfully deleted from database by {}", id, username);
+        } else {
+            log.info("Payroll record with ID {} was a draft/preview item; reset.", id);
+        }
     }
 
     @Override

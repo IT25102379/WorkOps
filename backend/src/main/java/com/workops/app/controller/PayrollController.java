@@ -94,6 +94,20 @@ public class PayrollController {
         return ResponseEntity.ok(ApiResponse.ok("Payroll allowances and overtime updated successfully", updated));
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete / reset employee payroll record")
+    public ResponseEntity<ApiResponse<Void>> deletePayroll(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String username = (userDetails != null && userDetails.getUsername() != null)
+                ? userDetails.getUsername()
+                : "Payroll Officer";
+
+        payrollService.deletePayroll(id, username);
+        return ResponseEntity.ok(ApiResponse.ok("Payroll record deleted / reset successfully", null));
+    }
+
     @GetMapping("/history")
     @Operation(summary = "Retrieve historical salary and payroll run summaries")
     public ResponseEntity<ApiResponse<List<PayrollDTO>>> getPayrollHistory() {

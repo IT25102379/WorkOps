@@ -141,10 +141,10 @@ class PayrollController {
                     <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
                     <td>
                         <div class="d-flex gap-1">
-                            <button class="action-btn action-btn-edit" style="color: #6366f1; border-color: rgba(99, 102, 241, 0.35); background: rgba(99, 102, 241, 0.08);" title="Update Allowances & Overtime (දීමනා සහ ඕටී සංශෝධනය)" onclick="window.payrollModule.openAdjustModal(${p.id || idx})">
+                            <button class="action-btn action-btn-edit" style="color: #6366f1; border-color: rgba(99, 102, 241, 0.35); background: rgba(99, 102, 241, 0.08);" title="Update Allowances, Overtime & Basic (සංස්කරණය)" onclick="window.payrollModule.openAdjustModal(${p.id || idx})">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
-                            <button class="action-btn action-btn-view" title="View & Print Payslip" onclick="window.payrollModule.viewPayslip(${p.id || idx})">
+                            <button class="action-btn action-btn-view" title="View & Print Payslip (පේස්ලිප් බලන්න)" onclick="window.payrollModule.viewPayslip(${p.id || idx})">
                                 <i class="fa-solid fa-file-invoice"></i>
                             </button>
                             ${p.paymentStatus !== 'PAID' ? `
@@ -152,6 +152,9 @@ class PayrollController {
                                     <i class="fa-solid fa-check-double text-success"></i>
                                 </button>
                             ` : ''}
+                            <button class="action-btn action-btn-delete" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.08);" title="Delete / Reset Record (මකා දමන්න)" onclick="window.payrollModule.deleteSalaryRecord(${p.id || idx})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -569,6 +572,33 @@ class PayrollController {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-check me-1"></i>Save Updates';
             }
+        }
+    }
+
+    async deleteSalaryRecord(id) {
+        const p = this.records.find(x => x.id === id || x.employeeId === id) || this.records[id];
+        const empName = p?.employeeName || 'this employee';
+
+        const result = await Swal.fire({
+            title: 'Delete Payroll Record?',
+            text: `Are you sure you want to delete / reset the salary record for ${empName}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fa-solid fa-trash me-1"></i> Yes, delete it',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b'
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            await ApiClient.delete(`/payroll/${id}`);
+            WorkOps.showToast('success', `Salary record for ${empName} has been deleted/reset.`);
+            await Promise.all([this.loadSalaryRecords(), this.loadPayrollHistory()]);
+        } catch (e) {
+            console.error('Delete payroll error:', e);
+            WorkOps.showToast('error', e.message || 'Failed to delete payroll record.');
         }
     }
 

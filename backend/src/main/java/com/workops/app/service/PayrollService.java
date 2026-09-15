@@ -18,6 +18,8 @@ public interface PayrollService {
 
     PayrollDTO adjustPayroll(Long id, PayrollAdjustmentDTO adjustmentDTO, String username);
 
+    void deletePayroll(Long id, String username);
+
     List<PayrollDTO> getPayrollHistory();
 
     List<PayrollEventDTO> getPayrollEvents();
