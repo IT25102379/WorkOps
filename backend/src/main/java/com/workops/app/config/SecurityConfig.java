@@ -63,6 +63,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/contact/**").permitAll()
                 .requestMatchers("/api/v1/attendance/reports/**").permitAll()
                 .requestMatchers("/api/v1/overtime/**").permitAll()
+                .requestMatchers("/api/v1/payroll/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/api-docs/**").permitAll()
                 .requestMatchers("/", "/index.html", "/dashboard.html", "/pages/**", "/assets/**").permitAll()
                 // Protected REST APIs

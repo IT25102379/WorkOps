@@ -434,3 +434,30 @@ BEGIN
 END;
 GO
 
+-- ---------------------------------------------------------------------
+-- 11. Table: payroll_events (Corporate Event & Payroll Timeline Calendar)
+-- ---------------------------------------------------------------------
+IF OBJECT_ID('dbo.payroll_events', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.payroll_events (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        title NVARCHAR(150) NOT NULL,
+        event_type NVARCHAR(50) NOT NULL DEFAULT 'PAYROLL_CUTOFF',
+        event_date DATE NOT NULL,
+        description NVARCHAR(500) NULL,
+        priority NVARCHAR(20) NOT NULL DEFAULT 'MEDIUM',
+        created_by NVARCHAR(100) NULL,
+        created_at DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    CREATE INDEX idx_payroll_events_date ON dbo.payroll_events (event_date);
+
+    INSERT INTO dbo.payroll_events (title, event_type, event_date, description, priority, created_by)
+    VALUES 
+    ('Monthly Attendance & OT Freeze', 'PAYROLL_CUTOFF', DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 20), 'All employee overtime claims and attendance corrections must be approved', 'HIGH', 'Payroll Officer'),
+    ('Executive Salary Disbursement Payout', 'SALARY_PAYOUT', DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 25), 'Direct bank transfer salary batch execution for all departments', 'URGENT', 'Payroll Officer'),
+    ('EPF & ETF Statutory Tax Remittance', 'TAX_FILING', DATEADD(month, 1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 15)), 'Monthly Central Bank statutory EPF Form C and ETF returns submission', 'HIGH', 'Payroll Officer');
+END;
+GO
+
+
