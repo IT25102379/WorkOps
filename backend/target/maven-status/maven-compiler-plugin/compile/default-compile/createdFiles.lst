@@ -35,6 +35,7 @@ com\workops\app\entity\PayrollEvent.class
 com\workops\app\dto\EmployeeSummaryDTO$EmployeeSummaryDTOBuilder.class
 com\workops\app\repository\PayrollRepository.class
 com\workops\app\entity\AttendanceRequest$AttendanceRequestBuilder.class
+com\workops\app\dto\PayrollAdjustmentDTO$PayrollAdjustmentDTOBuilder.class
 com\workops\app\config\SecurityConfig.class
 com\workops\app\entity\OvertimeRequest$OvertimeRequestBuilder.class
 com\workops\app\dto\PayrollOvertimeSummaryDTO.class
@@ -87,6 +88,7 @@ com\workops\app\entity\OvertimeRequest.class
 com\workops\app\dto\TodayStatusDTO$TodayStatusDTOBuilder.class
 com\workops\app\security\JwtUtils.class
 com\workops\app\dto\AuthResponse.class
+com\workops\app\dto\PayrollAdjustmentDTO.class
 com\workops\app\WorkOpsApplication.class
 com\workops\app\dto\PayrollRunRequestDTO$PayrollRunRequestDTOBuilder.class
 com\workops\app\repository\EmployeeRepository.class

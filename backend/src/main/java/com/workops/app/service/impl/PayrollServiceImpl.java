@@ -34,14 +34,77 @@ public class PayrollServiceImpl implements PayrollService {
         if (month == null) month = LocalDate.now().getMonthValue();
         if (year == null) year = LocalDate.now().getYear();
 
-        List<Payroll> records = payrollRepository.filterPayroll(month, year, departmentId, search);
+        final int targetMonth = month;
+        final int targetYear = year;
 
-        // If no records exist yet for this month, generate preview from active employees
-        if (records.isEmpty()) {
-            return generatePreviewRecords(month, year, departmentId);
+        // Fetch all active employees matching department filter if provided
+        List<Employee> employees = (departmentId != null)
+                ? employeeRepository.findByDepartmentId(departmentId)
+                : employeeRepository.findAll();
+
+        // Fetch existing saved payroll records for this month/year
+        List<Payroll> existingRecords = payrollRepository.findAll().stream()
+                .filter(p -> p.getPayrollMonth() != null && p.getPayrollMonth() == targetMonth
+                        && p.getPayrollYear() != null && p.getPayrollYear() == targetYear)
+                .collect(Collectors.toList());
+
+        Map<Long, Payroll> existingMap = existingRecords.stream()
+                .filter(p -> p.getEmployee() != null)
+                .collect(Collectors.toMap(p -> p.getEmployee().getId(), p -> p, (a, b) -> a));
+
+        List<PayrollOvertimeSummaryDTO> otSummaries = calculateOvertimeSummary(targetMonth, targetYear);
+        Map<Long, BigDecimal> otMap = otSummaries.stream()
+                .collect(Collectors.toMap(PayrollOvertimeSummaryDTO::getEmployeeId, PayrollOvertimeSummaryDTO::getTotalOtPayout, (a, b) -> a));
+
+        List<PayrollDTO> result = new ArrayList<>();
+
+        for (Employee emp : employees) {
+            if (existingMap.containsKey(emp.getId())) {
+                result.add(mapToDTO(existingMap.get(emp.getId())));
+            } else {
+                BigDecimal basic = getBaseSalaryForEmployee(emp);
+                BigDecimal ot = otMap.getOrDefault(emp.getId(), BigDecimal.ZERO);
+                BigDecimal allowances = basic.multiply(new BigDecimal("0.15")).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal epf = basic.multiply(new BigDecimal("0.08")).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal tax = (basic.compareTo(new BigDecimal("100000")) > 0)
+                        ? basic.subtract(new BigDecimal("100000")).multiply(new BigDecimal("0.06")).setScale(2, RoundingMode.HALF_UP)
+                        : BigDecimal.ZERO;
+                BigDecimal deductions = epf.add(tax);
+                BigDecimal net = basic.add(ot).add(allowances).subtract(deductions);
+
+                result.add(PayrollDTO.builder()
+                        .id(emp.getId())
+                        .employeeId(emp.getId())
+                        .employeeCode(emp.getEmployeeCode())
+                        .employeeName(emp.getFullName())
+                        .departmentName(emp.getDepartment() != null ? emp.getDepartment().getName() : "General")
+                        .designation(emp.getDesignation())
+                        .email(emp.getEmail())
+                        .payrollMonth(targetMonth)
+                        .payrollYear(targetYear)
+                        .basicSalary(basic)
+                        .overtimePay(ot)
+                        .allowances(allowances)
+                        .deductions(deductions)
+                        .tax(tax)
+                        .netSalary(net)
+                        .paymentStatus("DRAFT")
+                        .paymentDate(LocalDate.now())
+                        .createdAt(LocalDateTime.now())
+                        .build());
+            }
         }
 
-        return records.stream().map(this::mapToDTO).collect(Collectors.toList());
+        if (search != null && !search.trim().isEmpty()) {
+            String query = search.trim().toLowerCase();
+            result = result.stream().filter(r ->
+                    (r.getEmployeeName() != null && r.getEmployeeName().toLowerCase().contains(query)) ||
+                    (r.getEmployeeCode() != null && r.getEmployeeCode().toLowerCase().contains(query)) ||
+                    (r.getDepartmentName() != null && r.getDepartmentName().toLowerCase().contains(query))
+            ).collect(Collectors.toList());
+        }
+
+        return result;
     }
 
     @Override
@@ -240,18 +303,82 @@ public class PayrollServiceImpl implements PayrollService {
         log.info("Payroll event #{} deleted by {}", id, username);
     }
 
-    private BigDecimal getBaseSalaryForEmployee(Employee emp) {
-        String designation = (emp.getDesignation() != null) ? emp.getDesignation().toLowerCase() : "";
-        if (designation.contains("manager") || designation.contains("head")) {
-            return new BigDecimal("185000.00");
-        } else if (designation.contains("senior") || designation.contains("officer") || designation.contains("lead")) {
-            return new BigDecimal("145000.00");
-        } else if (designation.contains("specialist") || designation.contains("engineer")) {
-            return new BigDecimal("115000.00");
-        } else if (designation.contains("payroll") || designation.contains("finance")) {
-            return new BigDecimal("125000.00");
+    @Override
+    @Transactional
+    public void deletePayroll(Long id, String username) {
+        log.info("Deleting payroll record #{} by {}", id, username);
+        Optional<Payroll> pOpt = payrollRepository.findById(id);
+        if (pOpt.isPresent()) {
+            payrollRepository.delete(pOpt.get());
+            log.info("Payroll record #{} successfully deleted from database by {}", id, username);
+        } else {
+            log.info("Payroll record with ID {} was a draft/preview item; reset.", id);
         }
-        return new BigDecimal("95000.00");
+    }
+
+    @Override
+    @Transactional
+    public PayrollDTO adjustPayroll(Long id, PayrollAdjustmentDTO adjustmentDTO, String username) {
+        log.info("Adjusting payroll record / preview #{} by {}", id, username);
+
+        Optional<Payroll> existingOpt = payrollRepository.findById(id);
+        Payroll payroll;
+
+        if (existingOpt.isPresent()) {
+            payroll = existingOpt.get();
+        } else {
+            // Check if ID refers to an employee ID (preview item)
+            Employee emp = employeeRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Payroll or Employee record not found with ID: " + id));
+
+            int month = (adjustmentDTO.getPayrollMonth() != null) ? adjustmentDTO.getPayrollMonth() : LocalDate.now().getMonthValue();
+            int year = (adjustmentDTO.getPayrollYear() != null) ? adjustmentDTO.getPayrollYear() : LocalDate.now().getYear();
+
+            payroll = payrollRepository.findByEmployeeIdAndPayrollMonthAndPayrollYear(emp.getId(), month, year)
+                    .orElse(Payroll.builder()
+                            .employee(emp)
+                            .payrollMonth(month)
+                            .payrollYear(year)
+                            .build());
+        }
+
+        BigDecimal basic = (adjustmentDTO.getBasicSalary() != null && adjustmentDTO.getBasicSalary().compareTo(BigDecimal.ZERO) > 0)
+                ? adjustmentDTO.getBasicSalary()
+                : (payroll.getBasicSalary() != null && payroll.getBasicSalary().compareTo(BigDecimal.ZERO) > 0 ? payroll.getBasicSalary() : new BigDecimal("50000.00"));
+
+        BigDecimal allowances = (adjustmentDTO.getAllowances() != null) ? adjustmentDTO.getAllowances() : BigDecimal.ZERO;
+        BigDecimal overtimePay = (adjustmentDTO.getOvertimePay() != null) ? adjustmentDTO.getOvertimePay() : BigDecimal.ZERO;
+
+        BigDecimal deductions;
+        if (adjustmentDTO.getDeductions() != null) {
+            deductions = adjustmentDTO.getDeductions();
+        } else {
+            BigDecimal epf = basic.multiply(new BigDecimal("0.08")).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal tax = (basic.compareTo(new BigDecimal("100000")) > 0)
+                    ? basic.subtract(new BigDecimal("100000")).multiply(new BigDecimal("0.06")).setScale(2, RoundingMode.HALF_UP)
+                    : BigDecimal.ZERO;
+            deductions = epf.add(tax);
+        }
+
+        BigDecimal net = basic.add(allowances).add(overtimePay).subtract(deductions);
+
+        payroll.setBasicSalary(basic);
+        payroll.setAllowances(allowances);
+        payroll.setOvertimePay(overtimePay);
+        payroll.setDeductions(deductions);
+        payroll.setNetSalary(net);
+        if (payroll.getPaymentStatus() == null) {
+            payroll.setPaymentStatus("PROCESSED");
+        }
+
+        Payroll saved = payrollRepository.save(payroll);
+        log.info("Payroll adjustments saved for employee #{} - Net: {}", (saved.getEmployee() != null ? saved.getEmployee().getId() : null), net);
+        return mapToDTO(saved);
+    }
+
+    private BigDecimal getBaseSalaryForEmployee(Employee emp) {
+        // Standard company baseline basic salary of LKR 50,000.00 for all workforce employees
+        return new BigDecimal("50000.00");
     }
 
     private List<PayrollDTO> generatePreviewRecords(int month, int year, Long deptId) {
