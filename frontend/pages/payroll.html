@@ -104,24 +104,17 @@
             <div class="brand-text">Work<span class="text-gradient-primary">Ops</span></div>
         </div>
         <div class="sidebar-nav">
-            <div class="nav-header">Payroll Portal</div>
-            <a href="../dashboard.html" class="nav-link-custom"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+            <div class="nav-header">Payroll Officer Menu</div>
             <a href="payroll.html" class="nav-link-custom active"><i class="fa-solid fa-file-invoice-dollar"></i><span>Payroll Management</span></a>
-            <a href="attendance.html" class="nav-link-custom"><i class="fa-solid fa-user-clock"></i><span>Attendance & OT</span></a>
-            <a href="leave.html" class="nav-link-custom"><i class="fa-solid fa-calendar-days"></i><span>Leave Management</span></a>
-            <div class="nav-header mt-3">Staff Directory</div>
-            <a href="employees.html" class="nav-link-custom"><i class="fa-solid fa-users"></i><span>Employees</span></a>
-            <a href="departments.html" class="nav-link-custom"><i class="fa-solid fa-building"></i><span>Departments</span></a>
-            <a href="profile.html" class="nav-link-custom"><i class="fa-solid fa-circle-user"></i><span>My Profile</span></a>
         </div>
         <div class="sidebar-footer">
-            <div class="user-snippet" onclick="window.location='profile.html'">
+            <div class="user-snippet">
                 <div class="user-avatar session-avatar">PO</div>
                 <div class="user-info">
                     <div class="user-name session-name">David Beck</div>
                     <div class="user-role session-role">Payroll Officer</div>
                 </div>
-                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;cursor:pointer;" onclick="event.stopPropagation();localStorage.removeItem('workops_user');localStorage.removeItem('workops_token');window.location='../login.html';"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket ms-auto" style="color:var(--text-muted);font-size:0.8rem;cursor:pointer;" title="Logout" onclick="event.stopPropagation();localStorage.removeItem('workops_user');localStorage.removeItem('workops_token');window.location='../login.html';"></i>
             </div>
         </div>
     </aside>
@@ -144,8 +137,6 @@
                 <button class="btn btn-workops btn-workops-primary btn-sm" id="quick-run-payroll-btn">
                     <i class="fa-solid fa-bolt me-1"></i>Run Payroll
                 </button>
-                <a href="../home.html" class="topbar-icon-btn" title="Home"><i class="fa-solid fa-house"></i></a>
-                <a href="profile.html" class="topbar-icon-btn" title="Profile"><i class="fa-solid fa-circle-user"></i></a>
             </div>
         </div>
 
