@@ -381,6 +381,32 @@ export const ApiClient = {
             return { success: true, message: 'Correction request reviewed', data: target };
         }
 
+        // 8. Log Generated Report
+        if (endpoint === '/attendance/reports/log' && options.method === 'POST') {
+            const body = JSON.parse(options.body || '{}');
+            if (!mockDB.generatedReports) mockDB.generatedReports = [];
+            const newLog = {
+                id: Date.now(),
+                reportTitle: body.reportTitle || 'Attendance Management Report',
+                reportType: body.reportType || 'PDF',
+                module: body.module || 'ATTENDANCE',
+                fileName: body.fileName || `workops_report_${todayStr}.pdf`,
+                recordCount: body.recordCount || 0,
+                filterCriteria: body.filterCriteria || '',
+                generatedBy: body.generatedBy || 'HR Manager',
+                status: 'COMPLETED',
+                createdAt: now.toISOString().replace('T', ' ').substring(0, 19)
+            };
+            mockDB.generatedReports.unshift(newLog);
+            saveMockDB(mockDB);
+            return { success: true, message: 'Report generation logged in database (Client Mode)', data: newLog };
+        }
+
+        // 9. Fetch Generated Reports
+        if (endpoint.startsWith('/attendance/reports/logs') && options.method === 'GET') {
+            return { success: true, data: mockDB.generatedReports || [] };
+        }
+
         // Default mock response
         return { success: true, message: 'Mock response', data: [] };
     }

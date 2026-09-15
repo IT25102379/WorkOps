@@ -124,4 +124,24 @@ public class AttendanceController {
         AttendanceCorrectionRequestDTO result = attendanceService.reviewCorrectionRequest(id, reviewDTO, username);
         return ResponseEntity.ok(ApiResponse.ok("Correction request processed successfully", result));
     }
+
+    @PostMapping("/reports/log")
+    @PreAuthorize("hasAnyAuthority('ROLE_STAFF', 'ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @Operation(summary = "Log an exported attendance report (PDF / CSV) into database audit log")
+    public ResponseEntity<ApiResponse<GeneratedReportDTO>> logReport(
+            @RequestBody GeneratedReportDTO reportDTO,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String username = (userDetails != null) ? userDetails.getUsername() : "HR Manager";
+        GeneratedReportDTO logged = attendanceService.logGeneratedReport(reportDTO, username);
+        return ResponseEntity.ok(ApiResponse.ok("Report logged to database successfully", logged));
+    }
+
+    @GetMapping("/reports/logs")
+    @PreAuthorize("hasAnyAuthority('ROLE_HR', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @Operation(summary = "Retrieve all exported report audit logs from database")
+    public ResponseEntity<ApiResponse<List<GeneratedReportDTO>>> getReportLogs() {
+        List<GeneratedReportDTO> logs = attendanceService.getGeneratedReports();
+        return ResponseEntity.ok(ApiResponse.ok(logs));
+    }
 }

@@ -24,4 +24,8 @@ public interface AttendanceService {
     List<AttendanceCorrectionRequestDTO> getCorrectionRequests(RequestStatus status);
 
     AttendanceCorrectionRequestDTO reviewCorrectionRequest(Long requestId, ReviewCorrectionDTO reviewDTO, String reviewerUsername);
+
+    GeneratedReportDTO logGeneratedReport(GeneratedReportDTO dto, String username);
+
+    List<GeneratedReportDTO> getGeneratedReports();
 }

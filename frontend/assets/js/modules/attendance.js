@@ -1,3 +1,4 @@
+import { ApiClient } from '../api.js';
 import { WorkOps } from '../main.js';
 import { AttendanceModel } from '../models/attendance-model.js';
 import { AttendanceView } from '../views/attendance-view.js';
@@ -188,15 +189,27 @@ class AttendanceController {
             WorkOps.showToast('warning', 'No records available to export.');
             return;
         }
+        const fileName = `workops_attendance_${new Date().toISOString().split('T')[0]}.csv`;
         const headers = ['Employee Code', 'Name', 'Department', 'Date', 'Clock In', 'Clock Out', 'Duration', 'Late (Mins)', 'Overtime (Mins)', 'Status', 'Geofence'];
         const rows = this.model.records.map(record => [record.employeeCode, record.employeeName, record.departmentName, record.attendanceDate, record.clockInTime, record.clockOutTime, `${record.workDurationMinutes || 0} mins`, record.lateMinutes || 0, record.overtimeMinutes || 0, record.status, record.isGeofenceVerified ? 'YES' : 'NO'].map(value => `"${value || ''}"`).join(','));
         const link = document.createElement('a');
         link.href = encodeURI(`data:text/csv;charset=utf-8,${[headers.join(','), ...rows].join('\n')}`);
-        link.download = `workops_attendance_${new Date().toISOString().split('T')[0]}.csv`;
+        link.download = fileName;
         document.body.appendChild(link);
         link.click();
         link.remove();
-        WorkOps.showToast('success', 'Attendance CSV file exported successfully.');
+        WorkOps.showToast('success', 'Attendance CSV file exported & recorded in database.');
+
+        // Pass report record to Database
+        ApiClient.post('/attendance/reports/log', {
+            reportTitle: 'Live Attendance Records Export (CSV)',
+            reportType: 'CSV',
+            module: 'ATTENDANCE',
+            fileName: fileName,
+            recordCount: this.model.records.length,
+            filterCriteria: JSON.stringify(this.view.getFilterValues()),
+            generatedBy: 'HR Manager'
+        }).catch(err => console.warn('Could not log report to database:', err));
     }
 
     exportToPDF() {
@@ -204,6 +217,8 @@ class AttendanceController {
             WorkOps.showToast('warning', 'No records available to export.');
             return;
         }
+
+        const fileName = `workops_attendance_report_${new Date().toISOString().split('T')[0]}.pdf`;
 
         try {
             if (window.jspdf && window.jspdf.jsPDF) {
@@ -284,18 +299,30 @@ class AttendanceController {
                     }
                 });
 
-                doc.save(`workops_attendance_report_${new Date().toISOString().split('T')[0]}.pdf`);
-                WorkOps.showToast('success', 'Attendance PDF report downloaded successfully.');
+                doc.save(fileName);
+                WorkOps.showToast('success', 'Attendance PDF report downloaded & recorded in database.');
+
+                // Pass report record to Database
+                ApiClient.post('/attendance/reports/log', {
+                    reportTitle: 'Live Attendance Management Report (PDF)',
+                    reportType: 'PDF',
+                    module: 'ATTENDANCE',
+                    fileName: fileName,
+                    recordCount: this.model.records.length,
+                    filterCriteria: JSON.stringify(this.view.getFilterValues()),
+                    generatedBy: 'HR Manager'
+                }).catch(err => console.warn('Could not log report to database:', err));
+
             } else {
-                this.fallbackPrintPDF();
+                this.fallbackPrintPDF(fileName);
             }
         } catch (error) {
             console.error('PDF export error:', error);
-            this.fallbackPrintPDF();
+            this.fallbackPrintPDF(fileName);
         }
     }
 
-    fallbackPrintPDF() {
+    fallbackPrintPDF(fileName = 'workops_attendance_report.pdf') {
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
             WorkOps.showToast('error', 'Pop-up blocked. Please allow pop-ups to print PDF.');
@@ -368,7 +395,18 @@ class AttendanceController {
         setTimeout(() => {
             printWindow.print();
         }, 500);
-        WorkOps.showToast('success', 'PDF Print view opened.');
+        WorkOps.showToast('success', 'PDF Print view opened & recorded in database.');
+
+        // Pass report record to Database
+        ApiClient.post('/attendance/reports/log', {
+            reportTitle: 'Live Attendance Management Report (Print/PDF)',
+            reportType: 'PDF',
+            module: 'ATTENDANCE',
+            fileName: fileName,
+            recordCount: this.model.records.length,
+            filterCriteria: JSON.stringify(this.view.getFilterValues()),
+            generatedBy: 'HR Manager'
+        }).catch(err => console.warn('Could not log report to database:', err));
     }
 }
 

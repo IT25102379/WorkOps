@@ -345,3 +345,24 @@ BEGIN
     CREATE INDEX idx_contact_messages_created_at ON dbo.contact_messages (created_at);
 END;
 GO
+
+-- 8. Table: generated_reports (Report Export History & Audit Log)
+IF OBJECT_ID('dbo.generated_reports', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.generated_reports (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        report_title NVARCHAR(150) NOT NULL,
+        report_type NVARCHAR(20) NOT NULL,
+        module NVARCHAR(50) NOT NULL DEFAULT 'ATTENDANCE',
+        file_name NVARCHAR(255) NULL,
+        record_count INT NULL DEFAULT 0,
+        filter_criteria NVARCHAR(MAX) NULL,
+        generated_by NVARCHAR(100) NULL,
+        status NVARCHAR(30) NOT NULL DEFAULT 'COMPLETED',
+        created_at DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    CREATE INDEX idx_generated_reports_module ON dbo.generated_reports (module);
+    CREATE INDEX idx_generated_reports_created_at ON dbo.generated_reports (created_at);
+END;
+GO
