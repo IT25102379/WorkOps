@@ -704,17 +704,31 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     });
 });
 
-// ── Contact form ──────────────────────────────────────────────────────────
 document.getElementById('contact-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+    const name = document.getElementById('cf-name').value.trim();
+    const email = document.getElementById('cf-email').value.trim();
+    const subject = document.getElementById('cf-subject').value;
+    const message = document.getElementById('cf-message').value.trim();
+
+    if (name.length < 2) {
+        Swal.fire({ icon: 'warning', title: 'Name Required', text: 'Please enter your full name (at least 2 characters).', confirmButtonColor: '#4f46e5' });
+        return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        Swal.fire({ icon: 'warning', title: 'Invalid Email', text: 'Please enter a valid email address.', confirmButtonColor: '#4f46e5' });
+        return;
+    }
+
+    if (message.length < 10) {
+        Swal.fire({ icon: 'warning', title: 'Message Too Short', text: 'Please provide a detailed message (at least 10 characters).', confirmButtonColor: '#4f46e5' });
+        return;
+    }
+
     const btn = document.getElementById('contact-submit-btn');
     const originalButtonContent = btn.innerHTML;
-    const payload = {
-        fullName: document.getElementById('cf-name').value.trim(),
-        email: document.getElementById('cf-email').value.trim(),
-        subject: document.getElementById('cf-subject').value,
-        message: document.getElementById('cf-message').value.trim()
-    };
+    const payload = { fullName: name, email, subject, message };
 
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
     btn.disabled = true;

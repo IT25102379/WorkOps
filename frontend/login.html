@@ -89,8 +89,23 @@
 
     document.getElementById('login-form').addEventListener('submit', async event => { 
         event.preventDefault(); 
-        const username = document.getElementById('username').value.trim(); 
-        const password = document.getElementById('password').value; 
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const username = usernameInput.value.trim(); 
+        const password = passwordInput.value; 
+
+        if (!username || username.length < 3) {
+            WorkOps.showToast('warning', 'Please enter a valid username or email address (at least 3 characters).', 'Validation Required');
+            usernameInput.focus();
+            return;
+        }
+
+        if (!password || password.length < 6) {
+            WorkOps.showToast('warning', 'Please enter your password (minimum 6 characters).', 'Validation Required');
+            passwordInput.focus();
+            return;
+        }
+
         const button = document.getElementById('btn-submit-login'); 
         button.disabled = true; 
         button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-2"></i> Authenticating...'; 

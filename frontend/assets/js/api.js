@@ -245,18 +245,24 @@ export const ApiClient = {
                 headers,
                 signal: controller.signal
             });
-            clearTimeout(timeoutId);
-
             const json = await response.json();
             if (!response.ok) {
-                throw new Error(json.message || `Request failed with status ${response.status}`);
+                let errorMsg = json.message || `Request failed with status ${response.status}`;
+                if (json.data && typeof json.data === 'object' && Object.keys(json.data).length > 0) {
+                    const fieldErrors = Object.entries(json.data).map(([field, msg]) => `• ${msg || field}`).join('\n');
+                    errorMsg = `${json.message || 'Validation failed'}:\n${fieldErrors}`;
+                }
+                const err = new Error(errorMsg);
+                err.status = response.status;
+                err.validationErrors = json.data;
+                throw err;
             }
             return json;
         } catch (error) {
-            console.warn(`[WorkOps API] Backend offline or request error (${endpoint}). Running in seamless client fallback mode.`, error.message);
-            if (endpoint.startsWith('/auth/')) {
+            if (error.status === 400 || error.status === 401 || error.status === 403 || error.status === 422 || endpoint.startsWith('/auth/')) {
                 throw error;
             }
+            console.warn(`[WorkOps API] Backend offline or network error (${endpoint}). Running in seamless client fallback mode.`, error.message);
             return this.handleMockFallback(endpoint, options);
         }
     },

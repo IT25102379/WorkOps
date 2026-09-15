@@ -6,6 +6,7 @@ import com.workops.app.dto.OvertimeStatusUpdateDTO;
 import com.workops.app.service.OvertimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class OvertimeController {
     @PostMapping
     @Operation(summary = "Create an Overtime (OT) Request or Allocation (HR/Manager or Employee)")
     public ResponseEntity<ApiResponse<OvertimeRequestDTO>> createOvertime(
-            @RequestBody OvertimeRequestDTO requestDTO,
+            @Valid @RequestBody OvertimeRequestDTO requestDTO,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String username = (userDetails != null && userDetails.getUsername() != null)
@@ -83,7 +84,7 @@ public class OvertimeController {
     @Operation(summary = "Update an Overtime (OT) record details (HR Manager Edit)")
     public ResponseEntity<ApiResponse<OvertimeRequestDTO>> updateOvertime(
             @PathVariable Long id,
-            @RequestBody OvertimeRequestDTO requestDTO,
+            @Valid @RequestBody OvertimeRequestDTO requestDTO,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String username = (userDetails != null && userDetails.getUsername() != null)
@@ -98,7 +99,7 @@ public class OvertimeController {
     @Operation(summary = "Approve or Reject an Overtime request")
     public ResponseEntity<ApiResponse<OvertimeRequestDTO>> updateOvertimeStatus(
             @PathVariable Long id,
-            @RequestBody OvertimeStatusUpdateDTO statusDTO,
+            @Valid @RequestBody OvertimeStatusUpdateDTO statusDTO,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String username = (userDetails != null && userDetails.getUsername() != null)

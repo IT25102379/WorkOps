@@ -4,6 +4,7 @@ import com.workops.app.dto.*;
 import com.workops.app.service.PayrollService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,7 +46,7 @@ public class PayrollController {
     @PostMapping("/generate")
     @Operation(summary = "Execute and persist monthly payroll run into the database")
     public ResponseEntity<ApiResponse<List<PayrollDTO>>> generatePayroll(
-            @RequestBody PayrollRunRequestDTO runRequest,
+            @Valid @RequestBody PayrollRunRequestDTO runRequest,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String username = (userDetails != null && userDetails.getUsername() != null)
@@ -95,7 +96,7 @@ public class PayrollController {
     @PostMapping("/events")
     @Operation(summary = "Create a new payroll event / milestone reminder")
     public ResponseEntity<ApiResponse<PayrollEventDTO>> createEvent(
-            @RequestBody PayrollEventDTO eventDTO,
+            @Valid @RequestBody PayrollEventDTO eventDTO,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         String username = (userDetails != null && userDetails.getUsername() != null)

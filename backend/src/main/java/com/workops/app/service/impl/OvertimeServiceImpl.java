@@ -5,6 +5,7 @@ import com.workops.app.dto.OvertimeStatusUpdateDTO;
 import com.workops.app.entity.Employee;
 import com.workops.app.entity.OvertimeRequest;
 import com.workops.app.entity.User;
+import com.workops.app.exception.BadRequestException;
 import com.workops.app.exception.ResourceNotFoundException;
 import com.workops.app.repository.EmployeeRepository;
 import com.workops.app.repository.OvertimeRequestRepository;
@@ -37,6 +38,10 @@ public class OvertimeServiceImpl implements OvertimeService {
     @Transactional
     public OvertimeRequestDTO createOvertime(OvertimeRequestDTO dto, String username) {
         log.info("Creating overtime request: username={}, employeeCode={}", username, dto.getEmployeeCode());
+
+        if (dto.getStartTime() != null && dto.getEndTime() != null && !dto.getEndTime().isAfter(dto.getStartTime())) {
+            throw new BadRequestException("Overtime end time (" + dto.getEndTime() + ") must be after start time (" + dto.getStartTime() + ")");
+        }
 
         Employee employee = resolveEmployee(dto.getEmployeeId(), dto.getEmployeeCode(), username);
 
@@ -124,6 +129,10 @@ public class OvertimeServiceImpl implements OvertimeService {
         if (dto.getStartTime() != null) request.setStartTime(dto.getStartTime());
         if (dto.getEndTime() != null) request.setEndTime(dto.getEndTime());
         
+        if (request.getStartTime() != null && request.getEndTime() != null && !request.getEndTime().isAfter(request.getStartTime())) {
+            throw new BadRequestException("Overtime end time (" + request.getEndTime() + ") must be after start time (" + request.getStartTime() + ")");
+        }
+
         request.setOtHours(calculateHours(request.getStartTime(), request.getEndTime(), dto.getOtHours()));
         
         if (dto.getMultiplierRate() != null) request.setMultiplierRate(dto.getMultiplierRate());

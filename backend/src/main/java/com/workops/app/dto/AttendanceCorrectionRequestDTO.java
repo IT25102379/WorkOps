@@ -5,6 +5,7 @@ import com.workops.app.entity.enums.RequestStatus;
 import com.workops.app.entity.enums.RequestType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -38,10 +39,13 @@ public class AttendanceCorrectionRequestDTO {
     private LocalDateTime requestedClockOut;
 
     @NotBlank(message = "Reason for attendance correction is required")
+    @Size(min = 10, max = 1000, message = "Reason must provide adequate detail between 10 and 1000 characters")
     private String reason;
 
     private RequestStatus status;
     private String reviewedByName;
+
+    @Size(max = 1000, message = "Review comment must not exceed 1000 characters")
     private String reviewComment;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
