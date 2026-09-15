@@ -89,7 +89,10 @@ export class AttendanceView {
         const shiftMeta = document.getElementById('shift-meta-text');
         if (shiftMeta && status.shiftStartTime) shiftMeta.textContent = `Shift: ${status.shiftStartTime} - ${status.shiftEndTime} (Grace: ${status.gracePeriodMinutes}m)`;
 
-        if (status.isClockedIn && !status.isClockedOut) {
+        const isClockedIn = Boolean(status.isClockedIn || status.clockedIn || status.clockInTime);
+        const isClockedOut = Boolean(status.isClockedOut || status.clockedOut || (status.clockInTime && status.clockOutTime));
+
+        if (isClockedIn && !isClockedOut) {
             button.className = 'btn-clock-toggle clock-out-state';
             button.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Clock Out Now';
             button.disabled = false;
@@ -102,7 +105,7 @@ export class AttendanceView {
             };
             updateTimer();
             setTimerInterval(setInterval(updateTimer, 1000));
-        } else if (status.isClockedIn && status.isClockedOut) {
+        } else if (isClockedOut) {
             button.className = 'btn-clock-toggle btn-secondary';
             button.innerHTML = '<i class="fa-solid fa-check-double"></i> Shift Completed Today';
             button.disabled = true;
@@ -133,12 +136,63 @@ export class AttendanceView {
         if (!body) return;
         this.renderRecordCount(records.length);
         if (!records.length) { this.renderEmptyRecords(); return; }
-        body.innerHTML = records.map(record => {
+        
+        const avatarGradients = [
+            'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            'linear-gradient(135deg, #ec4899 0%, #d946ef 100%)',
+            'linear-gradient(135deg, #06b6d4 0%, #0284c7 100%)',
+            'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+            'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'
+        ];
+
+        body.innerHTML = records.map((record, index) => {
             const statusBadge = getStatusBadge(record.status);
-            const inTime = record.clockInTime ? record.clockInTime.substring(11, 16) : '--:--';
-            const outTime = record.clockOutTime ? record.clockOutTime.substring(11, 16) : '--:--';
-            const initials = (record.employeeName || 'Staff').split(' ').map(name => name[0]).join('').toUpperCase().substring(0, 2);
-            return `<tr><td><div class="d-flex align-items-center gap-3"><div class="user-avatar sm">${initials}</div><div><div class="fw-bold text-primary">${record.employeeName || 'Unknown'}</div><div class="small text-muted">${record.employeeCode || '--'}</div></div></div></td><td>${record.attendanceDate || '--'}</td><td>${inTime}</td><td>${outTime}</td><td>${record.workDurationMinutes || 0} mins</td><td>${statusBadge}</td><td>${record.isGeofenceVerified ? '<span class="text-success">Verified</span>' : '<span class="text-warning">Unverified</span>'}</td><td class="text-end"><button class="btn btn-sm btn-outline-info btn-record-detail" data-id="${record.id}"><i class="fa-solid fa-eye"></i></button></td></tr>`;
+            const inTime = record.clockInTime ? (record.clockInTime.includes(' ') ? record.clockInTime.split(' ')[1].substring(0, 5) : (record.clockInTime.includes('T') ? record.clockInTime.split('T')[1].substring(0, 5) : record.clockInTime.substring(0, 5))) : '--:--';
+            const outTime = record.clockOutTime ? (record.clockOutTime.includes(' ') ? record.clockOutTime.split(' ')[1].substring(0, 5) : (record.clockOutTime.includes('T') ? record.clockOutTime.split('T')[1].substring(0, 5) : record.clockOutTime.substring(0, 5))) : '--:--';
+            const initials = (record.employeeName || 'Staff').split(' ').filter(Boolean).map(name => name[0]).join('').toUpperCase().substring(0, 2) || 'WO';
+            const bgGrad = avatarGradients[index % avatarGradients.length];
+
+            const geofenceBadge = record.isGeofenceVerified 
+                ? `<span class="geo-pill geo-verified" title="Verified within designated office geofence"><i class="fa-solid fa-circle-check"></i> Verified</span>`
+                : `<span class="geo-pill geo-unverified" title="Outside registered office geofence"><i class="fa-solid fa-location-crosshairs"></i> Remote</span>`;
+
+            return `<tr>
+                <td>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="user-avatar-stylish" style="background: ${bgGrad}">${initials}</div>
+                        <div class="employee-meta">
+                            <span class="emp-name">${record.employeeName || 'Unknown'}</span>
+                            <span class="emp-code font-monospace">${record.employeeCode || '--'}</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="cell-date font-monospace"><i class="fa-regular fa-calendar text-muted me-1"></i>${record.attendanceDate || '--'}</span>
+                </td>
+                <td>
+                    <span class="time-pill in-time font-monospace"><i class="fa-solid fa-arrow-right-to-bracket me-1"></i>${inTime}</span>
+                </td>
+                <td>
+                    ${outTime !== '--:--' 
+                        ? `<span class="time-pill out-time font-monospace"><i class="fa-solid fa-arrow-right-from-bracket me-1"></i>${outTime}</span>` 
+                        : `<span class="time-pill empty-time font-monospace">--:--</span>`}
+                </td>
+                <td>
+                    <div class="duration-cell">
+                        <span class="duration-number font-monospace">${record.workDurationMinutes || 0}</span>
+                        <span class="duration-unit text-muted">mins</span>
+                    </div>
+                </td>
+                <td>${statusBadge}</td>
+                <td>${geofenceBadge}</td>
+                <td class="text-end">
+                    <button class="btn-table-action btn-record-detail" title="View Detailed Audit Log" data-id="${record.id}">
+                        <i class="fa-solid fa-file-waveform"></i>
+                        <span>Audit</span>
+                    </button>
+                </td>
+            </tr>`;
         }).join('');
         body.querySelectorAll('.btn-record-detail').forEach(button => button.addEventListener('click', () => onDetail(Number(button.dataset.id))));
     }

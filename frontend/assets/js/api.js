@@ -262,7 +262,9 @@ export const ApiClient = {
             mockDB.todayStatus = {
                 ...mockDB.todayStatus,
                 isClockedIn: true,
+                clockedIn: true,
                 isClockedOut: false,
+                clockedOut: false,
                 clockInTime: clockInTimeStr,
                 currentStatus: status,
                 isGeofenceVerified: true,
@@ -302,6 +304,7 @@ export const ApiClient = {
             const clockOutTimeStr = now.toISOString().replace('T', ' ').substring(0, 19);
 
             mockDB.todayStatus.isClockedOut = true;
+            mockDB.todayStatus.clockedOut = true;
             mockDB.todayStatus.clockOutTime = clockOutTimeStr;
 
             const existing = mockDB.records.find(r => r.attendanceDate === todayStr && r.employeeCode === 'EMP-004');

@@ -107,14 +107,14 @@ class AttendanceController {
 
     getStatusBadgeHTML(status) {
         const badges = {
-            PRESENT: '<span class="badge bg-success">Present</span>',
-            LATE_ARRIVAL: '<span class="badge bg-warning text-dark">Late Arrival</span>',
-            OVERTIME: '<span class="badge bg-info text-dark">Overtime</span>',
-            HALF_DAY: '<span class="badge bg-secondary">Half Day</span>',
-            EARLY_DEPARTURE: '<span class="badge bg-danger">Early Leave</span>',
-            ABSENT: '<span class="badge bg-danger">Absent</span>'
+            PRESENT: '<span class="status-pill status-present"><i class="fa-solid fa-circle-check"></i> Present</span>',
+            LATE_ARRIVAL: '<span class="status-pill status-late"><i class="fa-solid fa-clock-rotate-left"></i> Late Arrival</span>',
+            OVERTIME: '<span class="status-pill status-overtime"><i class="fa-solid fa-bolt"></i> Overtime</span>',
+            HALF_DAY: '<span class="status-pill status-halfday"><i class="fa-solid fa-circle-half-stroke"></i> Half Day</span>',
+            EARLY_DEPARTURE: '<span class="status-pill status-early"><i class="fa-solid fa-person-walking-arrow-right"></i> Early Leave</span>',
+            ABSENT: '<span class="status-pill status-absent"><i class="fa-solid fa-circle-xmark"></i> Absent</span>'
         };
-        return badges[status] || `<span class="badge bg-secondary">${status || 'Unknown'}</span>`;
+        return badges[status] || `<span class="status-pill status-default">${status || 'Unknown'}</span>`;
     }
 
     bindEvents() {
@@ -127,6 +127,7 @@ class AttendanceController {
             this.view.renderRecords(records, status => this.getStatusBadgeHTML(status), id => this.showRecord(id));
         });
         document.getElementById('btn-export-csv')?.addEventListener('click', () => this.exportToCSV());
+        document.getElementById('btn-export-pdf')?.addEventListener('click', () => this.exportToPDF());
         document.getElementById('correction-request-form')?.addEventListener('submit', event => this.handleCorrectionSubmit(event));
     }
 
@@ -196,6 +197,178 @@ class AttendanceController {
         link.click();
         link.remove();
         WorkOps.showToast('success', 'Attendance CSV file exported successfully.');
+    }
+
+    exportToPDF() {
+        if (!this.model.records.length) {
+            WorkOps.showToast('warning', 'No records available to export.');
+            return;
+        }
+
+        try {
+            if (window.jspdf && window.jspdf.jsPDF) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('landscape', 'pt', 'a4');
+
+                // Header & Brand Banner
+                doc.setFillColor(79, 70, 229);
+                doc.rect(0, 0, doc.internal.pageSize.width, 55, 'F');
+
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text('WorkOps — Live Attendance Management Report', 30, 35);
+
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                const todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                doc.text(`Generated: ${todayStr} | Officer: HR Manager`, doc.internal.pageSize.width - 250, 35);
+
+                // Table Rows
+                const headers = [['#', 'Code', 'Employee Name', 'Department', 'Date', 'Clock In', 'Clock Out', 'Duration', 'Status', 'Geofence']];
+                const data = this.model.records.map((r, i) => [
+                    i + 1,
+                    r.employeeCode || '--',
+                    r.employeeName || 'Unknown',
+                    r.departmentName || '--',
+                    r.attendanceDate || '--',
+                    r.clockInTime ? (r.clockInTime.includes(' ') ? r.clockInTime.split(' ')[1].substring(0, 5) : (r.clockInTime.includes('T') ? r.clockInTime.split('T')[1].substring(0, 5) : r.clockInTime.substring(0, 5))) : '--:--',
+                    r.clockOutTime ? (r.clockOutTime.includes(' ') ? r.clockOutTime.split(' ')[1].substring(0, 5) : (r.clockOutTime.includes('T') ? r.clockOutTime.split('T')[1].substring(0, 5) : r.clockOutTime.substring(0, 5))) : '--:--',
+                    `${r.workDurationMinutes || 0}m`,
+                    r.status || 'PRESENT',
+                    r.isGeofenceVerified ? 'Verified' : 'Remote'
+                ]);
+
+                doc.autoTable({
+                    head: headers,
+                    body: data,
+                    startY: 75,
+                    theme: 'grid',
+                    headStyles: {
+                        fillColor: [30, 41, 59],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold',
+                        fontSize: 9,
+                        halign: 'center'
+                    },
+                    bodyStyles: {
+                        fontSize: 8.5,
+                        textColor: [30, 41, 59],
+                        halign: 'center'
+                    },
+                    columnStyles: {
+                        0: { cellWidth: 25, halign: 'center' },
+                        1: { cellWidth: 70, halign: 'center', fontStyle: 'bold' },
+                        2: { cellWidth: 130, halign: 'left' },
+                        3: { cellWidth: 120, halign: 'left' },
+                        4: { cellWidth: 70, halign: 'center' },
+                        5: { cellWidth: 60, halign: 'center' },
+                        6: { cellWidth: 60, halign: 'center' },
+                        7: { cellWidth: 60, halign: 'center' },
+                        8: { cellWidth: 80, halign: 'center' },
+                        9: { cellWidth: 65, halign: 'center' }
+                    },
+                    alternateRowStyles: {
+                        fillColor: [248, 250, 252]
+                    },
+                    margin: { top: 75, left: 30, right: 30 },
+                    didDrawPage: () => {
+                        doc.setFontSize(8);
+                        doc.setTextColor(148, 163, 184);
+                        doc.text(
+                            `WorkOps Enterprise Workforce Management — Page ${doc.internal.getNumberOfPages()}`,
+                            doc.internal.pageSize.width / 2,
+                            doc.internal.pageSize.height - 15,
+                            { align: 'center' }
+                        );
+                    }
+                });
+
+                doc.save(`workops_attendance_report_${new Date().toISOString().split('T')[0]}.pdf`);
+                WorkOps.showToast('success', 'Attendance PDF report downloaded successfully.');
+            } else {
+                this.fallbackPrintPDF();
+            }
+        } catch (error) {
+            console.error('PDF export error:', error);
+            this.fallbackPrintPDF();
+        }
+    }
+
+    fallbackPrintPDF() {
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            WorkOps.showToast('error', 'Pop-up blocked. Please allow pop-ups to print PDF.');
+            return;
+        }
+
+        const rowsHtml = this.model.records.map((r, i) => `
+            <tr>
+                <td style="text-align:center;padding:8px;border:1px solid #cbd5e1;">${i + 1}</td>
+                <td style="padding:8px;border:1px solid #cbd5e1;font-family:monospace;font-weight:bold;">${r.employeeCode || '--'}</td>
+                <td style="padding:8px;border:1px solid #cbd5e1;font-weight:600;">${r.employeeName || 'Unknown'}</td>
+                <td style="padding:8px;border:1px solid #cbd5e1;">${r.departmentName || '--'}</td>
+                <td style="text-align:center;padding:8px;border:1px solid #cbd5e1;">${r.attendanceDate || '--'}</td>
+                <td style="text-align:center;padding:8px;border:1px solid #cbd5e1;">${r.clockInTime ? (r.clockInTime.includes(' ') ? r.clockInTime.split(' ')[1].substring(0, 5) : r.clockInTime.substring(0, 5)) : '--:--'}</td>
+                <td style="text-align:center;padding:8px;border:1px solid #cbd5e1;">${r.clockOutTime ? (r.clockOutTime.includes(' ') ? r.clockOutTime.split(' ')[1].substring(0, 5) : r.clockOutTime.substring(0, 5)) : '--:--'}</td>
+                <td style="text-align:center;padding:8px;border:1px solid #cbd5e1;">${r.workDurationMinutes || 0} mins</td>
+                <td style="text-align:center;padding:8px;border:1px solid #cbd5e1;">${r.status || 'PRESENT'}</td>
+                <td style="text-align:center;padding:8px;border:1px solid #cbd5e1;">${r.isGeofenceVerified ? 'Verified' : 'Remote'}</td>
+            </tr>
+        `).join('');
+
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>WorkOps Attendance Report</title>
+                <style>
+                    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 30px; color: #1e293b; }
+                    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4f46e5; padding-bottom: 16px; margin-bottom: 24px; }
+                    .title { font-size: 20px; font-weight: bold; color: #4f46e5; }
+                    .meta { font-size: 12px; color: #64748b; }
+                    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                    th { background: #1e293b; color: #ffffff; padding: 10px 8px; border: 1px solid #0f172a; text-align: center; text-transform: uppercase; font-size: 10px; }
+                    @media print { body { padding: 0; } }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div>
+                        <div class="title">WorkOps — Attendance Report</div>
+                        <div class="meta">Official Employee Shift & Attendance Summary</div>
+                    </div>
+                    <div style="text-align:right;" class="meta">
+                        <div>Date: ${new Date().toLocaleDateString('en-GB')}</div>
+                        <div>Generated by: HR Manager</div>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Date</th>
+                            <th>Clock In</th>
+                            <th>Clock Out</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Geofence</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+            printWindow.print();
+        }, 500);
+        WorkOps.showToast('success', 'PDF Print view opened.');
     }
 }
 

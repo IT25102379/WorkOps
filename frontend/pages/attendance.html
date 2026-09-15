@@ -21,7 +21,10 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="stylesheet" href="../assets/css/attendance.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jsPDF & AutoTable for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -75,10 +78,10 @@
 
         <div class="sidebar-footer">
             <div class="user-snippet">
-                <div class="user-avatar session-user-avatar">JD</div>
+                <div class="user-avatar session-user-avatar">HR</div>
                 <div class="user-info">
-                    <div class="user-name session-user-name">John Doe</div>
-                    <div class="user-role session-user-role">Senior Engineer</div>
+                    <div class="user-name session-user-name">HR Manager</div>
+                    <div class="user-role session-user-role">Human Resources</div>
                 </div>
                 <a href="../login.html" class="btn btn-sm text-secondary p-1" title="Sign Out">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -102,12 +105,6 @@
             </div>
 
             <div class="topbar-right">
-                <!-- GPS Geofence Pill -->
-                <div class="geo-status-indicator d-none d-md-flex" id="geo-status-pill">
-                    <div class="radar-dot"></div>
-                    <span id="geo-status-text">Acquiring Geolocation...</span>
-                </div>
-
                 <!-- Theme Toggle Button -->
                 <button class="btn-icon-action" id="theme-toggle-btn" title="Toggle Theme">
                     <i class="fa-solid fa-sun"></i>
@@ -247,20 +244,21 @@
             </div>
 
             <!-- Attendance Records & Filter Toolbar -->
+            <!-- Attendance Records & Filter Toolbar (Full Width) -->
             <div class="row g-4">
-                <div class="col-xl-8">
+                <div class="col-12">
                     <!-- Filter Toolbar -->
-                    <div class="filter-toolbar">
+                    <div class="filter-toolbar mb-4">
                         <div class="row g-3 align-items-end">
-                            <div class="col-md-3 col-6">
+                            <div class="col-xl-2 col-md-3 col-6">
                                 <label class="form-label">Start Date</label>
                                 <input type="date" class="form-control" id="filter-start-date">
                             </div>
-                            <div class="col-md-3 col-6">
+                            <div class="col-xl-2 col-md-3 col-6">
                                 <label class="form-label">End Date</label>
                                 <input type="date" class="form-control" id="filter-end-date">
                             </div>
-                            <div class="col-md-3 col-6">
+                            <div class="col-xl-2 col-md-3 col-6">
                                 <label class="form-label">Department</label>
                                 <select class="form-select" id="filter-dept">
                                     <option value="">All Departments</option>
@@ -270,7 +268,7 @@
                                     <option value="4">Marketing</option>
                                 </select>
                             </div>
-                            <div class="col-md-3 col-6">
+                            <div class="col-xl-2 col-md-3 col-6">
                                 <label class="form-label">Status</label>
                                 <select class="form-select" id="filter-status">
                                     <option value="">All Statuses</option>
@@ -282,23 +280,27 @@
                                     <option value="ABSENT">Absent</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-xl-4 col-md-12">
+                                <label class="form-label">Search</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-secondary border-secondary text-muted">
+                                    <span class="input-group-text bg-light border text-muted">
                                         <i class="fa-solid fa-magnifying-glass"></i>
                                     </span>
                                     <input type="text" class="form-control" id="filter-search" placeholder="Search by employee name or code...">
                                 </div>
                             </div>
-                            <div class="col-md-6 d-flex gap-2 justify-content-md-end">
-                                <button class="btn btn-workops-outline" id="btn-reset-filters">
-                                    <i class="fa-solid fa-rotate-left"></i> Reset
+                            <div class="col-12 d-flex flex-wrap gap-2 justify-content-end pt-2 border-top">
+                                <button class="btn btn-workops-outline px-3" id="btn-reset-filters">
+                                    <i class="fa-solid fa-rotate-left me-1"></i> Reset
                                 </button>
-                                <button class="btn btn-workops-primary" id="btn-apply-filters">
-                                    <i class="fa-solid fa-filter"></i> Apply
+                                <button class="btn btn-workops-primary px-4" id="btn-apply-filters">
+                                    <i class="fa-solid fa-filter me-1"></i> Apply Filters
                                 </button>
-                                <button class="btn btn-workops-success" id="btn-export-csv">
-                                    <i class="fa-solid fa-file-excel"></i> Export CSV
+                                <button class="btn btn-workops-success px-4" id="btn-export-csv">
+                                    <i class="fa-solid fa-file-excel me-1"></i> Export CSV
+                                </button>
+                                <button class="btn btn-danger px-4" id="btn-export-pdf" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);">
+                                    <i class="fa-solid fa-file-pdf me-1"></i> Export PDF
                                 </button>
                             </div>
                         </div>
@@ -306,9 +308,17 @@
 
                     <!-- Attendance Records Table -->
                     <div class="table-custom-container">
-                        <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center bg-secondary">
-                            <h5 class="mb-0 fs-6 fw-bold">Live Attendance Logs</h5>
-                            <span class="small text-muted" id="records-total-count">Loading logs...</span>
+                        <div class="table-custom-header p-3 border-bottom d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="table-header-icon">
+                                    <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0 fs-6 fw-bold">Live Attendance Logs</h5>
+                                    <span class="small text-muted">Real-time daily shift check-ins & duration records</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill font-monospace" id="records-total-count">Loading logs...</span>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-custom">
@@ -321,34 +331,13 @@
                                         <th>Work Duration</th>
                                         <th>Status</th>
                                         <th>Geofence</th>
-                                        <th class="text-end">Action</th>
+                                        <th class="text-end">Audit</th>
                                     </tr>
                                 </thead>
                                 <tbody id="attendance-table-body">
                                     <!-- Populated dynamically via JS -->
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Manager / HR Review & Correction Panel -->
-                <div class="col-xl-4">
-                    <div class="glass-card p-4 attendance-manager-only">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0 fs-6 fw-bold">
-                                <i class="fa-solid fa-clipboard-check text-primary me-2"></i>
-                                Correction Requests
-                            </h5>
-                            <span class="badge bg-danger rounded-pill" id="pending-corrections-badge">0</span>
-                        </div>
-                        <p class="small text-muted mb-4">
-                            Review and approve missed clock-in or time amendment submissions from team members.
-                        </p>
-
-                        <!-- Correction Requests List -->
-                        <div id="correction-requests-list" style="max-height: 580px; overflow-y: auto;">
-                            <!-- Populated dynamically via JS -->
                         </div>
                     </div>
                 </div>
