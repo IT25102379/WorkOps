@@ -2,26 +2,44 @@
 <html th:replace="~{layout/base :: html(content=~{::div.content-wrapper}, extraScripts=~{::script})}">
 <body>
 <div class="content-wrapper">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Manage Leave Requests (Manager/HR)</h2>
-        <a th:href="@{/leave/report}" class="btn btn-outline-primary"><i class="bi bi-file-earmark-bar-graph me-2"></i>View Reports</a>
+        <div>
+            <h2 class="mb-1">Manage Leave Requests</h2>
+            <span th:if="${approverRole == 'HR_OFFICER'}" class="badge bg-primary fs-6">
+                <i class="bi bi-shield-check me-1"></i>HR Officer — Can approve all requests
+            </span>
+            <span th:if="${approverRole == 'MANAGER'}" class="badge bg-info text-dark fs-6">
+                <i class="bi bi-person-badge me-1"></i>Manager — Can approve Employee requests only
+            </span>
+        </div>
+    </div>
+
+    <!-- Info Banner for Manager -->
+    <div th:if="${approverRole == 'MANAGER'}" class="alert alert-info d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+        <div>
+            As a <strong>Manager</strong>, you can approve or reject leave requests from <strong>Employees</strong> only.
+            If a Manager submits a leave request, it must be reviewed by <strong>HR</strong>.
+        </div>
     </div>
 
     <!-- Stats -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-warning text-dark h-100">
-                <div class="card-body text-center">
-                    <h1 th:text="${pendingRequests.size()}">0</h1>
-                    <p class="mb-0 text-uppercase fw-bold">Pending Requests</p>
+            <div class="card text-center" style="border: 1px solid rgba(234,179,8,0.4) !important;">
+                <div class="card-body">
+                    <h1 class="text-warning fw-bold" th:text="${pendingRequests.size()}">0</h1>
+                    <p class="mb-0 text-uppercase fw-bold text-muted small">Pending Requests</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Pending Requests Table -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-white">
-            <h5 class="mb-0">Pending Requests</h5>
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clock-history me-2 text-warning"></i>Pending Requests</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -30,8 +48,9 @@
                         <tr>
                             <th>Req ID</th>
                             <th>Employee</th>
+                            <th>Role</th>
                             <th>Dept</th>
-                            <th>Type</th>
+                            <th>Leave Type</th>
                             <th>Dates</th>
                             <th>Days</th>
                             <th>Status</th>
@@ -40,84 +59,187 @@
                     </thead>
                     <tbody>
                         <tr th:each="req : ${pendingRequests}">
-                            <td th:text="'#' + ${req.leaveRequestId}"></td>
+                            <td th:text="'#' + ${req.leaveRequestId}" class="fw-bold"></td>
                             <td>
-                                <span th:text="${req.employee.fullName}" class="fw-bold d-block"></span>
+                                <span th:text="${req.employee.firstName + ' ' + req.employee.lastName}" class="fw-bold d-block"></span>
+                                <small class="text-muted" th:text="${req.employee.email}"></small>
+                            </td>
+                            <td>
+                                <span th:if="${req.employee.role == 'EMPLOYEE'}" class="badge bg-secondary">Employee</span>
+                                <span th:if="${req.employee.role == 'MANAGER'}" class="badge bg-info text-dark">Manager</span>
+                                <span th:if="${req.employee.role == 'HR_OFFICER'}" class="badge bg-primary">HR</span>
                             </td>
                             <td th:text="${req.employee.department}"></td>
                             <td th:text="${req.leaveType.leaveTypeName}"></td>
                             <td>
-                                <span th:text="${#temporals.format(req.startDate, 'MMM dd')}"></span> - 
+                                <span th:text="${#temporals.format(req.startDate, 'MMM dd')}"></span> –
                                 <span th:text="${#temporals.format(req.endDate, 'MMM dd')}"></span>
                             </td>
-                            <td th:text="${req.numberOfDays}"></td>
+                            <td><span class="badge bg-light text-dark border" th:text="${req.numberOfDays} + ' days'"></span></td>
                             <td><span class="badge bg-warning text-dark">PENDING</span></td>
                             <td>
-                                <button class="btn btn-sm btn-success action-btn" data-bs-toggle="modal" th:attr="data-bs-target='#approveModal'+${req.leaveRequestId}">Approve</button>
-                                <button class="btn btn-sm btn-danger action-btn" data-bs-toggle="modal" th:attr="data-bs-target='#rejectModal'+${req.leaveRequestId}">Reject</button>
-
-                                <!-- Approve Modal -->
-                                <div class="modal fade" th:id="'approveModal'+${req.leaveRequestId}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form th:action="@{/leave/manage/approve/{id}(id=${req.leaveRequestId})}" method="post">
-                                                <div class="modal-header bg-success text-white">
-                                                    <h5 class="modal-title">Approve Leave Request</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Are you sure you want to approve this leave request for <strong><span th:text="${req.employee.fullName}"></span></strong>?</p>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Approval Comment (Optional)</label>
-                                                        <textarea name="comment" class="form-control" rows="2"></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-success">Confirm Approve</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Reject Modal -->
-                                <div class="modal fade" th:id="'rejectModal'+${req.leaveRequestId}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form th:action="@{/leave/manage/reject/{id}(id=${req.leaveRequestId})}" method="post">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title">Reject Leave Request</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Are you sure you want to reject this leave request for <strong><span th:text="${req.employee.fullName}"></span></strong>?</p>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Rejection Reason (Required) <span class="text-danger">*</span></label>
-                                                        <textarea name="comment" class="form-control" rows="2" required></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-danger">Confirm Reject</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                <button class="btn btn-sm btn-success me-1"
+                                        data-bs-toggle="modal"
+                                        th:attr="data-bs-target='#approveModal'+${req.leaveRequestId}">
+                                    <i class="bi bi-check-circle me-1"></i>Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger"
+                                        data-bs-toggle="modal"
+                                        th:attr="data-bs-target='#rejectModal'+${req.leaveRequestId}">
+                                    <i class="bi bi-x-circle me-1"></i>Reject
+                                </button>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(pendingRequests)}">
-                            <td colspan="8" class="text-center py-4">No pending requests.</td>
+                            <td colspan="9" class="text-center py-5 text-muted">
+                                <i class="bi bi-check-circle fs-1 d-block mb-2 text-success"></i>
+                                No pending requests for your review.
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+
+    <!-- All Requests History -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>All Leave Requests History</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Req ID</th>
+                            <th>Employee</th>
+                            <th>Leave Type</th>
+                            <th>Dates</th>
+                            <th>Days</th>
+                            <th>Status</th>
+                            <th>Reviewed By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="req : ${allRequests}">
+                            <td th:text="'#' + ${req.leaveRequestId}" class="fw-bold"></td>
+                            <td th:text="${req.employee.firstName + ' ' + req.employee.lastName}"></td>
+                            <td th:text="${req.leaveType.leaveTypeName}"></td>
+                            <td>
+                                <span th:text="${#temporals.format(req.startDate, 'MMM dd')}"></span> –
+                                <span th:text="${#temporals.format(req.endDate, 'MMM dd')}"></span>
+                            </td>
+                            <td th:text="${req.numberOfDays}"></td>
+                            <td>
+                                <span th:if="${req.status.name() == 'PENDING'}" class="badge bg-warning text-dark">PENDING</span>
+                                <span th:if="${req.status.name() == 'APPROVED'}" class="badge bg-success">APPROVED</span>
+                                <span th:if="${req.status.name() == 'REJECTED'}" class="badge bg-danger">REJECTED</span>
+                                <span th:if="${req.status.name() == 'CANCELLED'}" class="badge bg-secondary">CANCELLED</span>
+                            </td>
+                            <td>
+                                <span th:if="${req.approvedBy != null}"
+                                      th:text="${req.approvedBy.firstName + ' ' + req.approvedBy.lastName}"
+                                      class="text-muted small"></span>
+                                <span th:if="${req.approvedBy == null}" class="text-muted small">—</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(allRequests)}">
+                            <td colspan="7" class="text-center py-4 text-muted">No leave requests found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- Modals — rendered INSIDE content-wrapper so Thymeleaf outputs them -->
+    <!-- ============================================================ -->
+    <div th:each="req : ${pendingRequests}">
+
+        <!-- Approve Modal -->
+        <div class="modal fade" th:id="'approveModal'+${req.leaveRequestId}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <form th:action="@{/leave/manage/approve/{id}(id=${req.leaveRequestId})}" method="post">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title"><i class="bi bi-check-circle me-2"></i>Approve Leave Request</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-3">You are about to <strong class="text-success">approve</strong> the leave request for
+                                <strong th:text="${req.employee.firstName + ' ' + req.employee.lastName}"></strong>
+                                <span class="badge bg-secondary ms-1" th:text="${req.employee.role}"></span>
+                            </p>
+                            <div class="alert alert-light border small mb-3">
+                                <strong>Leave Type:</strong> <span th:text="${req.leaveType.leaveTypeName}"></span><br>
+                                <strong>Duration:</strong>
+                                <span th:text="${#temporals.format(req.startDate, 'MMM dd, yyyy')}"></span> –
+                                <span th:text="${#temporals.format(req.endDate, 'MMM dd, yyyy')}"></span>
+                                (<span th:text="${req.numberOfDays}"></span> days)<br>
+                                <strong>Reason:</strong> <span th:text="${req.reason}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Comment (Optional)</label>
+                                <textarea name="comment" class="form-control" rows="2" placeholder="Add an approval comment..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x me-1"></i>Cancel
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-1"></i>Confirm Approve
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reject Modal -->
+        <div class="modal fade" th:id="'rejectModal'+${req.leaveRequestId}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <form th:action="@{/leave/manage/reject/{id}(id=${req.leaveRequestId})}" method="post">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title"><i class="bi bi-x-circle me-2"></i>Reject Leave Request</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-3">You are about to <strong class="text-danger">reject</strong> the leave request for
+                                <strong th:text="${req.employee.firstName + ' ' + req.employee.lastName}"></strong>
+                                <span class="badge bg-secondary ms-1" th:text="${req.employee.role}"></span>
+                            </p>
+                            <div class="alert alert-light border small mb-3">
+                                <strong>Leave Type:</strong> <span th:text="${req.leaveType.leaveTypeName}"></span><br>
+                                <strong>Duration:</strong>
+                                <span th:text="${#temporals.format(req.startDate, 'MMM dd, yyyy')}"></span> –
+                                <span th:text="${#temporals.format(req.endDate, 'MMM dd, yyyy')}"></span>
+                                (<span th:text="${req.numberOfDays}"></span> days)<br>
+                                <strong>Reason:</strong> <span th:text="${req.reason}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Rejection Reason <span class="text-danger">*</span></label>
+                                <textarea name="comment" class="form-control" rows="2" required placeholder="Reason for rejection..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x me-1"></i>Cancel
+                            </button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle me-1"></i>Confirm Reject
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
-<script>
-    // additional scripts if needed
-</script>
 </body>
 </html>

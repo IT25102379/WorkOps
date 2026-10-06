@@ -20,11 +20,19 @@
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-people me-2"></i>Employees</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-calendar-check me-2"></i>Attendance</a>
-            <a th:href="@{/leave/dashboard}" class="list-group-item list-group-item-action bg-primary text-white"><i class="bi bi-calendar2-minus me-2"></i>Leave Management</a>
+            <!-- HR Officer: only Manage Leave -->
+            <a th:if="${session.loggedInEmployee != null and session.loggedInEmployee.role == 'HR_OFFICER'}" th:href="@{/leave/manage}" class="list-group-item list-group-item-action bg-primary text-white"><i class="bi bi-shield-check me-2"></i>Manage Leave (HR)</a>
+
+            <!-- Manager: Manage Leave + My Leave -->
+            <a th:if="${session.loggedInEmployee != null and session.loggedInEmployee.role == 'MANAGER'}" th:href="@{/leave/manage}" class="list-group-item list-group-item-action bg-primary text-white"><i class="bi bi-clipboard-check me-2"></i>Manage Leave</a>
+            <a th:if="${session.loggedInEmployee != null and session.loggedInEmployee.role == 'MANAGER'}" th:href="@{/leave/dashboard}" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-calendar2-minus me-2"></i>My Leave</a>
+
+            <!-- Employee: My Leave only -->
+            <a th:if="${session.loggedInEmployee != null and session.loggedInEmployee.role == 'EMPLOYEE'}" th:href="@{/leave/dashboard}" class="list-group-item list-group-item-action bg-primary text-white"><i class="bi bi-calendar2-minus me-2"></i>My Leave</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-cash me-2"></i>Payroll</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-graph-up me-2"></i>Performance</a>
             <a href="#" class="list-group-item list-group-item-action bg-dark text-white"><i class="bi bi-book me-2"></i>Staff Development</a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white mt-5 border-top"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+            <a th:href="@{/logout}" class="list-group-item list-group-item-action bg-dark text-white mt-5 border-top"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
         </div>
     </div>
 
@@ -46,16 +54,16 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <div class="ms-2 text-end d-none d-md-block">
-                                    <span class="d-block fw-bold" style="line-height: 1;">John Doe</span>
-                                    <small class="text-muted">EMPLOYEE / IT</small>
+                                <div class="ms-2 text-end d-none d-md-block" th:if="${session.loggedInEmployee != null}">
+                                    <span class="d-block fw-bold" style="line-height: 1;" th:text="${session.loggedInEmployee.firstName + ' ' + session.loggedInEmployee.lastName}">User Name</span>
+                                    <small class="text-muted" th:text="${session.loggedInEmployee.role + ' / ' + session.loggedInEmployee.department}">ROLE / DEPT</small>
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="#">Profile</a>
                                 <a class="dropdown-item" href="#">Settings</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Logout</a>
+                                <a class="dropdown-item" th:href="@{/logout}">Logout</a>
                             </div>
                         </li>
                     </ul>

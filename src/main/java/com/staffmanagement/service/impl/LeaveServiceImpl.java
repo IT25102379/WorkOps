@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class LeaveServiceImpl implements LeaveService {
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         LeaveType leaveType = leaveTypeService.getLeaveTypeById(dto.getLeaveTypeId());
-        
+
         List<LeaveRequest> overlapping = leaveRequestRepository.findOverlappingLeaveRequests(
                 employeeId, dto.getStartDate(), dto.getEndDate());
         if (!overlapping.isEmpty()) {
@@ -50,9 +51,9 @@ public class LeaveServiceImpl implements LeaveService {
         int days = calculateDays(dto.getStartDate(), dto.getEndDate());
         dto.setNumberOfDays(days);
 
-        // Check Balance early
         if (!leaveType.getLeaveTypeName().equalsIgnoreCase("Unpaid Leave")) {
-            LeaveBalance balance = leaveBalanceService.getLeaveBalance(employeeId, leaveType.getLeaveTypeId(), dto.getStartDate().getYear());
+            LeaveBalance balance = leaveBalanceService.getLeaveBalance(
+                    employeeId, leaveType.getLeaveTypeId(), dto.getStartDate().getYear());
             if (balance.getRemainingDays() < days) {
                 throw new InsufficientLeaveBalanceException("Insufficient leave balance.");
             }
@@ -88,21 +89,20 @@ public class LeaveServiceImpl implements LeaveService {
         if (request.getStatus() != LeaveStatus.PENDING) {
             throw new IllegalStateException("Only PENDING leave requests can be edited");
         }
-        
+
         validateDates(dto.getStartDate(), dto.getEndDate());
 
         List<LeaveRequest> overlapping = leaveRequestRepository.findOverlappingLeaveRequests(
                 request.getEmployee().getEmployeeId(), dto.getStartDate(), dto.getEndDate());
-        
+
         boolean hasOverlap = overlapping.stream().anyMatch(lr -> !lr.getLeaveRequestId().equals(id));
         if (hasOverlap) {
             throw new IllegalArgumentException("An overlapping leave request already exists.");
         }
 
         int days = calculateDays(dto.getStartDate(), dto.getEndDate());
-        
         LeaveType leaveType = leaveTypeService.getLeaveTypeById(dto.getLeaveTypeId());
-        
+
         if (!leaveType.getLeaveTypeName().equalsIgnoreCase("Unpaid Leave")) {
             LeaveBalance balance = leaveBalanceService.getLeaveBalance(
                     request.getEmployee().getEmployeeId(), leaveType.getLeaveTypeId(), dto.getStartDate().getYear());
@@ -141,26 +141,61 @@ public class LeaveServiceImpl implements LeaveService {
         return leaveRequestRepository.findByStatus(LeaveStatus.PENDING);
     }
 
+    /**
+     * Role-based filtering:
+     *  - HR_OFFICER → sees ALL pending requests (employees + managers)
+     *  - MANAGER    → sees only EMPLOYEE role pending requests (not other managers' requests)
+     */
+    @Override
+    public List<LeaveRequest> getPendingRequestsForApprover(Employee approver) {
+        List<LeaveRequest> allPending = leaveRequestRepository.findByStatus(LeaveStatus.PENDING);
+
+        // Exclude own requests for everyone
+        if ("HR_OFFICER".equals(approver.getRole())) {
+            // HR sees all pending except their own
+            return allPending.stream()
+                    .filter(r -> !r.getEmployee().getEmployeeId().equals(approver.getEmployeeId()))
+                    .collect(Collectors.toList());
+        } else {
+            // MANAGER sees only EMPLOYEE role requests (not MANAGER or HR_OFFICER requests)
+            return allPending.stream()
+                    .filter(r -> !r.getEmployee().getEmployeeId().equals(approver.getEmployeeId()))
+                    .filter(r -> "EMPLOYEE".equals(r.getEmployee().getRole()))
+                    .collect(Collectors.toList());
+        }
+    }
+
     @Override
     @Transactional
     public void approveLeave(Long id, Long approverId, String comment) {
         LeaveRequest request = getLeaveById(id);
+
         if (request.getEmployee().getEmployeeId().equals(approverId)) {
             throw new IllegalStateException("You cannot approve your own leave request.");
         }
         if (request.getStatus() != LeaveStatus.PENDING) {
-            throw new IllegalStateException("Leave request is already processed");
+            throw new IllegalStateException("Leave request is already processed.");
         }
 
         Employee approver = employeeRepository.findById(approverId)
                 .orElseThrow(() -> new ResourceNotFoundException("Approver not found"));
 
-        // Deduct balance
-        leaveBalanceService.deductLeaveBalance(
-                request.getEmployee().getEmployeeId(), 
-                request.getLeaveType().getLeaveTypeId(), 
-                request.getStartDate().getYear(), 
-                request.getNumberOfDays());
+        // Role-based permission check:
+        // If the requester is a MANAGER or HR_OFFICER, only HR_OFFICER can approve
+        String requesterRole = request.getEmployee().getRole();
+        if (("MANAGER".equals(requesterRole) || "HR_OFFICER".equals(requesterRole))
+                && !"HR_OFFICER".equals(approver.getRole())) {
+            throw new IllegalStateException("Only HR Officer can approve a Manager's leave request.");
+        }
+
+        // Deduct balance only if NOT Unpaid Leave
+        if (!request.getLeaveType().getLeaveTypeName().equalsIgnoreCase("Unpaid Leave")) {
+            leaveBalanceService.deductLeaveBalance(
+                    request.getEmployee().getEmployeeId(),
+                    request.getLeaveType().getLeaveTypeId(),
+                    request.getStartDate().getYear(),
+                    request.getNumberOfDays());
+        }
 
         request.setStatus(LeaveStatus.APPROVED);
         request.setApprovedBy(approver);
@@ -174,8 +209,9 @@ public class LeaveServiceImpl implements LeaveService {
     @Transactional
     public void rejectLeave(Long id, Long reviewerId, String comment) {
         LeaveRequest request = getLeaveById(id);
+
         if (request.getStatus() != LeaveStatus.PENDING) {
-            throw new IllegalStateException("Leave request is already processed");
+            throw new IllegalStateException("Leave request is already processed.");
         }
         if (comment == null || comment.trim().isEmpty()) {
             throw new IllegalArgumentException("Rejection reason is required.");
@@ -184,8 +220,15 @@ public class LeaveServiceImpl implements LeaveService {
         Employee reviewer = employeeRepository.findById(reviewerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Reviewer not found"));
 
+        // Role-based permission check
+        String requesterRole = request.getEmployee().getRole();
+        if (("MANAGER".equals(requesterRole) || "HR_OFFICER".equals(requesterRole))
+                && !"HR_OFFICER".equals(reviewer.getRole())) {
+            throw new IllegalStateException("Only HR Officer can reject a Manager's leave request.");
+        }
+
         request.setStatus(LeaveStatus.REJECTED);
-        request.setApprovedBy(reviewer); // Using this field to track who rejected
+        request.setApprovedBy(reviewer);
         request.setApprovedDate(LocalDateTime.now());
         request.setManagerComment(comment);
 

@@ -1,11 +1,13 @@
 package com.staffmanagement.controller;
 
 import com.staffmanagement.dto.LeaveRequestDTO;
+import com.staffmanagement.entity.Employee;
 import com.staffmanagement.entity.LeaveBalance;
 import com.staffmanagement.entity.LeaveRequest;
 import com.staffmanagement.service.LeaveBalanceService;
 import com.staffmanagement.service.LeaveService;
 import com.staffmanagement.service.LeaveTypeService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,14 +28,20 @@ public class LeaveController {
     private final LeaveTypeService leaveTypeService;
     private final LeaveBalanceService leaveBalanceService;
 
-    // Hardcoded for testing. In a real app, get from Spring Security Context.
-    private final Long LOGGED_IN_EMPLOYEE_ID = 1L;
+    private Long getLoggedInEmployeeId(HttpSession session) {
+        Employee employee = (Employee) session.getAttribute("loggedInEmployee");
+        if (employee != null) {
+            return employee.getEmployeeId();
+        }
+        throw new IllegalStateException("User not logged in");
+    }
 
     @GetMapping("/dashboard")
-    public String leaveDashboard(Model model) {
+    public String leaveDashboard(Model model, HttpSession session) {
+        Long empId = getLoggedInEmployeeId(session);
         int currentYear = LocalDate.now().getYear();
-        List<LeaveBalance> balances = leaveBalanceService.getLeaveBalancesForEmployee(LOGGED_IN_EMPLOYEE_ID, currentYear);
-        List<LeaveRequest> history = leaveService.getEmployeeLeaveHistory(LOGGED_IN_EMPLOYEE_ID);
+        List<LeaveBalance> balances = leaveBalanceService.getLeaveBalancesForEmployee(empId, currentYear);
+        List<LeaveRequest> history = leaveService.getEmployeeLeaveHistory(empId);
         
         model.addAttribute("balances", balances);
         model.addAttribute("history", history);
@@ -53,6 +61,7 @@ public class LeaveController {
     @PostMapping("/apply")
     public String applyLeave(@Valid @ModelAttribute("leaveRequestDTO") LeaveRequestDTO dto, 
                              BindingResult bindingResult, 
+                             HttpSession session,
                              RedirectAttributes redirectAttributes) {
         
         if (bindingResult.hasErrors()) {
@@ -62,7 +71,8 @@ public class LeaveController {
         }
 
         try {
-            leaveService.applyLeave(dto, LOGGED_IN_EMPLOYEE_ID);
+            Long empId = getLoggedInEmployeeId(session);
+            leaveService.applyLeave(dto, empId);
             redirectAttributes.addFlashAttribute("successMessage", "Leave request submitted successfully.");
             return "redirect:/leave/dashboard";
         } catch (Exception e) {
@@ -73,17 +83,19 @@ public class LeaveController {
     }
 
     @GetMapping("/history")
-    public String leaveHistory(Model model) {
-        List<LeaveRequest> history = leaveService.getEmployeeLeaveHistory(LOGGED_IN_EMPLOYEE_ID);
+    public String leaveHistory(Model model, HttpSession session) {
+        Long empId = getLoggedInEmployeeId(session);
+        List<LeaveRequest> history = leaveService.getEmployeeLeaveHistory(empId);
         model.addAttribute("history", history);
         return "leave/leave-history";
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditLeaveForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String showEditLeaveForm(@PathVariable Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
+            Long empId = getLoggedInEmployeeId(session);
             LeaveRequest request = leaveService.getLeaveById(id);
-            if (!request.getEmployee().getEmployeeId().equals(LOGGED_IN_EMPLOYEE_ID)) {
+            if (!request.getEmployee().getEmployeeId().equals(empId)) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Access Denied");
                 return "redirect:/leave/dashboard";
             }
@@ -129,10 +141,11 @@ public class LeaveController {
     }
 
     @PostMapping("/cancel/{id}")
-    public String cancelLeave(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String cancelLeave(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
+            Long empId = getLoggedInEmployeeId(session);
             LeaveRequest request = leaveService.getLeaveById(id);
-            if (!request.getEmployee().getEmployeeId().equals(LOGGED_IN_EMPLOYEE_ID)) {
+            if (!request.getEmployee().getEmployeeId().equals(empId)) {
                 throw new IllegalStateException("Access Denied");
             }
             leaveService.cancelLeave(id);

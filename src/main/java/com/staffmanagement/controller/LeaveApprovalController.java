@@ -1,6 +1,8 @@
 package com.staffmanagement.controller;
 
+import com.staffmanagement.entity.Employee;
 import com.staffmanagement.service.LeaveService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,22 +16,30 @@ public class LeaveApprovalController {
 
     private final LeaveService leaveService;
 
-    // Hardcoded for testing.
-    private final Long LOGGED_IN_MANAGER_ID = 2L;
+    private Employee getLoggedInApprover(HttpSession session) {
+        Employee employee = (Employee) session.getAttribute("loggedInEmployee");
+        if (employee == null) throw new IllegalStateException("User not logged in");
+        return employee;
+    }
 
     @GetMapping
-    public String manageLeave(Model model) {
-        model.addAttribute("pendingRequests", leaveService.getPendingRequests());
-        model.addAttribute("allRequests", leaveService.getAllRequests()); // We could optimize this
+    public String manageLeave(Model model, HttpSession session) {
+        Employee approver = getLoggedInApprover(session);
+        // Show only the requests this approver is allowed to see/act on
+        model.addAttribute("pendingRequests", leaveService.getPendingRequestsForApprover(approver));
+        model.addAttribute("allRequests", leaveService.getAllRequests());
+        model.addAttribute("approverRole", approver.getRole());
         return "leave/manage-leave";
     }
 
     @PostMapping("/approve/{id}")
-    public String approveLeave(@PathVariable Long id, 
-                               @RequestParam(required = false) String comment, 
+    public String approveLeave(@PathVariable Long id,
+                               @RequestParam(required = false) String comment,
+                               HttpSession session,
                                RedirectAttributes redirectAttributes) {
         try {
-            leaveService.approveLeave(id, LOGGED_IN_MANAGER_ID, comment);
+            Employee approver = getLoggedInApprover(session);
+            leaveService.approveLeave(id, approver.getEmployeeId(), comment);
             redirectAttributes.addFlashAttribute("successMessage", "Leave request approved successfully.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -38,11 +48,13 @@ public class LeaveApprovalController {
     }
 
     @PostMapping("/reject/{id}")
-    public String rejectLeave(@PathVariable Long id, 
-                              @RequestParam String comment, 
+    public String rejectLeave(@PathVariable Long id,
+                              @RequestParam(required = false) String comment,
+                              HttpSession session,
                               RedirectAttributes redirectAttributes) {
         try {
-            leaveService.rejectLeave(id, LOGGED_IN_MANAGER_ID, comment);
+            Employee approver = getLoggedInApprover(session);
+            leaveService.rejectLeave(id, approver.getEmployeeId(), comment);
             redirectAttributes.addFlashAttribute("successMessage", "Leave request rejected successfully.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

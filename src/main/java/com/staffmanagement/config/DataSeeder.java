@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +26,32 @@ public class DataSeeder implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         if (employeeRepository.count() == 0) {
-            // Create Employees
+
+            // ── Leave Types ──────────────────────────────────────────────
+            LeaveType annual = new LeaveType();
+            annual.setLeaveTypeName("Annual Leave");
+            annual.setDefaultDays(14);
+            annual.setDescription("Standard annual leave");
+            annual.setActive(true);
+            leaveTypeRepository.save(annual);
+
+            LeaveType sick = new LeaveType();
+            sick.setLeaveTypeName("Sick Leave");
+            sick.setDefaultDays(7);
+            sick.setDescription("Sick leave");
+            sick.setActive(true);
+            leaveTypeRepository.save(sick);
+
+            LeaveType unpaid = new LeaveType();
+            unpaid.setLeaveTypeName("Unpaid Leave");
+            unpaid.setDefaultDays(0);
+            unpaid.setDescription("Leave without pay");
+            unpaid.setActive(true);
+            leaveTypeRepository.save(unpaid);
+
+            int year = LocalDate.now().getYear();
+
+            // ── Employee 1 : John Doe (EMPLOYEE – IT) ────────────────────
             Employee emp1 = new Employee();
             emp1.setFirstName("John");
             emp1.setLastName("Doe");
@@ -35,62 +60,58 @@ public class DataSeeder implements CommandLineRunner {
             emp1.setRole("EMPLOYEE");
             emp1.setStatus("ACTIVE");
             employeeRepository.save(emp1);
+            createBalances(emp1, annual, sick, year);
 
-            Employee mgr1 = new Employee();
-            mgr1.setFirstName("Jane");
-            mgr1.setLastName("Manager");
-            mgr1.setEmail("jane.manager@example.com");
-            mgr1.setDepartment("IT");
-            mgr1.setRole("MANAGER");
-            mgr1.setStatus("ACTIVE");
-            employeeRepository.save(mgr1);
+            // ── Employee 2 : Sara Smith (EMPLOYEE – Finance) ─────────────
+            Employee emp2 = new Employee();
+            emp2.setFirstName("Sara");
+            emp2.setLastName("Smith");
+            emp2.setEmail("sara.employee@example.com");
+            emp2.setDepartment("Finance");
+            emp2.setRole("EMPLOYEE");
+            emp2.setStatus("ACTIVE");
+            employeeRepository.save(emp2);
+            createBalances(emp2, annual, sick, year);
 
-            Employee hr1 = new Employee();
-            hr1.setFirstName("Alice");
-            hr1.setLastName("HR");
-            hr1.setEmail("alice.hr@example.com");
-            hr1.setDepartment("HR");
-            hr1.setRole("HR_OFFICER");
-            hr1.setStatus("ACTIVE");
-            employeeRepository.save(hr1);
+            // ── Manager : Jane Manager (MANAGER – IT) ────────────────────
+            Employee mgr = new Employee();
+            mgr.setFirstName("Jane");
+            mgr.setLastName("Manager");
+            mgr.setEmail("jane.manager@example.com");
+            mgr.setDepartment("IT");
+            mgr.setRole("MANAGER");
+            mgr.setStatus("ACTIVE");
+            employeeRepository.save(mgr);
+            createBalances(mgr, annual, sick, year);
 
-            // Create Leave Types
-            LeaveType annual = new LeaveType();
-            annual.setLeaveTypeName("Annual Leave");
-            annual.setDefaultDays(14);
-            annual.setDescription("Standard annual leave");
-            leaveTypeRepository.save(annual);
-
-            LeaveType sick = new LeaveType();
-            sick.setLeaveTypeName("Sick Leave");
-            sick.setDefaultDays(7);
-            sick.setDescription("Sick leave");
-            leaveTypeRepository.save(sick);
-            
-            LeaveType unpaid = new LeaveType();
-            unpaid.setLeaveTypeName("Unpaid Leave");
-            unpaid.setDefaultDays(0);
-            unpaid.setDescription("Leave without pay");
-            leaveTypeRepository.save(unpaid);
-
-            // Create Balances for emp1
-            int year = LocalDate.now().getYear();
-            
-            LeaveBalance bal1 = new LeaveBalance();
-            bal1.setEmployee(emp1);
-            bal1.setLeaveType(annual);
-            bal1.setYear(year);
-            bal1.setAllocatedDays(annual.getDefaultDays());
-            bal1.setRemainingDays(annual.getDefaultDays());
-            leaveBalanceRepository.save(bal1);
-
-            LeaveBalance bal2 = new LeaveBalance();
-            bal2.setEmployee(emp1);
-            bal2.setLeaveType(sick);
-            bal2.setYear(year);
-            bal2.setAllocatedDays(sick.getDefaultDays());
-            bal2.setRemainingDays(sick.getDefaultDays());
-            leaveBalanceRepository.save(bal2);
+            // ── HR Officer : Alice HR (HR_OFFICER – HR) ──────────────────
+            Employee hr = new Employee();
+            hr.setFirstName("Alice");
+            hr.setLastName("HR");
+            hr.setEmail("alice.hr@example.com");
+            hr.setDepartment("HR");
+            hr.setRole("HR_OFFICER");
+            hr.setStatus("ACTIVE");
+            employeeRepository.save(hr);
+            createBalances(hr, annual, sick, year);
         }
+    }
+
+    private void createBalances(Employee emp, LeaveType annual, LeaveType sick, int year) {
+        LeaveBalance b1 = new LeaveBalance();
+        b1.setEmployee(emp);
+        b1.setLeaveType(annual);
+        b1.setYear(year);
+        b1.setAllocatedDays(annual.getDefaultDays());
+        b1.setRemainingDays(annual.getDefaultDays());
+        leaveBalanceRepository.save(b1);
+
+        LeaveBalance b2 = new LeaveBalance();
+        b2.setEmployee(emp);
+        b2.setLeaveType(sick);
+        b2.setYear(year);
+        b2.setAllocatedDays(sick.getDefaultDays());
+        b2.setRemainingDays(sick.getDefaultDays());
+        leaveBalanceRepository.save(b2);
     }
 }
